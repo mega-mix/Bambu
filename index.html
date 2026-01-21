@@ -13,13 +13,10 @@
             if (window.netlifyIdentity) {
                 window.netlifyIdentity.on("login", user => {
                     const roles = user.app_metadata.roles || [];
-
-                    if (roles.includes("user")) {
+                    if (roles.includes("user") || roles.includes("admin")) {
                         window.location.href = "/app/start.html";
-                    } 
-                    else {
-                        alert("Du hast keine Berechtigung!");
-                        netlifyIdentity.logout();
+                    } else {
+                        alert("Keine Berechtigung.");
                     }
                 });
             }
