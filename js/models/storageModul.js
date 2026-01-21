@@ -1,9 +1,9 @@
 // js/models/storageModule.js
 
-import { auth, db } from "./config.js";
-import FirebaseStorage from "../models/FirebaseStorage.js";
+import { auth, db } from "../config.js";
+import FirebaseStorage from "./FirebaseStorage.js";
 
-export class storageModule{
+export class StorageModul{
     constructor() {
         this.storage = new FirebaseStorage(db, auth);
     }
@@ -11,18 +11,17 @@ export class storageModule{
     async saveData(saveGame) {
         if (!auth.currentUser) return; 
 
-        await storage.save(saveGame);
-        console.log("gespeichert...");
+        await this.storage.save(saveGame);
     }
 
     async loadData() {
         if (!auth.currentUser) return;
 
-        const data = await storage.load();
+        const data = await this.storage.load();
         if (data) {
-            console.log("geladen...");
-            return data.characterName;
+            return data;
+        } else {
+            return null
         }
-        console.log("Fehler beim laden!");
     }
 }
