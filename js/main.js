@@ -48,39 +48,52 @@ if (btnLogout) {
 
 // --- WHITELIST CHECK ---
 onAuthStateChanged(auth, async (user) => {
+    // Wo sind wir gerade? (Pfad checken)
+    const currentPath = window.location.pathname;
+    // Prüfen, ob wir auf der Startseite (Spiel) sind
+    const isGamePage = currentPath.includes("start.html");
+
     if (user) {
-        // 1. User hat sich bei Google eingeloggt. Jetzt Whitelist prüfen.
-        console.log("Google Login erfolgreich. Prüfe Whitelist für:", user.email);
+        // === USER IST EINGELOGGT ===
+        console.log("Eingeloggt als:", user.email);
 
         try {
-            // Suchen in der Collection "whitelist" nach einem Dokument mit der ID = E-Mail
+            // 1. Whitelist Check (wie vorher)
             const whitelistRef = doc(db, "whitelist", user.email);
             const snapshot = await getDoc(whitelistRef);
 
-            if (snapshot.exists()) {
-                // === ZUGRIFF ERLAUBT ===
-                console.log("✅ User ist berechtigt:", user.email);
-                
-                window.location.href = "start.html"
-                //divLogin.style.display = "none";
-                //divApp.style.display = "block";
-
-                // Optional: Code zum ausführen nach Login
-            } else {
-                // === ZUGRIFF VERWEIGERT ===
+            if (!snapshot.exists()) {
                 throw new Error("Nicht auf der Whitelist");
             }
+
+            // 2. Zugriff ERLAUBT:
+            // Wenn wir noch auf der Login-Seite (index.html) sind -> Weiterleiten zum Spiel!
+            if (!isGamePage) {
+                console.log("Weiterleitung zum Spiel...");
+                window.location.href = "start.html";
+            }
+            
+            // Wenn wir schon auf start.html sind, bleiben wir einfach hier.
+
         } catch (error) {
             console.warn("⛔ Zugriff verweigert:", user.email);
-            alert("Du hast keine Berechtigung für dieses Spiel.");
-            
-            // Sofort wieder ausloggen und UI zurücksetzen
+            alert("Keine Berechtigung!");
             await signOut(auth);
+            window.location.href = "index.html";
         }
 
     } else {
         // === NICHT EINGELOGGT ===
         console.log("Nicht angemeldet.");
+
+        // Wenn jemand versucht, start.html ohne Login aufzurufen -> Rauswurf!
+        if (isGamePage) {
+            console.warn("Unerlaubter Zugriff auf Spielseite -> Rauswurf.");
+            window.location.href = "index.html";
+        }
+        
+        // Auf der index.html bleiben wir einfach und zeigen den Login-Button (falls vorhanden)
+        if (divLogin) divLogin.style.display = "block";
     }
 });
 
