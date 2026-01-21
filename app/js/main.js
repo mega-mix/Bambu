@@ -49,12 +49,14 @@ function setupUI() {
 
 // Wir hören IMMER auf 'init', prüfen aber auch direkt.
 // Durch den 'appGestartet' Schutz oben ist es egal, ob das hier doppelt feuert.
-const currentUser = netlifyIdentity.currentUser();
+//const currentUser = netlifyIdentity.currentUser();
 
+/*
 if (currentUser) {
     console.log(`User startApp: ${currentUser}`);
     startApp(currentUser);
 }
+*/
 
 if (isLocal) {
     console.warn("⚠️ Lokal-Modus: Admin");
@@ -66,13 +68,10 @@ if (isLocal) {
     startApp(user);
 }
 
-/*
-// Zur Sicherheit auch auf das Event hören (falls currentUser noch null war)
 netlifyIdentity.on("init", (user) => {
     console.log(`Netlify startApp: ${user}`);
     startApp(user);
 });
-*/
 
 // Init sicherstellen
 netlifyIdentity.init();
