@@ -1,5 +1,5 @@
-# Regel 1: Erlaube Zugriff auf dashboard.html nur für User mit Rolle "admin"
-/dashboard.html   /dashboard.html   200!  Role=admin
+# Erlaube Usern UND Admins den Zutritt zum App-Ordner
+/app/* /app/:splat    200!    Role=user,admin
 
-# Regel 2: Alle anderen, die dashboard.html wollen, werden auf index.html zurückgeworfen
-/dashboard.html   /index.html       401!
+# Nicht eingeloggte fliegen raus
+/app/* /index.html    401!

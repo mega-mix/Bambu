@@ -1,18 +1,29 @@
 <!DOCTYPE html>
 <html lang="de">
     <head>
+        <title>Bambu login...</title>
         <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
     </head>
 
     <body>
-        <h1>Mein geschützter Bereich</h1>
+        <h1>Bambu</h1>
         <button onclick="netlifyIdentity.open('login')">Einloggen</button>
-        <button onclick="netlifyIdentity.open('signup')">Registrieren</button>
 
         <script>
             if (window.netlifyIdentity) {
                 window.netlifyIdentity.on("login", user => {
-                    window.location.href = "/dashboard.html";
+                    const roles = user.app_metadata.roles || [];
+
+                    if (roles.includes("admin")) {
+                        window.location.href = "/admin/start.html";
+                    } 
+                    else if (roles.includes("user")) {
+                        window.location.href = "/user/start.html";
+                    } 
+                    else {
+                        alert("Du hast keine Berechtigung!");
+                        netlifyIdentity.logout();
+                    }
                 });
             }
         </script>
