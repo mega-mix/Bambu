@@ -1,51 +1,40 @@
+const instanceID = Math.floor(Math.random() * 1000);
+console.log("Skript-Instanz geladen: ID " + instanceID);
+
 import SaveGame from "./models/SaveGame.js";
+
+console.log("Main.js geladen");
 
 const netlifyIdentity = window.netlifyIdentity;
 
-// Hauptfunktion zum Starten der UI
+const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+console.log(`isLocal: ${isLocal}`);
+
+// === DER SCHUTZ GEGEN DOPPELTE AUSFÜHRUNG ===
+let appGestartet = false;
+
 function startApp(user) {
-    // Falls wir lokal sind und kein User da ist -> Fake Admin
-    const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
-    if (isLocal && !user) {
-        console.warn("⚠️ Lokal-Modus: Admin aktiv");
-        user = {
-            email: "admin@localhost",
-            user_metadata: { full_name: "Lokal Admin" },
-            app_metadata: { roles: ["admin", "user"] }
-        };
-    }
+    // Wenn die App schon läuft: Sofort abbrechen!
+    console.log("startversuch...");
+    if (appGestartet) return;
 
-    if (!user) {
-        document.body.innerHTML = `
-            <h1>Fehler: Benutzer nicht erkannt.</h1>
-            <p>Obwohl du Zugriff hast, konnte dein Benutzerprofil nicht geladen werden.</p>
-            <button onclick="window.netlifyIdentity.open('login')">Neu einloggen</button>
-            <a href="/">Zur Startseite</a>
-        `;
-        return;
-    }
+    // Sonst: Merken, dass wir gestartet sind
+    appGestartet = true;
+    console.log("Main.js gestartet");
 
-    // === User erfolgreich geladen ===
     const fullName = user.user_metadata.full_name || "Unbekannt";
     console.log(`Angemeldet als: ${fullName}`);
-
-    // Admin Check für Konsole (oder UI Logik)
-    const roles = user.app_metadata.roles || [];
-    if (roles.includes("admin")) {
-        console.log("Admin-Rechte bestätigt.");
-    }
 
     setupUI();
 }
 
-// UI Event Listener
 function setupUI() {
     const btnLaden = document.getElementById("btnLaden");
     const btnSpeichern = document.getElementById("btnSpeichern");
     const input = document.getElementById("input");
 
     if (btnLaden) {
-        btnLaden.addEventListener('click', () => console.log("Laden geklickt"));
+        btnLaden.addEventListener('click', () => console.log("Laden..."));
     }
     if (btnSpeichern) {
         btnSpeichern.addEventListener('click', () => {
@@ -56,18 +45,34 @@ function setupUI() {
     }
 }
 
-// === INITIALISIERUNG OHNE LOOP-GEFAHR ===
+// === INITIALISIERUNG ===
 
-// 1. Prüfen ob User schon da ist
+// Wir hören IMMER auf 'init', prüfen aber auch direkt.
+// Durch den 'appGestartet' Schutz oben ist es egal, ob das hier doppelt feuert.
 const currentUser = netlifyIdentity.currentUser();
 
 if (currentUser) {
+    console.log(`User startApp: ${currentUser}`);
     startApp(currentUser);
-} else {
-    // 2. Warten auf Init
-    netlifyIdentity.on("init", (user) => {
-        startApp(user);
-    });
-    
-    netlifyIdentity.init();
 }
+
+if (isLocal) {
+    console.warn("⚠️ Lokal-Modus: Admin");
+    const user = {
+        email: "admin@localhost",
+        user_metadata: { full_name: "LokalAdmin" },
+        app_metadata: { roles: ["admin", "user"] }
+    };
+    startApp(user);
+}
+
+/*
+// Zur Sicherheit auch auf das Event hören (falls currentUser noch null war)
+netlifyIdentity.on("init", (user) => {
+    console.log(`Netlify startApp: ${user}`);
+    startApp(user);
+});
+*/
+
+// Init sicherstellen
+netlifyIdentity.init();

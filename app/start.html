@@ -8,7 +8,7 @@
     
     <body>
         <h1>Dashboard</h1>
-        <p id="output">Test</p> <br>
+        <p id="output">Hallo</p> <br>
         <input id="input" type="text" placeholder="Spielername"> <br>
         <button id="btnLaden">laden</button>
         <button id="btnSpeichern">speichern</button>
@@ -17,14 +17,14 @@
         <button onclick="netlifyIdentity.logout()">Ausloggen</button>
 
         <script>
-            // Bei Logout zurück zur Startseite werfen
+            // Logout Logik
             if (window.netlifyIdentity) {
                 window.netlifyIdentity.on("logout", () => {
                     window.location.href = "/";
                 });
             }
         </script>
-    </body>
 
-    <script src="./js/main.js" type="module"></script>
+        <script src="./js/main.js" type="module"></script>
+    </body>
 </html>
