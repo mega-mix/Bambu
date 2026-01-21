@@ -1,10 +1,10 @@
 // Importiere Firebase Module
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-// NEU: doc und getDoc hinzugefügt für den Whitelist-Check
+// Für den Whitelist-Check
 import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// Dein Modell importieren
+// Modell importieren
 import FirebaseStorage from "./models/FirebaseStorage.js";
 
 // --- KONFIGURATION ---
@@ -23,15 +23,13 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 
-// Instanz unserer Speicher-Klasse erstellen
+// Instanz der Speicher-Klasse erstellen
 const storage = new FirebaseStorage(db, auth);
 
 
 // --- LOGIN LOGIK ---
 const btnLogin = document.getElementById("btnLogin");
 const btnLogout = document.getElementById("btnLogout");
-const divApp = document.getElementById("appArea"); // Der Bereich mit dem Spiel
-const divLogin = document.getElementById("loginArea"); // Der Bereich mit dem Login-Button
 
 // Login Button
 if (btnLogin) {
@@ -48,14 +46,14 @@ if (btnLogout) {
     });
 }
 
-// --- DER TÜRSTEHER (WHITELIST CHECK) ---
+// --- WHITELIST CHECK ---
 onAuthStateChanged(auth, async (user) => {
     if (user) {
-        // 1. User hat sich bei Google eingeloggt. Jetzt prüfen wir die Whitelist.
+        // 1. User hat sich bei Google eingeloggt. Jetzt Whitelist prüfen.
         console.log("Google Login erfolgreich. Prüfe Whitelist für:", user.email);
 
         try {
-            // Wir suchen in der Collection "whitelist" nach einem Dokument mit der ID = E-Mail
+            // Suchen in der Collection "whitelist" nach einem Dokument mit der ID = E-Mail
             const whitelistRef = doc(db, "whitelist", user.email);
             const snapshot = await getDoc(whitelistRef);
 
@@ -63,12 +61,13 @@ onAuthStateChanged(auth, async (user) => {
                 // === ZUGRIFF ERLAUBT ===
                 console.log("✅ User ist berechtigt:", user.email);
                 
-                divLogin.style.display = "none";
-                divApp.style.display = "block";
+                window.location.href = "start.html"
+                //divLogin.style.display = "none";
+                //divApp.style.display = "block";
 
-                // Optional: Hier könnte man Spielstände direkt laden
+                // Optional: Code zum ausführen nach Login
             } else {
-                // === ZUGRIFF VERWEIGERT (Nicht auf der Liste) ===
+                // === ZUGRIFF VERWEIGERT ===
                 throw new Error("Nicht auf der Whitelist");
             }
         } catch (error) {
@@ -77,15 +76,11 @@ onAuthStateChanged(auth, async (user) => {
             
             // Sofort wieder ausloggen und UI zurücksetzen
             await signOut(auth);
-            divLogin.style.display = "block";
-            divApp.style.display = "none";
         }
 
     } else {
         // === NICHT EINGELOGGT ===
         console.log("Nicht angemeldet.");
-        divLogin.style.display = "block";
-        divApp.style.display = "none";
     }
 });
 
