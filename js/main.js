@@ -28,6 +28,7 @@ const storage = new FirebaseStorage(db, auth);
 
 
 // --- LOGIN LOGIK ---
+const divLogin = document.getElementById("loginArea");
 const btnLogin = document.getElementById("btnLogin");
 const btnLogout = document.getElementById("btnLogout");
 
