@@ -14,12 +14,9 @@
                 window.netlifyIdentity.on("login", user => {
                     const roles = user.app_metadata.roles || [];
 
-                    if (roles.includes("admin")) {
-                        window.location.href = "/admin/start.html";
-                    } 
-                    else if (roles.includes("user")) {
-                        window.location.href = "/user/start.html";
-                    } 
+                    if (roles.includes("user")) {
+                        window.location.href = "/app/start.html";
+                    }  
                     else {
                         alert("Du hast keine Berechtigung!");
                         netlifyIdentity.logout();
@@ -28,4 +25,5 @@
             }
         </script>
     </body>
+
 </html>
