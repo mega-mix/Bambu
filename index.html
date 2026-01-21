@@ -1,28 +1,33 @@
 <!DOCTYPE html>
 <html lang="de">
-    <head>
-        <meta charset="UTF-8">
-        <title>Bambu Login</title>
-        <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <title>Firebase Game Save</title>
+    <style>
+        /* Einfaches Umschalten der Ansichten */
+        #appArea { display: none; }
+    </style>
+</head>
+<body>
 
-    <body>
-        <h1>Bambu</h1>
-        <button onclick="netlifyIdentity.open('login')">Einloggen</button>
+    <h1>Mein Spiel</h1>
 
-        <script>
-            if (window.netlifyIdentity) {
-                window.netlifyIdentity.on("login", user => {
-                    console.log("Login erfolgreich, leite weiter...");
-                    window.location.href = "/app/start.html";
-                });
+    <div id="loginArea">
+        <p>Bitte einloggen um zu spielen.</p>
+        <button id="btnLogin">Mit Google einloggen</button>
+    </div>
 
-                const user = window.netlifyIdentity.currentUser();
-                if (user) {
-                    console.log("Alter Login gefunden – wird bereinigt.");
-                    window.netlifyIdentity.logout();
-                }
-            }
-        </script>
-    </body>
+    <div id="appArea">
+        <p>Willkommen im Spiel!</p>
+        <input type="text" id="gameInput" placeholder="Spielername">
+        <br><br>
+        <button id="btnSave">💾 Speichern</button>
+        <button id="btnLoad">📂 Laden</button>
+        <br><br>
+        <button id="btnLogout">Ausloggen</button>
+    </div>
+
+    <script type="module" src="main.js"></script>
+
+</body>
 </html>
