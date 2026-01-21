@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="de">
     <head>
         <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
@@ -11,8 +12,8 @@
         <script>
             if (window.netlifyIdentity) {
                 window.netlifyIdentity.on("login", user => {
-                window.location.href = "/dashboard.html";
-            });
+                    window.location.href = "/dashboard.html";
+                });
             }
         </script>
     </body>

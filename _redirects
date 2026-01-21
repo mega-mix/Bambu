@@ -1,0 +1,5 @@
+# Regel 1: Erlaube Zugriff auf dashboard.html nur für User mit Rolle "admin"
+/dashboard.html   /dashboard.html   200!  Role=admin
+
+# Regel 2: Alle anderen, die dashboard.html wollen, werden auf index.html zurückgeworfen
+/dashboard.html   /index.html       401!
