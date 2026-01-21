@@ -1,7 +1,8 @@
 // Importiere Firebase Module
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+// NEU: doc und getDoc hinzugefügt für den Whitelist-Check
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 // Dein Modell importieren
 import FirebaseStorage from "./models/FirebaseStorage.js";
@@ -47,18 +48,41 @@ if (btnLogout) {
     });
 }
 
-// Der "Türsteher" (Observer) - Feuert automatisch bei Statusänderung
-onAuthStateChanged(auth, (user) => {
+// --- DER TÜRSTEHER (WHITELIST CHECK) ---
+onAuthStateChanged(auth, async (user) => {
     if (user) {
-        // === USER IST DRIN ===
-        console.log("Angemeldet als:", user.displayName);
-        divLogin.style.display = "none";
-        divApp.style.display = "block";
-        
-        // Optional: Direkt beim Login laden?
-        // loadGameData(); 
+        // 1. User hat sich bei Google eingeloggt. Jetzt prüfen wir die Whitelist.
+        console.log("Google Login erfolgreich. Prüfe Whitelist für:", user.email);
+
+        try {
+            // Wir suchen in der Collection "whitelist" nach einem Dokument mit der ID = E-Mail
+            const whitelistRef = doc(db, "whitelist", user.email);
+            const snapshot = await getDoc(whitelistRef);
+
+            if (snapshot.exists()) {
+                // === ZUGRIFF ERLAUBT ===
+                console.log("✅ User ist berechtigt:", user.email);
+                
+                divLogin.style.display = "none";
+                divApp.style.display = "block";
+
+                // Optional: Hier könnte man Spielstände direkt laden
+            } else {
+                // === ZUGRIFF VERWEIGERT (Nicht auf der Liste) ===
+                throw new Error("Nicht auf der Whitelist");
+            }
+        } catch (error) {
+            console.warn("⛔ Zugriff verweigert:", user.email);
+            alert("Du hast keine Berechtigung für dieses Spiel.");
+            
+            // Sofort wieder ausloggen und UI zurücksetzen
+            await signOut(auth);
+            divLogin.style.display = "block";
+            divApp.style.display = "none";
+        }
+
     } else {
-        // === USER IST DRAUSSEN ===
+        // === NICHT EINGELOGGT ===
         console.log("Nicht angemeldet.");
         divLogin.style.display = "block";
         divApp.style.display = "none";
