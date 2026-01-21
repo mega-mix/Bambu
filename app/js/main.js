@@ -1,6 +1,6 @@
 import SaveGame from "./models/SaveGame.js";
 
-const user = netlifyIdentity.currentUser();
+let user = netlifyIdentity.currentUser();
 const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
 
 if (isLocal && !user) {
@@ -51,6 +51,7 @@ btnSpeichern.addEventListener('click', e => {
     const save = new SaveGame(playerName, 1);
     console.log("Save erstellt:");
     console.log(save.player);
+
 
 
 });
