@@ -1,58 +1,70 @@
 import SaveGame from "./models/SaveGame.js";
 
-const user = netlifyIdentity.currentUser();
-const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+const netlifyIdentity = window.netlifyIdentity;
 
-/*
-if (isLocal && !user) {
-    console.warn("⚠️ Entwicklungsumgebung erkannt: Fake-Admin aktiviert!");
+// === DER SCHUTZ GEGEN DOPPELTE AUSFÜHRUNG ===
+let appGestartet = false;
+
+function startApp(user) {
+    // Wenn die App schon läuft: Sofort abbrechen!
+    if (appGestartet) return;
     
-    user = {
-        email: "admin@localhost",
-        user_metadata: { 
-            full_name: "Admin (Lokal)" 
-        },
-        app_metadata: { 
-            roles: ["admin", "user"]
-        }
-    };
-}
-*/
+    // Sonst: Merken, dass wir gestartet sind
+    appGestartet = true;
+    
+    // Falls lokal und kein User -> Lokal Admin
+    const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+    if (isLocal && !user) {
+        console.warn("⚠️ Lokal-Modus: Admin");
+        user = {
+            email: "admin@localhost",
+            user_metadata: { full_name: "Lokal Admin" },
+            app_metadata: { roles: ["admin", "user"] }
+        };
+    }
 
-if (!user) {
-    window.location.href = "/"; // Zurück zum Login
-} else {
-    // A. Benutzernamen & E-Mail auslesen
-    const email = user.email;
+    if (!user) {
+        document.body.innerHTML = `<h1>Fehler: Kein Benutzer gefunden.</h1><a href="/">Zurück</a>`;
+        return;
+    }
+
     const fullName = user.user_metadata.full_name || "Unbekannt";
-    
-    console.log(`Eingeloggt als: ${fullName} (${email})`);
-    
-    const roles = user.app_metadata.roles || [];
-    const isAdmin = roles.includes("admin");
+    console.log(`Angemeldet als: ${fullName}`);
 
-    // Admin-Funktionen freischalten
-    if (isAdmin) {
-        console.log("Admin-Rechte erkannt.");
-    } else {
-        console.log("Nur User-Rechte.");
+    setupUI();
+}
+
+function setupUI() {
+    const btnLaden = document.getElementById("btnLaden");
+    const btnSpeichern = document.getElementById("btnSpeichern");
+    const input = document.getElementById("input");
+
+    if (btnLaden) {
+        btnLaden.addEventListener('click', () => console.log("Laden..."));
+    }
+    if (btnSpeichern) {
+        btnSpeichern.addEventListener('click', () => {
+            const name = input ? input.value : "Player";
+            const save = new SaveGame(name, 1);
+            console.log("Gespeichert:", save);
+        });
     }
 }
 
-const output = document.getElementById("output");
-const input = document.getElementById("input");
-const btnLaden = document.getElementById("btnLaden");
-const btnSpeichern = document.getElementById("btnSpeichern");
+// === INITIALISIERUNG ===
 
-btnLaden.addEventListener('click', e => {
+// Wir hören IMMER auf 'init', prüfen aber auch direkt.
+// Durch den 'appGestartet' Schutz oben ist es egal, ob das hier doppelt feuert.
+const currentUser = netlifyIdentity.currentUser();
 
+if (currentUser) {
+    startApp(currentUser);
+}
+
+// Zur Sicherheit auch auf das Event hören (falls currentUser noch null war)
+netlifyIdentity.on("init", (user) => {
+    startApp(user);
 });
 
-btnSpeichern.addEventListener('click', e => {
-    const playerName = input.value;
-    const save = new SaveGame(playerName, 1);
-    console.log("Save erstellt:");
-    console.log(save.player);
-
-
-});
+// Init sicherstellen
+netlifyIdentity.init();
