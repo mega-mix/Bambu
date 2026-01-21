@@ -3,27 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>Bambu login</title>
-    <style>
-        /* Einfaches Umschalten der Ansichten */
-        #appArea { display: none; }
-    </style>
+
+    <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
-
-    <h1>Bambu</h1>
-
-    <div id="loginArea">
+    <div class="ui-login">
+        <h1>Bambu</h1>
         <p>Bitte einloggen...</p>
+
         <button id="btnLogin">Mit Google einloggen</button>
     </div>
 
-    <div id="appArea">
-        <p>Willkommen im Spiel!</p>
-        <br><br>
-        <button id="btnLogout">Ausloggen</button>
-    </div>
-
-    <script type="module" src="./js/main.js"></script>
+    <script type="module" src="./js/authGuard.js"></script>
 
 </body>
 </html>

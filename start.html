@@ -3,13 +3,18 @@
     <head>
         <meta charset="UTF-8">
         <title>Bambu game</title>
+
+        <link rel="stylesheet" href="./css/style.css">
     </head>
     
     <body>
-        <h1>Startseite</h1>
-        <p>Hallo</p> <br>
-        <button id="btnLogout">Ausloggen</button>
+        <div class="ui-start">
+            <h1>Startseite</h1>
+            <p id="loginLabel">Hallo</p> <br>
+            <button id="btnLogout" class="logout">Ausloggen</button>
+        </div>
 
-        <script type="module" src="./js/main.js"></script>
+        <script type="module" src="./js/authGuard.js"></script>
+        <script type="module" src="./js/game.js"></script>
     </body>
 </html>
