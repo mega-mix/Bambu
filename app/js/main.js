@@ -1,35 +1,13 @@
 import SaveGame from "./models/SaveGame.js";
 
-// Hilfsfunktion: Wartet garantiert, bis Netlify Identity bereit ist
-function waitForUser() {
-    return new Promise((resolve) => {
-        // Fall 1: User ist schon geladen (z.B. durch Cache)
-        const existingUser = window.netlifyIdentity.currentUser();
-        if (existingUser) {
-            resolve(existingUser);
-            return;
-        }
+const netlifyIdentity = window.netlifyIdentity;
 
-        // Fall 2: Wir müssen warten, bis das 'init' Event feuert
-        window.netlifyIdentity.on("init", (user) => {
-            resolve(user);
-        });
-
-        // Sicherheitshalber Init erzwingen, falls noch nicht geschehen
-        window.netlifyIdentity.init();
-    });
-}
-
-// Hauptfunktion starten
-async function initApp() {
+// Hauptfunktion zum Starten der UI
+function startApp(user) {
+    // Falls wir lokal sind und kein User da ist -> Fake Admin
     const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
-    
-    // Wir warten hier, bis Netlify "Fertig!" meldet. Das verhindert den Loop.
-    let user = await waitForUser();
-
-    // DEV-MODUS: Fake User falls lokal
     if (isLocal && !user) {
-        console.warn("⚠️ Lokal-Modus: Fake-Admin aktiv");
+        console.warn("⚠️ Lokal-Modus: Admin aktiv");
         user = {
             email: "admin@localhost",
             user_metadata: { full_name: "Lokal Admin" },
@@ -37,28 +15,37 @@ async function initApp() {
         };
     }
 
-    // JETZT erst prüfen wir, ob wir redirecten müssen
     if (!user) {
-        // Nur redirecten, wenn wir sicher sind, dass kein User da ist
-        window.location.href = "/";
+        document.body.innerHTML = `
+            <h1>Fehler: Benutzer nicht erkannt.</h1>
+            <p>Obwohl du Zugriff hast, konnte dein Benutzerprofil nicht geladen werden.</p>
+            <button onclick="window.netlifyIdentity.open('login')">Neu einloggen</button>
+            <a href="/">Zur Startseite</a>
+        `;
         return;
     }
 
-    // === App Start ===
+    // === User erfolgreich geladen ===
     const fullName = user.user_metadata.full_name || "Unbekannt";
     console.log(`Angemeldet als: ${fullName}`);
-    
-    // UI aufbauen
+
+    // Admin Check für Konsole (oder UI Logik)
+    const roles = user.app_metadata.roles || [];
+    if (roles.includes("admin")) {
+        console.log("Admin-Rechte bestätigt.");
+    }
+
     setupUI();
 }
 
+// UI Event Listener
 function setupUI() {
     const btnLaden = document.getElementById("btnLaden");
     const btnSpeichern = document.getElementById("btnSpeichern");
     const input = document.getElementById("input");
 
     if (btnLaden) {
-        btnLaden.addEventListener('click', () => console.log("Laden..."));
+        btnLaden.addEventListener('click', () => console.log("Laden geklickt"));
     }
     if (btnSpeichern) {
         btnSpeichern.addEventListener('click', () => {
@@ -69,5 +56,18 @@ function setupUI() {
     }
 }
 
-// App starten
-initApp();
+// === INITIALISIERUNG OHNE LOOP-GEFAHR ===
+
+// 1. Prüfen ob User schon da ist
+const currentUser = netlifyIdentity.currentUser();
+
+if (currentUser) {
+    startApp(currentUser);
+} else {
+    // 2. Warten auf Init
+    netlifyIdentity.on("init", (user) => {
+        startApp(user);
+    });
+    
+    netlifyIdentity.init();
+}

@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="de">
     <head>
-        <title>Bambu login...</title>
+        <meta charset="UTF-8">
+        <title>Bambu Login</title>
         <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
     </head>
 
@@ -16,7 +17,7 @@
                     if (roles.includes("user") || roles.includes("admin")) {
                         window.location.href = "/app/start.html";
                     } else {
-                        alert("Keine Berechtigung.");
+                        alert("Keine Berechtigung!");
                     }
                 });
             }
