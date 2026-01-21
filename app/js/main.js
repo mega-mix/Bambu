@@ -1,6 +1,21 @@
 import SaveGame from "./models/SaveGame.js";
 
 const user = netlifyIdentity.currentUser();
+const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+
+if (isLocal && !user) {
+    console.warn("⚠️ Entwicklungsumgebung erkannt: Fake-Admin aktiviert!");
+    
+    user = {
+        email: "entwickler@localhost",
+        user_metadata: { 
+            full_name: "Super-Entwickler (Lokal)" 
+        },
+        app_metadata: { 
+            roles: ["admin", "user"]
+        }
+    };
+}
 
 if (!user) {
     window.location.href = "/"; // Zurück zum Login
