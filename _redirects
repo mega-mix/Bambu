@@ -1,5 +1,0 @@
-# Erlaube Usern UND Admins den Zutritt zum App-Ordner
-/app/* /app/:splat    200!    Role=user,admin
-
-# Nicht eingeloggte fliegen raus
-/app/* /index.html    401!
