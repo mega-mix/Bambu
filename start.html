@@ -9,19 +9,54 @@
     
     <body>
         <div class="topBar">
-            <p id="topGold">Gold</p>
-            <p id="topHolz">Holz</p>
-            <p id="topStein">Stein</p>
+            <div class="topMenue">
+                <button id="topBtnLogout" class="topBtn">Logout</button>
+                <button id="topBtnSave" class="topBtn">speichern</button>
+                <button id="topBtnReset" class="topBtn">RESET</button>
+                <p id="topInfo" class="topInfo"></p>
+            </div>
+            <div class="topLager">
+                <p id="topGold">Gold</p>
+                <p id="topHolz">Holz</p>
+                <p id="topStein">Stein</p>
+            </div>
         </div>
-        <br>
-        <div class="ui-start">
-            <h1>Startseite</h1>
-            <p id="loginLabel">Hallo</p>
-            <button id="btnSave">speichern</button>
-            <button id="btnLogout" class="logout">Ausloggen</button>
+
+        <div class="navigation">
+            <p>Navigation</p>
+            <button id="btnStadt" class="navBtn">Stadtübersicht</button>
+            <button id="btnBauwerke" class="navBtn">Bauwerke</button>
         </div>
-        <br>
-        
+
+        <main>
+            <div id="view-start" class="view active">
+                <div class="view-start">
+                    <h1>Willkommen</h1>
+                    <p id="startName"></p>
+                </div>
+            </div>
+
+            <div id="view-stadt" class="view">
+                <div class="view-stadt">
+                    <h1>Stadtübersicht</h1>
+                </div>
+            </div>
+
+            <div id="view-bauwerke" class="view">
+                <div class="view-bauwerke">
+                    <h1>Bauwerke</h1>
+                    <br>
+                    <div class="view-bauwerke">
+                        <button id="bauwerkeBtnRathaus" class="bauwerke">Rathaus - Stufe X</button>
+                        <button id="bauwerkeBtnLagerhaus" class="bauwerke">Lagerhaus - Stufe X</button>
+                        <button id="bauwerkeBtnGoldmine" class="bauwerke">Goldmine - Stufe X</button>
+                        <button id="bauwerkeBtnHolzfaeller" class="bauwerke">Holzfäller - Stufe X</button>
+                        <button id="bauwerkeBtnSteinbruch" class="bauwerke">Steinbruch - Stufe X</button>
+                        <button id="bauwerkeBtnStadtmauer" class="bauwerke">Stadtmauer - Stufe X</button>
+                    </div>
+                </div>
+            </div>
+        </main>
 
         <script type="module" src="./js/authGuard.js"></script>
         <script type="module" src="./js/game.js"></script>

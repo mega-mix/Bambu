@@ -9,14 +9,14 @@ const provider = new GoogleAuthProvider();
 
 // HTML Elemente prüfen ob sie existieren
 const btnLogin = document.getElementById("btnLogin");
-const btnLogout = document.getElementById("btnLogout");
+const topBtnLogout = document.getElementById("topBtnLogout");
 
 // --- LOGIN / LOGOUT BUTTONS ---
 if (btnLogin) {
     btnLogin.addEventListener("click", () => signInWithPopup(auth, provider));
 }
-if (btnLogout) {
-    btnLogout.addEventListener("click", () => signOut(auth));
+if (topBtnLogout) {
+    topBtnLogout.addEventListener("click", () => signOut(auth));
 }
 
 // --- ÜBERWACHUNG ---

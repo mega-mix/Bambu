@@ -1,6 +1,6 @@
-// js/models/buildings/goldmine.js
+// js/models/buildings/holzfaeller.js
 
-export class Goldmine {
+export class Holzfaeller {
     #level;
     #mengeProTick;
     #msProduktion;

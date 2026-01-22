@@ -1,6 +1,6 @@
-// js/models/buildings/goldmine.js
+// js/models/buildings/steinbruch.js
 
-export class Goldmine {
+export class Steinbruch {
     #level;
     #mengeProTick;
     #msProduktion;
