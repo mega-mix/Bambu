@@ -25,7 +25,6 @@ async function resetGame() {
 }
 
 function viewBauwerke() {
-    gameView.aktBauwerke(mySaveGame);
     gameView.switchView("view-bauwerke");
 }
 
@@ -34,7 +33,6 @@ function viewStadt() {
 }
 
 function viewLagerhaus() {
-    gameView.aktLagerhaus(mySaveGame);
     gameView.switchView("view-lagerhaus");
 }
 
@@ -96,11 +94,10 @@ async function gameStart() {
     storage.saveData(mySaveGame);
 
     gameView.setTopInfo("Spielstand geladen");
-    gameView.aktTopLager(mySaveGame);
 
-    gameView.aktSaveGame(mySaveGame);
+    gameView.setGame(mySaveGame);
     initInteractions();
-    gameLoop();
+    requestAnimationFrame(gameLoop);
 }
 
 function gameLoop() {
@@ -117,5 +114,6 @@ function updateData() {
 }
 
 function updateView() {
-    gameView.aktTopLager(mySaveGame);
+    gameView.aktSaveGame(mySaveGame);
+    gameView.update();
 }
