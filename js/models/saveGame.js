@@ -8,7 +8,8 @@ import { Stadtmauer } from "./buildings/stadtmauer.js";
 import { Steinbruch } from "./buildings/steinbruch.js";
 
 export class SaveGame {
-    constructor() {
+    constructor(player) {
+        this.playerName = player;
         this.rathaus = new Rathaus();
         this.lagerhaus = new Lagerhaus();
         this.goldmine = new Goldmine();

@@ -24,7 +24,6 @@ export class ViewHandler {
 
     aktSaveGame(saveGame) {
         this.mySaveGame = saveGame;
-        this.update();
     }
 
     setGame(saveGame) {

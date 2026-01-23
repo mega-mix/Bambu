@@ -7,6 +7,7 @@ import { SaveGame } from "./models/saveGame.js";
 import { ViewHandler } from "./models/viewHandler.js";
 import { UIManager } from "./models/uiManager.js";
 
+let playerName;
 let mySaveGame;
 const storage = new StorageModul();
 const gameView = new ViewHandler(mySaveGame);
@@ -19,7 +20,7 @@ async function saveGame() {
 }
 
 async function resetGame() {
-    mySaveGame = new SaveGame();
+    mySaveGame = new SaveGame(playerName);
     await storage.saveData(mySaveGame);
     gameView.setTopInfo("Spielstand resettet!");
 }
@@ -52,7 +53,7 @@ async function lagerhausLevelKauf() {
 onAuthStateChanged(auth, (user) => {
     if (user) {      
         gameView.setStartName(user.displayName);
-
+        playerName = user.displayName;
         gameStart();
     }
 });
@@ -85,7 +86,7 @@ setInterval(async () => {
 async function gameStart() {
     console.log("Spiel gestartet");
 
-    mySaveGame = new SaveGame();
+    mySaveGame = new SaveGame(playerName);
     let oldSaveGame = await storage.loadData();
     if (oldSaveGame) {
         // Altes SaveGame mit neuem verschmelzen
