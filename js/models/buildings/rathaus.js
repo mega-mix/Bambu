@@ -4,5 +4,4 @@ export class Rathaus {
     constructor() {
         this.level = 1;
     }
-
 }
