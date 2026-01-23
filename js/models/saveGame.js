@@ -4,7 +4,7 @@ import { Goldmine } from "./buildings/goldmine.js";
 import { Holzfaeller } from "./buildings/holzfaeller.js";
 import { Lagerhaus } from "./buildings/lagerhaus.js";
 import { Rathaus } from "./buildings/rathaus.js";
-import { Stadtmauer } from "./buildings/Stadtmauer.js";
+import { Stadtmauer } from "./buildings/stadtmauer.js";
 import { Steinbruch } from "./buildings/steinbruch.js";
 
 export class SaveGame {
