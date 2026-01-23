@@ -5,42 +5,50 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/fi
 import { StorageModul } from "./models/storageModul.js";
 import { SaveGame } from "./models/saveGame.js";
 import { ViewHandler } from "./models/viewHandler.js";
+import { UIManager } from "./models/uiManager.js";
 
 let mySaveGame;
 const storage = new StorageModul();
 const gameView = new ViewHandler(mySaveGame);
+const ui = new UIManager();
 
 
-const topBtnSpeichern = document.getElementById("topBtnSave");
-if (topBtnSpeichern) {
-    topBtnSpeichern.addEventListener('click', () => {
-        storage.saveData(mySaveGame);
-        gameView.setTopInfo("Spiel gespeichert");
-    });
+async function saveGame() {
+    await storage.saveData(mySaveGame);
+    gameView.setTopInfo("Spiel gespeichert");
 }
 
-const topBtnReset = document.getElementById("topBtnReset");
-if (topBtnReset) {
-    topBtnReset.addEventListener('click', () => {
-        mySaveGame = new SaveGame();
-        storage.saveData(mySaveGame);
-        gameView.setTopInfo("Spielstand resettet!");
-    });
+async function resetGame() {
+    mySaveGame = new SaveGame();
+    await storage.saveData(mySaveGame);
+    gameView.setTopInfo("Spielstand resettet!");
 }
 
-const btnBauwerke = document.getElementById("btnBauwerke");
-if (btnBauwerke) {
-    btnBauwerke.addEventListener('click', () => {
-        gameView.aktBauwerke(mySaveGame);
-        gameView.switchView("view-bauwerke");
-    });
+function viewBauwerke() {
+    gameView.aktBauwerke(mySaveGame);
+    gameView.switchView("view-bauwerke");
 }
 
-const btnStadt = document.getElementById("btnStadt");
-if (btnStadt) {
-    btnStadt.addEventListener('click', () => {
-        gameView.switchView("view-stadt");
-    });
+function viewStadt() {
+    gameView.switchView("view-stadt");
+}
+
+function viewLagerhaus() {
+    gameView.aktLagerhaus(mySaveGame);
+    gameView.switchView("view-lagerhaus");
+}
+
+async function lagerhausLevelKauf() {
+    if (mySaveGame.lagerhaus.gold < mySaveGame.lagerhaus.levelKostenGold) {return;}
+    if (mySaveGame.lagerhaus.holz < mySaveGame.lagerhaus.levelKostenHolz) {return;}
+    if (mySaveGame.lagerhaus.stein < mySaveGame.lagerhaus.levelKostenStein) {return;}
+
+    // Genug Rohstoffe vorhanden
+    mySaveGame.lagerhaus.gold -= mySaveGame.lagerhaus.levelKostenGold;
+    mySaveGame.lagerhaus.holz -= mySaveGame.lagerhaus.levelKostenHolz;
+    mySaveGame.lagerhaus.stein -= mySaveGame.lagerhaus.levelKostenStein;
+    mySaveGame.lagerhaus.levelUp();
+    await storage.saveData(mySaveGame);
 }
 
 onAuthStateChanged(auth, (user) => {
@@ -51,6 +59,29 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
+// Button click Tabelle
+function initInteractions() {
+    const myActions = {
+        // "Name im HTML" : Funktion im Code
+        "saveGame": saveGame,
+        "resetGame": resetGame,
+        "viewStadt": viewStadt,
+        "viewBauwerke": viewBauwerke,
+        "viewLagerhaus": viewLagerhaus,
+        "lagerhausLevelKauf": lagerhausLevelKauf
+    };
+
+    // Dem uiManager geben
+    ui.registerActions(myActions);
+}
+
+// Auto-Save
+setInterval(async () => {
+    await storage.saveData(mySaveGame);
+    console.log("Auto-Save durchgeführt");
+}, 60000);
+
+
 // --- GAME LOGIK ---
 
 async function gameStart() {
@@ -58,7 +89,7 @@ async function gameStart() {
 
     mySaveGame = new SaveGame();
     let oldSaveGame = await storage.loadData();
-    if (oldSaveGame && false) {
+    if (oldSaveGame) {
         // Altes SaveGame mit neuem verschmelzen
         mySaveGame.applyData(oldSaveGame);
     }
@@ -67,6 +98,8 @@ async function gameStart() {
     gameView.setTopInfo("Spielstand geladen");
     gameView.aktTopLager(mySaveGame);
 
+    gameView.aktSaveGame(mySaveGame);
+    initInteractions();
     gameLoop();
 }
 
