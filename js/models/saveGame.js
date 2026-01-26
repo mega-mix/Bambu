@@ -22,37 +22,23 @@ export class SaveGame {
         // Vermisch alten Spielstand mit neuem, falls neue Variablen dazu gekommen sind.
         if (!data) return;
 
-        Object.assign(this, data);
-
         // Ein frisches Bauwerk erzeugen und mit den alten Daten füllen
-        if (data.rathaus) {
-            this.rathaus = new Rathaus(); // Frisch (mit neuen Variablen)
-            Object.assign(this.rathaus, data.rathaus); // Alte Daten reinmischen
-        }
+        this.rathaus = new Rathaus();
+        if (data.rathaus) { this.rathaus.load(data.rathaus); }
 
-        if (data.lagerhaus) {
-            this.lagerhaus = new Lagerhaus();
-            Object.assign(this.lagerhaus, data.lagerhaus);
-        }
+        this.lagerhaus = new Lagerhaus();
+        if (data.lagerhaus) { this.lagerhaus.load(data.lagerhaus); }
 
-        if (data.goldmine) {
-            this.goldmine = new Goldmine();
-            Object.assign(this.goldmine, data.goldmine);
-        }
+        this.goldmine = new Goldmine();
+        if (data.goldmine) { this.goldmine.load(data.goldmine); }
 
-        if (data.holzfaeller) {
-            this.holzfaeller = new Holzfaeller();
-            Object.assign(this.holzfaeller, data.holzfaeller);
-        }
+        this.holzfaeller = new Holzfaeller();
+        if (data.holzfaeller) { this.holzfaeller.load(data.holzfaeller); }
 
-        if (data.steinbruch) {
-            this.steinbruch = new Steinbruch();
-            Object.assign(this.steinbruch, data.steinbruch);
-        }
+        this.steinbruch = new Steinbruch();
+        if (data.steinbruch) { this.steinbruch.load(data.steinbruch); }
 
-        if (data.stadtmauer) {
-            this.stadtmauer = new Stadtmauer();
-            Object.assign(this.stadtmauer, data.stadtmauer);
-        }
+        this.stadtmauer = new Stadtmauer();
+        if (data.stadtmauer) { this.stadtmauer.load(data.stadtmauer); }
     }
 }

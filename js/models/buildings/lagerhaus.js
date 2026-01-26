@@ -7,20 +7,32 @@ export class Lagerhaus {
         this.gold = 100;
         this.holz = 100;
         this.stein = 100;
-        this.maxGold = 500;
-        this.maxHolz = 500;
-        this.maxStein = 500;
-        this.faktorLager = 1;
-        this.levelKostenGold = 25;
-        this.levelKostenHolz = 25;
-        this.levelKostenStein = 25;
+    }
+
+    load(data) {
+        if (!data) return;
+
+        if (data.level) { this.level = data.level; }
+        if (data.gold) { this.gold = data.gold; }
+        if (data.holz) { this.holz = data.holz; }
+        if (data.stein) { this.stein = data.stein; }
     }
     
+    berechnung(basis, faktor) {
+        return Math.floor(basis * Math.pow(faktor, this.level - 1));
+    }
+
     levelUp() {
         this.level ++;
-        // Max Lagerstand neu berechnen
-        // Level Kosten neu berechnen
     }
+
+    get maxGold() { return this.berechnung(300, 1.5); }
+    get maxHolz() { return this.berechnung(300, 1.5); }
+    get maxStein() { return this.berechnung(300, 1.5); }
+
+    get levelKostenGold() { return this.berechnung(102, 1.8); }
+    get levelKostenHolz() { return this.berechnung(88, 1.8); }
+    get levelKostenStein() { return this.berechnung(93, 1.8); }
 
     addGold(gold) {
         if (gold > 0) {

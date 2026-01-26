@@ -25,6 +25,7 @@ async function resetGame() {
     gameView.setTopInfo("Spielstand resettet!");
 }
 
+// FUNKTION VIEW ALLGEMEIN MACHEN!
 function viewBauwerke() {
     gameView.switchView("view-bauwerke");
 }
@@ -33,8 +34,38 @@ function viewStadt() {
     gameView.switchView("view-stadt");
 }
 
+function viewRathaus() {
+    gameView.switchView("view-rathaus");
+}
+
 function viewLagerhaus() {
     gameView.switchView("view-lagerhaus");
+}
+
+function viewGoldmine() {
+    gameView.switchView("view-goldmine");
+}
+
+function viewHolzfaeller() {
+    gameView.switchView("view-holzfaeller");
+}
+
+function viewSteinbruch() {
+    gameView.switchView("view-steinbruch");
+}
+
+// FUNKTION ZUM KAUF ALLGEMEIN MACHEN!
+async function rathausLevelKauf() {
+    if (mySaveGame.lagerhaus.gold < mySaveGame.rathaus.levelKostenGold) {return;}
+    if (mySaveGame.lagerhaus.holz < mySaveGame.rathaus.levelKostenHolz) {return;}
+    if (mySaveGame.lagerhaus.stein < mySaveGame.rathaus.levelKostenStein) {return;}
+
+    // Genug Rohstoffe vorhanden
+    mySaveGame.lagerhaus.gold -= mySaveGame.rathaus.levelKostenGold;
+    mySaveGame.lagerhaus.holz -= mySaveGame.rathaus.levelKostenHolz;
+    mySaveGame.lagerhaus.stein -= mySaveGame.rathaus.levelKostenStein;
+    mySaveGame.rathaus.levelUp();
+    await storage.saveData(mySaveGame);
 }
 
 async function lagerhausLevelKauf() {
@@ -47,6 +78,45 @@ async function lagerhausLevelKauf() {
     mySaveGame.lagerhaus.holz -= mySaveGame.lagerhaus.levelKostenHolz;
     mySaveGame.lagerhaus.stein -= mySaveGame.lagerhaus.levelKostenStein;
     mySaveGame.lagerhaus.levelUp();
+    await storage.saveData(mySaveGame);
+}
+
+async function goldmineLevelKauf() {
+    if (mySaveGame.lagerhaus.gold < mySaveGame.goldmine.levelKostenGold) {return;}
+    if (mySaveGame.lagerhaus.holz < mySaveGame.goldmine.levelKostenHolz) {return;}
+    if (mySaveGame.lagerhaus.stein < mySaveGame.goldmine.levelKostenStein) {return;}
+
+    // Genug Rohstoffe vorhanden
+    mySaveGame.lagerhaus.gold -= mySaveGame.goldmine.levelKostenGold;
+    mySaveGame.lagerhaus.holz -= mySaveGame.goldmine.levelKostenHolz;
+    mySaveGame.lagerhaus.stein -= mySaveGame.goldmine.levelKostenStein;
+    mySaveGame.goldmine.levelUp();
+    await storage.saveData(mySaveGame);
+}
+
+async function holzfaellerLevelKauf() {
+    if (mySaveGame.lagerhaus.gold < mySaveGame.holzfaeller.levelKostenGold) {return;}
+    if (mySaveGame.lagerhaus.holz < mySaveGame.holzfaeller.levelKostenHolz) {return;}
+    if (mySaveGame.lagerhaus.stein < mySaveGame.holzfaeller.levelKostenStein) {return;}
+
+    // Genug Rohstoffe vorhanden
+    mySaveGame.lagerhaus.gold -= mySaveGame.holzfaeller.levelKostenGold;
+    mySaveGame.lagerhaus.holz -= mySaveGame.holzfaeller.levelKostenHolz;
+    mySaveGame.lagerhaus.stein -= mySaveGame.holzfaeller.levelKostenStein;
+    mySaveGame.holzfaeller.levelUp();
+    await storage.saveData(mySaveGame);
+}
+
+async function steinbruchLevelKauf() {
+    if (mySaveGame.lagerhaus.gold < mySaveGame.steinbruch.levelKostenGold) {return;}
+    if (mySaveGame.lagerhaus.holz < mySaveGame.steinbruch.levelKostenHolz) {return;}
+    if (mySaveGame.lagerhaus.stein < mySaveGame.steinbruch.levelKostenStein) {return;}
+
+    // Genug Rohstoffe vorhanden
+    mySaveGame.lagerhaus.gold -= mySaveGame.steinbruch.levelKostenGold;
+    mySaveGame.lagerhaus.holz -= mySaveGame.steinbruch.levelKostenHolz;
+    mySaveGame.lagerhaus.stein -= mySaveGame.steinbruch.levelKostenStein;
+    mySaveGame.steinbruch.levelUp();
     await storage.saveData(mySaveGame);
 }
 
@@ -66,8 +136,16 @@ function initInteractions() {
         "resetGame": resetGame,
         "viewStadt": viewStadt,
         "viewBauwerke": viewBauwerke,
+        "viewRathaus": viewRathaus,
+        "rathausLevelKauf": rathausLevelKauf,
         "viewLagerhaus": viewLagerhaus,
-        "lagerhausLevelKauf": lagerhausLevelKauf
+        "lagerhausLevelKauf": lagerhausLevelKauf,
+        "viewGoldmine": viewGoldmine,
+        "goldmineLevelKauf": goldmineLevelKauf,
+        "viewHolzfaeller": viewHolzfaeller,
+        "holzfaellerLevelKauf": holzfaellerLevelKauf,
+        "viewSteinbruch": viewSteinbruch,
+        "steinbruchLevelKauf": steinbruchLevelKauf
     };
 
     // Dem uiManager geben

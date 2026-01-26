@@ -157,6 +157,47 @@
                         </div>
                 </div>
 
+                <div id="view-rathaus" class="view">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span>Rathaus Details</span>
+                            <span>Stufe <span data-bind="rathaus.level">0</span></span>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                    <span class="col-md-8">Maximales Level anderer Gebäude</span>
+                                    <span data-bind="rathaus.level">0</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <br>
+                    <br>
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span>Gebäudestufe erhöhen</span>
+                            <button class="btn btn-sm btn-secondary" data-action="rathausLevelKauf" data-check-cost="rathaus">Kaufen</button>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                    Kosten Gold
+                                    <span class="badge bg-warning text-dark rounded-pill" data-bind="rathaus.levelKostenGold">0</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                    Kosten Holz
+                                    <span class="badge bg-success rounded-pill" data-bind="rathaus.levelKostenHolz">0</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                    Kosten Stein
+                                    <span class="badge bg-secondary rounded-pill" data-bind="rathaus.levelKostenStein">0</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
                 <div id="view-lagerhaus" class="view">
                     <div class="card">
                         <div class="card-header d-flex justify-content-between align-items-center">
@@ -192,7 +233,7 @@
                     <div class="card">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <span>Gebäudestufe erhöhen</span>
-                            <button class="btn btn-sm btn-secondary" data-action="lagerhausLevelKauf">Kaufen</button>
+                            <button class="btn btn-sm btn-secondary" data-action="lagerhausLevelKauf" data-check-cost="lagerhaus">Kaufen</button>
                         </div>
                         <div class="card-body">
                             <ul class="list-group list-group-flush">
@@ -207,6 +248,130 @@
                                 <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
                                     Kosten Stein
                                     <span class="badge bg-secondary rounded-pill" data-bind="lagerhaus.levelKostenStein">0</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="view-goldmine" class="view">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span>Goldmine Details</span>
+                            <span>Stufe <span data-bind="goldmine.level">0</span></span>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                    <span class="col-md-8">Gold pro Minute</span>
+                                    <span data-bind="goldmine.mengeProMin">0</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <br>
+                    <br>
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span>Gebäudestufe erhöhen</span>
+                            <button class="btn btn-sm btn-secondary" data-action="goldmineLevelKauf" data-check-cost="goldmine">Kaufen</button>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                    Kosten Gold
+                                    <span class="badge bg-warning text-dark rounded-pill" data-bind="goldmine.levelKostenGold">0</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                    Kosten Holz
+                                    <span class="badge bg-success rounded-pill" data-bind="goldmine.levelKostenHolz">0</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                    Kosten Stein
+                                    <span class="badge bg-secondary rounded-pill" data-bind="goldmine.levelKostenStein">0</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="view-holzfaeller" class="view">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span>Holzfäller Details</span>
+                            <span>Stufe <span data-bind="holzfaeller.level">0</span></span>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                    <span class="col-md-8">Holz pro Minute</span>
+                                    <span data-bind="holzfaeller.mengeProMin">0</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <br>
+                    <br>
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span>Gebäudestufe erhöhen</span>
+                            <button class="btn btn-sm btn-secondary" data-action="holzfaellerLevelKauf" data-check-cost="holzfaeller">Kaufen</button>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                    Kosten Gold
+                                    <span class="badge bg-warning text-dark rounded-pill" data-bind="holzfaeller.levelKostenGold">0</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                    Kosten Holz
+                                    <span class="badge bg-success rounded-pill" data-bind="holzfaeller.levelKostenHolz">0</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                    Kosten Stein
+                                    <span class="badge bg-secondary rounded-pill" data-bind="holzfaeller.levelKostenStein">0</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="view-steinbruch" class="view">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span>Steinbruch Details</span>
+                            <span>Stufe <span data-bind="steinbruch.level">0</span></span>
+
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                    <span class="col-md-8">Stein pro Minute</span>
+                                    <span data-bind="steinbruch.mengeProMin">0</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <br>
+                    <br>
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span>Gebäudestufe erhöhen</span>
+                            <button class="btn btn-sm btn-secondary" data-action="steinbruchLevelKauf" data-check-cost="steinbruch">Kaufen</button>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                    Kosten Gold
+                                    <span class="badge bg-warning text-dark rounded-pill" data-bind="steinbruch.levelKostenGold">0</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                    Kosten Holz
+                                    <span class="badge bg-success rounded-pill" data-bind="steinbruch.levelKostenHolz">0</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                    Kosten Stein
+                                    <span class="badge bg-secondary rounded-pill" data-bind="steinbruch.levelKostenStein">0</span>
                                 </li>
                             </ul>
                         </div>
