@@ -4,6 +4,8 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+// ### Konfiguration Google Anmeldung ###
+
 const firebaseConfig = {
     apiKey: "AIzaSyDzHEMSShjWa5eZwrDGojwoe08UWZxNFVg",
     authDomain: "bambu-4d63e.firebaseapp.com",

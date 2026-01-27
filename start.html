@@ -21,13 +21,13 @@
                 
                 <div class="d-none d-md-flex gap-2">
                     <span class="badge bg-warning text-dark border border-warning">
-                        Gold: <span data-bind="lagerhaus.gold">0</span>
+                        Gold: <span data-bind="bauwerke.lagerhaus.gold">0</span>
                     </span>
                     <span class="badge bg-success border border-success">
-                        Holz: <span data-bind="lagerhaus.holz">0</span>
+                        Holz: <span data-bind="bauwerke.lagerhaus.holz">0</span>
                     </span>
                     <span class="badge bg-secondary border border-secondary">
-                        Stein: <span data-bind="lagerhaus.stein">0</span>
+                        Stein: <span data-bind="bauwerke.lagerhaus.stein">0</span>
                     </span>
                 </div>
 
@@ -80,7 +80,7 @@
                             <div class="card h-100">
                                 <div class="card-header"><h5>Rathaus</h5></div>
                                 <div class="card-body">
-                                    <h6 class="card-title">Stufe - <span data-bind="rathaus.level">0</span></h6>
+                                    <h6 class="card-title">Stufe - <span data-bind="bauwerke.rathaus.level">0</span></h6>
                                     <p class="card-text text-secondary">Zentrale deiner Macht.</p>
                                     <button id="bauwerkeBtnRathaus" class="btn btn-outline-light w-100" data-action="viewRathaus">
                                         Öffnen
@@ -93,7 +93,7 @@
                             <div class="card h-100">
                                 <div class="card-header"><h5>Lagerhaus</h5></div>
                                 <div class="card-body">
-                                    <h6 class="card-title">Stufe - <span data-bind="lagerhaus.level">0</span></h6>
+                                    <h6 class="card-title">Stufe - <span data-bind="bauwerke.lagerhaus.level">0</span></h6>
                                     <p class="card-text text-secondary">Erhöht Lagerkapazität.</p>
                                     <button id="bauwerkeBtnLagerhaus" class="btn btn-outline-light w-100" data-action="viewLagerhaus">
                                         Öffnen
@@ -106,7 +106,7 @@
                             <div class="card h-100">
                                 <div class="card-header"><h5>Goldmine</h5></div>
                                 <div class="card-body">
-                                    <h6 class="card-title">Stufe - <span data-bind="goldmine.level">0</span></h6>
+                                    <h6 class="card-title">Stufe - <span data-bind="bauwerke.goldmine.level">0</span></h6>
                                     <p class="card-text text-secondary">Schürft glänzendes Gold.</p>
                                     <button id="bauwerkeBtnGoldmine" class="btn btn-outline-light w-100" data-action="viewGoldmine">
                                         Öffnen
@@ -119,7 +119,7 @@
                             <div class="card h-100">
                                 <div class="card-header"><h5>Holzfäller</h5></div>
                                 <div class="card-body">
-                                    <h6 class="card-title">Stufe - <span data-bind="holzfaeller.level">0</span></h6>
+                                    <h6 class="card-title">Stufe - <span data-bind="bauwerke.holzfaeller.level">0</span></h6>
                                     <p class="card-text text-secondary">Fällt Bäume in deinem Wald.</p>
                                     <button id="bauwerkeBtnHolzfaeller" class="btn btn-outline-light w-100" data-action="viewHolzfaeller">
                                         Öffnen
@@ -132,7 +132,7 @@
                             <div class="card h-100">
                                 <div class="card-header"><h5>Steinbruch</h5></div>
                                 <div class="card-body">
-                                    <h6 class="card-title">Stufe - <span data-bind="steinbruch.level">0</span></h6>
+                                    <h6 class="card-title">Stufe - <span data-bind="bauwerke.steinbruch.level">0</span></h6>
                                     <p class="card-text text-secondary">Schwere Steine werden hier abgebaut.</p>
                                     <button id="bauwerkeBtnSteinbruch" class="btn btn-outline-light w-100" data-action="viewSteinbruch">
                                         Öffnen
@@ -145,7 +145,7 @@
                             <div class="card h-100">
                                 <div class="card-header"><h5>Stadtmauer</h5></div>
                                 <div class="card-body">
-                                    <h6 class="card-title">Stufe - <span data-bind="stadtmauer.level">0</span></h6>
+                                    <h6 class="card-title">Stufe - <span data-bind="bauwerke.stadtmauer.level">0</span></h6>
                                     <p class="card-text text-secondary">Schützt deine Stadt vor Angreifern.</p>
                                     <button id="bauwerkeBtnStadtmauer" class="btn btn-outline-light w-100" data-action="viewStadtmauer">
                                         Öffnen
@@ -161,13 +161,13 @@
                     <div class="card">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <span>Rathaus Details</span>
-                            <span>Stufe <span data-bind="rathaus.level">0</span></span>
+                            <span>Stufe <span data-bind="bauwerke.rathaus.level">0</span></span>
                         </div>
                         <div class="card-body">
                             <ul class="list-group list-group-flush">
                                 <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
                                     <span class="col-md-8">Maximales Level anderer Gebäude</span>
-                                    <span data-bind="rathaus.level">0</span>
+                                    <span data-bind="bauwerke.rathaus.level">0</span>
                                 </li>
                             </ul>
                         </div>
@@ -177,21 +177,21 @@
                     <div class="card">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <span>Gebäudestufe erhöhen</span>
-                            <button class="btn btn-sm btn-secondary" data-action="rathausLevelKauf" data-check-cost="rathaus">Kaufen</button>
+                            <button class="btn btn-sm btn-secondary" data-action="rathausLevelKauf" data-check-cost="bauwerke.rathaus">Kaufen</button>
                         </div>
                         <div class="card-body">
                             <ul class="list-group list-group-flush">
                                 <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
                                     Kosten Gold
-                                    <span class="badge bg-warning text-dark rounded-pill" data-bind="rathaus.levelKostenGold">0</span>
+                                    <span class="badge bg-warning text-dark rounded-pill" data-bind="bauwerke.rathaus.levelKostenGold">0</span>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
                                     Kosten Holz
-                                    <span class="badge bg-success rounded-pill" data-bind="rathaus.levelKostenHolz">0</span>
+                                    <span class="badge bg-success rounded-pill" data-bind="bauwerke.rathaus.levelKostenHolz">0</span>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
                                     Kosten Stein
-                                    <span class="badge bg-secondary rounded-pill" data-bind="rathaus.levelKostenStein">0</span>
+                                    <span class="badge bg-secondary rounded-pill" data-bind="bauwerke.rathaus.levelKostenStein">0</span>
                                 </li>
                             </ul>
                         </div>
@@ -202,28 +202,28 @@
                     <div class="card">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <span>📦 Lagerhaus Details</span>
-                            <span>Stufe - <span data-bind="lagerhaus.level">0</span></span>
+                            <span>Stufe - <span data-bind="bauwerke.lagerhaus.level">0</span></span>
                             <button class="btn btn-sm btn-secondary" data-action="viewBauwerke">Zurück</button>
                         </div>
                         <div class="card-body">
                             <ul class="list-group list-group-flush">
                                 <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
                                     <span class="col-md-8">Gold Vorrat</span>
-                                    <span data-bind="lagerhaus.gold">0</span>
+                                    <span data-bind="bauwerke.lagerhaus.gold">0</span>
                                     <span>/</span>
-                                    <span data-bind="lagerhaus.maxGold">000</span>
+                                    <span data-bind="bauwerke.lagerhaus.maxGold">000</span>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
                                     <span class="col-md-8">Holz Vorrat</span>
-                                    <span data-bind="lagerhaus.holz">0</span>
+                                    <span data-bind="bauwerke.lagerhaus.holz">0</span>
                                     <span>/</span>
-                                    <span data-bind="lagerhaus.maxHolz">000</span>
+                                    <span data-bind="bauwerke.lagerhaus.maxHolz">000</span>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
                                     <span class="col-md-8">Stein Vorrat</span>
-                                    <span data-bind="lagerhaus.stein">0</span>
+                                    <span data-bind="bauwerke.lagerhaus.stein">0</span>
                                     <span>/</span>
-                                    <span data-bind="lagerhaus.maxStein">000</span>
+                                    <span data-bind="bauwerke.lagerhaus.maxStein">000</span>
                                 </li>
                             </ul>
                         </div>
@@ -233,21 +233,21 @@
                     <div class="card">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <span>Gebäudestufe erhöhen</span>
-                            <button class="btn btn-sm btn-secondary" data-action="lagerhausLevelKauf" data-check-cost="lagerhaus">Kaufen</button>
+                            <button class="btn btn-sm btn-secondary" data-action="lagerhausLevelKauf" data-check-cost="bauwerke.lagerhaus">Kaufen</button>
                         </div>
                         <div class="card-body">
                             <ul class="list-group list-group-flush">
                                 <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
                                     Kosten Gold
-                                    <span class="badge bg-warning text-dark rounded-pill" data-bind="lagerhaus.levelKostenGold">0</span>
+                                    <span class="badge bg-warning text-dark rounded-pill" data-bind="bauwerke.lagerhaus.levelKostenGold">0</span>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
                                     Kosten Holz
-                                    <span class="badge bg-success rounded-pill" data-bind="lagerhaus.levelKostenHolz">0</span>
+                                    <span class="badge bg-success rounded-pill" data-bind="bauwerke.lagerhaus.levelKostenHolz">0</span>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
                                     Kosten Stein
-                                    <span class="badge bg-secondary rounded-pill" data-bind="lagerhaus.levelKostenStein">0</span>
+                                    <span class="badge bg-secondary rounded-pill" data-bind="bauwerke.lagerhaus.levelKostenStein">0</span>
                                 </li>
                             </ul>
                         </div>
@@ -258,13 +258,13 @@
                     <div class="card">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <span>Goldmine Details</span>
-                            <span>Stufe <span data-bind="goldmine.level">0</span></span>
+                            <span>Stufe <span data-bind="bauwerke.goldmine.level">0</span></span>
                         </div>
                         <div class="card-body">
                             <ul class="list-group list-group-flush">
                                 <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
                                     <span class="col-md-8">Gold pro Minute</span>
-                                    <span data-bind="goldmine.mengeProMin">0</span>
+                                    <span data-bind="bauwerke.goldmine.mengeProMin">0</span>
                                 </li>
                             </ul>
                         </div>
@@ -274,21 +274,21 @@
                     <div class="card">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <span>Gebäudestufe erhöhen</span>
-                            <button class="btn btn-sm btn-secondary" data-action="goldmineLevelKauf" data-check-cost="goldmine">Kaufen</button>
+                            <button class="btn btn-sm btn-secondary" data-action="goldmineLevelKauf" data-check-cost="bauwerke.goldmine">Kaufen</button>
                         </div>
                         <div class="card-body">
                             <ul class="list-group list-group-flush">
                                 <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
                                     Kosten Gold
-                                    <span class="badge bg-warning text-dark rounded-pill" data-bind="goldmine.levelKostenGold">0</span>
+                                    <span class="badge bg-warning text-dark rounded-pill" data-bind="bauwerke.goldmine.levelKostenGold">0</span>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
                                     Kosten Holz
-                                    <span class="badge bg-success rounded-pill" data-bind="goldmine.levelKostenHolz">0</span>
+                                    <span class="badge bg-success rounded-pill" data-bind="bauwerke.goldmine.levelKostenHolz">0</span>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
                                     Kosten Stein
-                                    <span class="badge bg-secondary rounded-pill" data-bind="goldmine.levelKostenStein">0</span>
+                                    <span class="badge bg-secondary rounded-pill" data-bind="bauwerke.goldmine.levelKostenStein">0</span>
                                 </li>
                             </ul>
                         </div>
@@ -299,13 +299,13 @@
                     <div class="card">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <span>Holzfäller Details</span>
-                            <span>Stufe <span data-bind="holzfaeller.level">0</span></span>
+                            <span>Stufe <span data-bind="bauwerke.holzfaeller.level">0</span></span>
                         </div>
                         <div class="card-body">
                             <ul class="list-group list-group-flush">
                                 <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
                                     <span class="col-md-8">Holz pro Minute</span>
-                                    <span data-bind="holzfaeller.mengeProMin">0</span>
+                                    <span data-bind="bauwerke.holzfaeller.mengeProMin">0</span>
                                 </li>
                             </ul>
                         </div>
@@ -315,21 +315,21 @@
                     <div class="card">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <span>Gebäudestufe erhöhen</span>
-                            <button class="btn btn-sm btn-secondary" data-action="holzfaellerLevelKauf" data-check-cost="holzfaeller">Kaufen</button>
+                            <button class="btn btn-sm btn-secondary" data-action="holzfaellerLevelKauf" data-check-cost="bauwerke.holzfaeller">Kaufen</button>
                         </div>
                         <div class="card-body">
                             <ul class="list-group list-group-flush">
                                 <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
                                     Kosten Gold
-                                    <span class="badge bg-warning text-dark rounded-pill" data-bind="holzfaeller.levelKostenGold">0</span>
+                                    <span class="badge bg-warning text-dark rounded-pill" data-bind="bauwerke.holzfaeller.levelKostenGold">0</span>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
                                     Kosten Holz
-                                    <span class="badge bg-success rounded-pill" data-bind="holzfaeller.levelKostenHolz">0</span>
+                                    <span class="badge bg-success rounded-pill" data-bind="bauwerke.holzfaeller.levelKostenHolz">0</span>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
                                     Kosten Stein
-                                    <span class="badge bg-secondary rounded-pill" data-bind="holzfaeller.levelKostenStein">0</span>
+                                    <span class="badge bg-secondary rounded-pill" data-bind="bauwerke.holzfaeller.levelKostenStein">0</span>
                                 </li>
                             </ul>
                         </div>
@@ -340,14 +340,14 @@
                     <div class="card">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <span>Steinbruch Details</span>
-                            <span>Stufe <span data-bind="steinbruch.level">0</span></span>
+                            <span>Stufe <span data-bind="bauwerke.steinbruch.level">0</span></span>
 
                         </div>
                         <div class="card-body">
                             <ul class="list-group list-group-flush">
                                 <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
                                     <span class="col-md-8">Stein pro Minute</span>
-                                    <span data-bind="steinbruch.mengeProMin">0</span>
+                                    <span data-bind="bauwerke.steinbruch.mengeProMin">0</span>
                                 </li>
                             </ul>
                         </div>
@@ -357,21 +357,21 @@
                     <div class="card">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <span>Gebäudestufe erhöhen</span>
-                            <button class="btn btn-sm btn-secondary" data-action="steinbruchLevelKauf" data-check-cost="steinbruch">Kaufen</button>
+                            <button class="btn btn-sm btn-secondary" data-action="steinbruchLevelKauf" data-check-cost="bauwerke.steinbruch">Kaufen</button>
                         </div>
                         <div class="card-body">
                             <ul class="list-group list-group-flush">
                                 <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
                                     Kosten Gold
-                                    <span class="badge bg-warning text-dark rounded-pill" data-bind="steinbruch.levelKostenGold">0</span>
+                                    <span class="badge bg-warning text-dark rounded-pill" data-bind="bauwerke.steinbruch.levelKostenGold">0</span>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
                                     Kosten Holz
-                                    <span class="badge bg-success rounded-pill" data-bind="steinbruch.levelKostenHolz">0</span>
+                                    <span class="badge bg-success rounded-pill" data-bind="bauwerke.steinbruch.levelKostenHolz">0</span>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
                                     Kosten Stein
-                                    <span class="badge bg-secondary rounded-pill" data-bind="steinbruch.levelKostenStein">0</span>
+                                    <span class="badge bg-secondary rounded-pill" data-bind="bauwerke.steinbruch.levelKostenStein">0</span>
                                 </li>
                             </ul>
                         </div>

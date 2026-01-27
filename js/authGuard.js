@@ -2,8 +2,9 @@
 
 import { onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-// Fertige Verbindung aus der config.js holen
 import { auth, db } from "./config.js";
+
+// ### Anmeldung über Google ###
 
 const provider = new GoogleAuthProvider();
 

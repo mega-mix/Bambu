@@ -7,16 +7,20 @@ export class Rathaus {
         this.level = 1;
     }
 
+    // --- Abgleich SaveGame ---
     load(data) {
         if (!data) return;
 
+        // Läd Daten vom SaveGame in dieses Objekt
         if (data.level) { this.level = data.level; }
     }
 
+    // --- Hilfsrechnung Wert * Level ---
     berechnung(basis, faktor) {
         return Math.floor(basis * Math.pow(faktor, this.level - 1));
     }
 
+    // --- Level erhöhen ---
     levelUp() {
         if (this.level < Rathaus.MAX_LEVEL) { this.level++; }
     }

@@ -9,19 +9,23 @@ export class Lagerhaus {
         this.stein = 100;
     }
 
+    // --- Abgleich SaveGame ---
     load(data) {
         if (!data) return;
 
+        // Läd Daten vom SaveGame in dieses Objekt
         if (data.level) { this.level = data.level; }
         if (data.gold) { this.gold = data.gold; }
         if (data.holz) { this.holz = data.holz; }
         if (data.stein) { this.stein = data.stein; }
     }
     
+    // --- Hilfsrechnung Wert * Level ---
     berechnung(basis, faktor) {
         return Math.floor(basis * Math.pow(faktor, this.level - 1));
     }
 
+    // --- Level erhöhen ---
     levelUp() {
         this.level ++;
     }
@@ -34,6 +38,10 @@ export class Lagerhaus {
     get levelKostenHolz() { return this.berechnung(88, 1.8); }
     get levelKostenStein() { return this.berechnung(93, 1.8); }
 
+
+    // ------------------------------
+    // ----- Rohstoffe erhalten -----
+    // ------------------------------
     addGold(gold) {
         if (gold > 0) {
             this.gold += gold;
@@ -55,6 +63,10 @@ export class Lagerhaus {
         }
     }
 
+    
+    // ------------------------------
+    // ----- Rohstoffe bezahlen -----
+    // ------------------------------
     payGold(gold) {
         if (gold > 0 && gold < this.gold) {
             this.gold -= gold;

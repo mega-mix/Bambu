@@ -1,14 +1,19 @@
 // js/model/viewHandler.js
 
-export class ViewHandler {
-    constructor(saveGame) {
-        this.startName = document.getElementById("startName");
-        this.topInfo = document.getElementById("topInfo");
+// ### Kümmert sich um die Darstellung auf der Seite ###
 
-        this.mySaveGame = saveGame;
-        this.cache = [];
+export class ViewHandler {
+    constructor(saveGame, aktuelleStadt) {
+        this.startName = document.getElementById("startName"); // Feld für Spielernamen erstellen
+        this.topInfo = document.getElementById("topInfo");  // Konsole in TopBar erstellen
+
+        this.mySaveGame = saveGame; // Spielstand für Werte zum anzeigen
+        this.aktuelleStadt = aktuelleStadt; // Daten der aktuellen Stadt für Werte
+        this.cache = []; // Cache für HTML Elemente die Daten ziehen
+        this.buttonCache = []; // Cache für Buttons die Liquidität prüfen
     }
 
+    // --- Seitenwechsel ---
     switchView(viewName) {
         // 1. Alle Views verstecken
         document.querySelectorAll(".view").forEach(div => {
@@ -22,42 +27,59 @@ export class ViewHandler {
         }
     }
 
-    aktSaveGame(saveGame) {
+    // --- mySaveGame aktualisieren ---
+    updateSaveGame(saveGame) {
         this.mySaveGame = saveGame;
     }
 
+    // --- aktuelleStadt aktualisieren ---
+    updateStadt(stadt) {
+        this.aktuelleStadt = stadt;
+    }
+
+    // --- Füllen der Chachs mit den vorhandenen HTML Elementen ---
     setGame(saveGame) {
+        // 1. mySaveGame aktualisieren
         this.mySaveGame = saveGame;
         
-        // 1. Text Cache
+        // 2. Elementen mit "data-bind" finden und speichern
         const elements = document.querySelectorAll("[data-bind]");
         
+        // 3. Cache mit Element und Pfad aus "data-bind" füllen
         this.cache = []; // Reset
         elements.forEach(el => {
             this.cache.push({
                 element: el,          // Das HTML-Element selbst
                 path: el.dataset.bind // Der Pfad z.B. "lagerhaus.gold"
+                // data-bind wird angesprochen über
+                // .dateset (aus data-)
+                // .bind (aus bind) Bindestrich entfällt und CamelCase wird angewendet
             });
         });
 
-        // 2. Kosten Prüfung
-        this.buttonCache = [];
+        // 4. ButtonCache mit Element und Gebäudename aus "data-check-cost" füllen
+        this.buttonCache = []; // Reset
         document.querySelectorAll("[data-check-cost]").forEach(btn => {
             this.buttonCache.push({
-                element: btn,
-                targetName: btn.dataset.checkCost
+                element: btn,                       // Das HTML-Element selbst
+                targetName: btn.dataset.checkCost   // Der Name des Gebäudes
+                // data-check-cost wird angesprochen über
+                // .dateset (aus data-)
+                // .checkCoast (aus check-coast) Bindestrich entfällt und CamelCase wird angewendet
             });
         });
 
+        // 5. Update der Daten durchführen
         this.update();
     }
 
+    // --- Update der HTML Elemente aus den Cachs ---
     update() {
-        if (!this.mySaveGame) return;
+        if (!this.aktuelleStadt) return;
 
-        // 1. Text aktualisieren
+        // 1. Werte in HTML Elemente (aus Cache) schreiben
         this.cache.forEach(item => {
-            const wert = this.resolvePath(item.path, this.mySaveGame);
+            const wert = this.resolvePath(item.path, this.aktuelleStadt);
             
             // Nur schreiben wenn sich etwas geändert hat
             if (item.element.innerText != wert) {
@@ -69,33 +91,33 @@ export class ViewHandler {
             }
         });
 
-        // 2. Buttons prüfen
-        const lager = this.mySaveGame.lagerhaus;
+        // 2. Buttons (aus ButtonCache) prüfen
+        const lager = this.aktuelleStadt.bauwerke.lagerhaus;
 
         this.buttonCache.forEach(item => {
-            // Wir holen uns das Gebäude-Objekt
-            const gebaeude = this.mySaveGame[item.targetName];
+            const gebaeude = this.resolvePath(item.targetName, this.aktuelleStadt); // Gebäude holen
 
             if (gebaeude) {
-                // Prüfen ob wir es uns leisten können
-                const kannKaufen = this.checkAffordability(lager, gebaeude);
+                const kannKaufen = this.checkAffordability(lager, gebaeude); // Prüfen ob genug Rohstoffe vorhanden sind
                 
                 // Button aktivieren oder deaktivieren
-                // disabled = true (wenn man es NICHT kaufen kann)
-                item.element.disabled = !kannKaufen;
+                item.element.disabled = !kannKaufen; // disabled = true (wenn man es NICHT kaufen kann)
             }
         });
     }
 
+    // --- Wert aus Pfad lesen ---
     resolvePath(path, obj) {
+        // Teilt String an Punkten und gibt Werte passend zurück
         return path.split('.').reduce((prev, curr) => {
             return prev ? prev[curr] : undefined;
         }, obj);
     }
 
+    // --- Liquiditätsprüfung ---
     checkAffordability(lager, gebaeude) {
-        // Wir prüfen sicherheitshalber ob Kosten definiert sind. 
-        // Falls undefined, nehmen wir 0 an.
+        // Prüfen ob Kosten definiert sind
+        // Falls undefined, nehme 0
         const kostenGold = gebaeude.levelKostenGold || 0;
         const kostenHolz = gebaeude.levelKostenHolz || 0;
         const kostenStein = gebaeude.levelKostenStein || 0;
@@ -107,10 +129,12 @@ export class ViewHandler {
         );
     }
 
+    // --- Konsole in TopBar schreiben ---
     setTopInfo(info) {
         this.topInfo.innerHTML = info;
     }
 
+    /// --- Element StartName schreiben ---
     setStartName(name) {
         this.startName.innerHTML = name;
     }
