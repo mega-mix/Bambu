@@ -1,9 +1,16 @@
 // js/models/buildings/holzfaeller.js
 
 export class Holzfaeller {
-    static MS_PRODUKTION = 30000; // 30 Sekunden
+    static MS_PRODUKTION = 30000;       // 30 Sekunden
+    static BASIS_ROHSTOFF = 5;          // Grundwert für Rohstoffproduktion
+    static FAKTOR_ROHSTOFF = 1.3;       // Faktor für Rohstoffproduktion
+    static BASIS_KOSTEN_GOLD = 132;     // Grundwert Goldkosten
+    static BASIS_KOSTEN_HOLZ = 110;     // Grundwert Holzkosten
+    static BASIS_KOSTEN_STEIN = 121;    // Grundwert Steinkosten
+    static FAKTOR_KOSTEN = 1.8;         // Faktor für Kostenrechnung
 
     constructor() {
+        this.name = "Holzfäller";
         this.level = 1;
         this.letzterProduktTick = Date.now();
     }
@@ -27,12 +34,18 @@ export class Holzfaeller {
         this.level ++;
     }
 
-    get mengeProTick() { return this.berechnung(5, 1.3); }
-    get mengeProMin() { return (60000 / Holzfaeller.MS_PRODUKTION) * this.mengeProTick; }
+    get mengeProTick() {
+        if (this.level <= 0) return 0;
+        return this.berechnung(Holzfaeller.BASIS_ROHSTOFF, Holzfaeller.FAKTOR_ROHSTOFF);
+    }
+    get mengeProMin() {
+        if (this.level <= 0) return 0;
+        return (60000 / Holzfaeller.MS_PRODUKTION) * this.mengeProTick;
+    }
 
-    get levelKostenGold() { return this.berechnung(132, 1.8); }
-    get levelKostenHolz() { return this.berechnung(110, 1.8); }
-    get levelKostenStein() { return this.berechnung(121, 1.8); }
+    get levelKostenGold() { return this.berechnung(Holzfaeller.BASIS_KOSTEN_GOLD, Holzfaeller.FAKTOR_KOSTEN); }
+    get levelKostenHolz() { return this.berechnung(Holzfaeller.BASIS_KOSTEN_HOLZ, Holzfaeller.FAKTOR_KOSTEN); }
+    get levelKostenStein() { return this.berechnung(Holzfaeller.BASIS_KOSTEN_STEIN, Holzfaeller.FAKTOR_KOSTEN); }
 
     // --- Rohstoff einsammeln ---
     einsammeln() {

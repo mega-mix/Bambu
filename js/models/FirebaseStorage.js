@@ -27,7 +27,7 @@ export default class FirebaseStorage {
             const plainData = JSON.parse(JSON.stringify(data));
             // Speichern unter "savegames/USER_ID"
             await setDoc(doc(this.db, "savegames", user.uid), plainData);
-            console.log("✅ Erfolgreich gespeichert für User:", user.uid);
+            //console.log("💾 Erfolgreich gespeichert");
             return true;
         } catch (error) {
             console.error("❌ Fehler beim Speichern:", error);

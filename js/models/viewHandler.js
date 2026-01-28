@@ -81,24 +81,39 @@ export class ViewHandler {
         this.cache.forEach(item => {
             const wert = this.resolvePath(item.path, this.aktuelleStadt);
             
-            // Nur schreiben wenn sich etwas geändert hat
-            if (item.element.innerText != wert) {
-                 if (typeof wert === 'number') {
-                    item.element.innerText = Math.floor(wert);
-                } else {
-                    item.element.innerText = wert;
+            if (item.element.tagName === "INPUT" || item.element.tagName === "TEXTAREA") {
+                // Input feld
+                if (document.activeElement === item.element) { return; } // Nicht überschreiben wenn Item Fokus hat
+
+                if (item.element.value != wert) {
+                    item.element.value = wert;
+                }
+
+            } else {
+                // Kein Input oder Textarea
+                if (item.element.innerText != wert) {
+                    // Nur schreiben wenn sich etwas geändert hat
+                    if (typeof wert === 'number') {
+                        item.element.innerText = Math.floor(wert);
+                    } else {
+                        item.element.innerText = wert;
+                    }
                 }
             }
+            
         });
 
         // 2. Buttons (aus ButtonCache) prüfen
         const lager = this.aktuelleStadt.bauwerke.lagerhaus;
+        const rathaus = this.aktuelleStadt.bauwerke.rathaus;
 
         this.buttonCache.forEach(item => {
             const gebaeude = this.resolvePath(item.targetName, this.aktuelleStadt); // Gebäude holen
 
             if (gebaeude) {
-                const kannKaufen = this.checkAffordability(lager, gebaeude); // Prüfen ob genug Rohstoffe vorhanden sind
+                const preisOk = this.checkAffordability(lager, gebaeude); // Prüfen ob genug Rohstoffe vorhanden sind
+                const levelOk = gebaeude.level < rathaus.level || gebaeude === rathaus; // Prüfen ob Rathaus Level ok oder Rathaus selbst
+                const kannKaufen = (preisOk && levelOk); // Vorprüfungen sind ok?
                 
                 // Button aktivieren oder deaktivieren
                 item.element.disabled = !kannKaufen; // disabled = true (wenn man es NICHT kaufen kann)
@@ -132,6 +147,9 @@ export class ViewHandler {
     // --- Konsole in TopBar schreiben ---
     setTopInfo(info) {
         this.topInfo.innerHTML = info;
+        setTimeout(() => {
+            this.topInfo.innerHTML = this.aktuelleStadt.name;
+        }, 5000);
     }
 
     /// --- Element StartName schreiben ---

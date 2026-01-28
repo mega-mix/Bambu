@@ -1,9 +1,16 @@
 // js/models/buildings/steinbruch.js
 
 export class Steinbruch {
-    static MS_PRODUKTION = 30000; // 30 Sekunden
+    static MS_PRODUKTION = 30000;       // 30 Sekunden
+    static BASIS_ROHSTOFF = 5;          // Grundwert für Rohstoffproduktion
+    static FAKTOR_ROHSTOFF = 1.3;       // Faktor für Rohstoffproduktion
+    static BASIS_KOSTEN_GOLD = 96;      // Grundwert Goldkosten
+    static BASIS_KOSTEN_HOLZ = 112;     // Grundwert Holzkosten
+    static BASIS_KOSTEN_STEIN = 90;     // Grundwert Steinkosten
+    static FAKTOR_KOSTEN = 1.8;         // Faktor für Kostenrechnung
 
     constructor() {
+        this.name = "Steinbruch";
         this.level = 1;
         this.letzterProduktTick = Date.now();
     }
@@ -27,12 +34,18 @@ export class Steinbruch {
         this.level ++;
     }
 
-    get mengeProTick() { return this.berechnung(5, 1.3); }
-    get mengeProMin() { return (60000 / Steinbruch.MS_PRODUKTION) * this.mengeProTick; }
+    get mengeProTick() {
+        if (this.level <= 0) return 0;
+        return this.berechnung(Steinbruch.BASIS_ROHSTOFF, Steinbruch.FAKTOR_ROHSTOFF);
+    }
+    get mengeProMin() {
+        if (this.level <= 0) return 0;
+        return (60000 / Steinbruch.MS_PRODUKTION) * this.mengeProTick;
+    }
 
-    get levelKostenGold() { return this.berechnung(96, 1.8); }
-    get levelKostenHolz() { return this.berechnung(112, 1.8); }
-    get levelKostenStein() { return this.berechnung(90, 1.8); }
+    get levelKostenGold() { return this.berechnung(Steinbruch.BASIS_KOSTEN_GOLD, Steinbruch.FAKTOR_KOSTEN); }
+    get levelKostenHolz() { return this.berechnung(Steinbruch.BASIS_KOSTEN_HOLZ, Steinbruch.FAKTOR_KOSTEN); }
+    get levelKostenStein() { return this.berechnung(Steinbruch.BASIS_KOSTEN_STEIN, Steinbruch.FAKTOR_KOSTEN); }
 
     // --- Rohstoff einsammeln ---
     einsammeln() {

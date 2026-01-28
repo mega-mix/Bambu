@@ -1,8 +1,17 @@
 // js/models/buildings/lagerhaus.js
 
 export class Lagerhaus {
+    static BASIS_KOSTEN_GOLD = 102;     // Grundwert Goldkosten
+    static BASIS_KOSTEN_HOLZ = 88;      // Grundwert Holzkosten
+    static BASIS_KOSTEN_STEIN = 93;     // Grundwert Steinkosten
+    static FAKTOR_KOSTEN = 1.8;         // Faktor für Kostenrechnung
+    static BASIS_MAX_GOLD = 300;        // Grundwert Lagergröße Gold
+    static BASIS_MAX_HOLZ = 300;        // Grundwert Lagergröße Holz
+    static BASIS_MAX_STEIN = 300;       // Grundwert Lagergröße Stein
+    static FAKTOR_MAX = 1.5;            // Faktor für Lagergröße
 
     constructor() {
+        this.name = "Lagerhaus";
         this.level = 1;
         this.gold = 100;
         this.holz = 100;
@@ -30,13 +39,13 @@ export class Lagerhaus {
         this.level ++;
     }
 
-    get maxGold() { return this.berechnung(300, 1.5); }
-    get maxHolz() { return this.berechnung(300, 1.5); }
-    get maxStein() { return this.berechnung(300, 1.5); }
+    get maxGold() { return this.berechnung(Lagerhaus.BASIS_MAX_GOLD, Lagerhaus.FAKTOR_MAX); }
+    get maxHolz() { return this.berechnung(Lagerhaus.BASIS_MAX_HOLZ, Lagerhaus.FAKTOR_MAX); }
+    get maxStein() { return this.berechnung(Lagerhaus.BASIS_MAX_STEIN, Lagerhaus.FAKTOR_MAX); }
 
-    get levelKostenGold() { return this.berechnung(102, 1.8); }
-    get levelKostenHolz() { return this.berechnung(88, 1.8); }
-    get levelKostenStein() { return this.berechnung(93, 1.8); }
+    get levelKostenGold() { return this.berechnung(Lagerhaus.BASIS_KOSTEN_GOLD, Lagerhaus.FAKTOR_KOSTEN); }
+    get levelKostenHolz() { return this.berechnung(Lagerhaus.BASIS_KOSTEN_HOLZ, Lagerhaus.FAKTOR_KOSTEN); }
+    get levelKostenStein() { return this.berechnung(Lagerhaus.BASIS_KOSTEN_STEIN, Lagerhaus.FAKTOR_KOSTEN); }
 
 
     // ------------------------------

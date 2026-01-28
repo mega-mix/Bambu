@@ -16,108 +16,68 @@ const ui = new UIManager();
 
 async function saveGame() {
     await storage.saveData(mySaveGame);
-    gameView.setTopInfo("Spiel gespeichert");
 }
 
 async function resetGame() {
     mySaveGame = new SaveGame(playerName);
     await storage.saveData(mySaveGame);
-    gameView.setTopInfo("Spielstand resettet!");
+    gameView.setTopInfo("⚠️ Spielstand resettet!");
+    console.log("⚠️ Spielstand resettet!");
 }
 
-// FUNKTION VIEW ALLGEMEIN MACHEN!
-function viewBauwerke() {
-    gameView.switchView("view-bauwerke");
+// --- Gebäude Level kaufen ---
+function gebaeudeLevelKauf(gebaeudeName) {
+    // Gebäude holen
+    const stadt = mySaveGame.aktuelleStadt;
+    const lager = stadt.bauwerke.lagerhaus;
+    const rathaus = stadt.bauwerke.rathaus;
+    const gebaeude = stadt.bauwerke[gebaeudeName];
+
+    if (!gebaeude) return; // Abbruch wenn leer
+
+    // Rathaus Level prüfen
+    if (gebaeude.level >= rathaus.level && gebaeude !== rathaus) {
+        gameView.setTopInfo("Stufe von Rathaus zu niedrig!");
+        console.log("Kauf abgebrochen!");
+        console.log("❌ Stufe von Rathaus zu niedrig!");
+        return; // Abbruch wenn Rathaus Stufe zu niedrig
+    }
+
+    // Kosten holen
+    const kostenGold = gebaeude.levelKostenGold || 0;
+    const kostenHolz = gebaeude.levelKostenHolz || 0;
+    const kostenStein = gebaeude.levelKostenStein || 0;
+
+    // Prüfung auf Liquidität
+    if (lager.gold < kostenGold || lager.holz < kostenHolz || lager.stein < kostenStein) {
+        gameView.setTopInfo(`${gebaeude.name} zu teuer`);
+        console.log("Kauf abgebrochen!");
+        console.log(`❌ ${gebaeude.name} ist zu teuer`);
+        return; // Abbruch wenn nicht genug
+    }
+
+    // Bezahlen
+    lager.gold -= kostenGold;
+    lager.holz -= kostenHolz;
+    lager.stein -= kostenStein;
+
+    // Level erhöhen und speichern
+    gebaeude.levelUp();
+    saveGame();
+    console.log(`Erfolgreich gekauft!`);
+    console.log(`🏠 ${gebaeude.name} ist nun Stufe ${gebaeude.level}`);
 }
 
-function viewStadt() {
-    gameView.switchView("view-stadt");
-}
+// --- Name der Stadt ändern ---
+function stadtUmbenennen() {
+    const input = document.getElementById("inputStadtName");
 
-function viewRathaus() {
-    gameView.switchView("view-rathaus");
-}
+    mySaveGame.aktuelleStadt.name = input.value;
 
-function viewLagerhaus() {
-    gameView.switchView("view-lagerhaus");
-}
+    gameView.setTopInfo(`Stadtname zu ${mySaveGame.aktuelleStadt.name} geändert`);
+    console.log(`Stadtname zu ${mySaveGame.aktuelleStadt.name} geändert`);
 
-function viewGoldmine() {
-    gameView.switchView("view-goldmine");
-}
-
-function viewHolzfaeller() {
-    gameView.switchView("view-holzfaeller");
-}
-
-function viewSteinbruch() {
-    gameView.switchView("view-steinbruch");
-}
-
-// FUNKTION ZUM KAUF ALLGEMEIN MACHEN!
-async function rathausLevelKauf() {
-    if (mySaveGame.aktuelleStadt.bauwerke.lagerhaus.gold < mySaveGame.aktuelleStadt.bauwerke.rathaus.levelKostenGold) {return;}
-    if (mySaveGame.aktuelleStadt.bauwerke.lagerhaus.holz < mySaveGame.aktuelleStadt.bauwerke.rathaus.levelKostenHolz) {return;}
-    if (mySaveGame.aktuelleStadt.bauwerke.lagerhaus.stein < mySaveGame.aktuelleStadt.bauwerke.rathaus.levelKostenStein) {return;}
-
-    // Genug Rohstoffe vorhanden
-    mySaveGame.aktuelleStadt.bauwerke.lagerhaus.gold -= mySaveGame.aktuelleStadt.bauwerke.rathaus.levelKostenGold;
-    mySaveGame.aktuelleStadt.bauwerke.lagerhaus.holz -= mySaveGame.aktuelleStadt.bauwerke.rathaus.levelKostenHolz;
-    mySaveGame.aktuelleStadt.bauwerke.lagerhaus.stein -= mySaveGame.aktuelleStadt.bauwerke.rathaus.levelKostenStein;
-    mySaveGame.aktuelleStadt.bauwerke.rathaus.levelUp();
-    await storage.saveData(mySaveGame);
-}
-
-async function lagerhausLevelKauf() {
-    if (mySaveGame.aktuelleStadt.bauwerke.lagerhaus.gold < mySaveGame.aktuelleStadt.bauwerke.lagerhaus.levelKostenGold) {return;}
-    if (mySaveGame.aktuelleStadt.bauwerke.lagerhaus.holz < mySaveGame.aktuelleStadt.bauwerke.lagerhaus.levelKostenHolz) {return;}
-    if (mySaveGame.aktuelleStadt.bauwerke.lagerhaus.stein < mySaveGame.aktuelleStadt.bauwerke.lagerhaus.levelKostenStein) {return;}
-
-    // Genug Rohstoffe vorhanden
-    mySaveGame.aktuelleStadt.bauwerke.lagerhaus.gold -= mySaveGame.aktuelleStadt.bauwerke.lagerhaus.levelKostenGold;
-    mySaveGame.aktuelleStadt.bauwerke.lagerhaus.holz -= mySaveGame.aktuelleStadt.bauwerke.lagerhaus.levelKostenHolz;
-    mySaveGame.aktuelleStadt.bauwerke.lagerhaus.stein -= mySaveGame.aktuelleStadt.bauwerke.lagerhaus.levelKostenStein;
-    mySaveGame.aktuelleStadt.bauwerke.lagerhaus.levelUp();
-    await storage.saveData(mySaveGame);
-}
-
-async function goldmineLevelKauf() {
-    if (mySaveGame.aktuelleStadt.bauwerke.lagerhaus.gold < mySaveGame.aktuelleStadt.bauwerke.goldmine.levelKostenGold) {return;}
-    if (mySaveGame.aktuelleStadt.bauwerke.lagerhaus.holz < mySaveGame.aktuelleStadt.bauwerke.goldmine.levelKostenHolz) {return;}
-    if (mySaveGame.aktuelleStadt.bauwerke.lagerhaus.stein < mySaveGame.aktuelleStadt.bauwerke.goldmine.levelKostenStein) {return;}
-
-    // Genug Rohstoffe vorhanden
-    mySaveGame.aktuelleStadt.bauwerke.lagerhaus.gold -= mySaveGame.aktuelleStadt.bauwerke.goldmine.levelKostenGold;
-    mySaveGame.aktuelleStadt.bauwerke.lagerhaus.holz -= mySaveGame.aktuelleStadt.bauwerke.goldmine.levelKostenHolz;
-    mySaveGame.aktuelleStadt.bauwerke.lagerhaus.stein -= mySaveGame.aktuelleStadt.bauwerke.goldmine.levelKostenStein;
-    mySaveGame.aktuelleStadt.bauwerke.goldmine.levelUp();
-    await storage.saveData(mySaveGame);
-}
-
-async function holzfaellerLevelKauf() {
-    if (mySaveGame.aktuelleStadt.bauwerke.lagerhaus.gold < mySaveGame.aktuelleStadt.bauwerke.holzfaeller.levelKostenGold) {return;}
-    if (mySaveGame.aktuelleStadt.bauwerke.lagerhaus.holz < mySaveGame.aktuelleStadt.bauwerke.holzfaeller.levelKostenHolz) {return;}
-    if (mySaveGame.aktuelleStadt.bauwerke.lagerhaus.stein < mySaveGame.aktuelleStadt.bauwerke.holzfaeller.levelKostenStein) {return;}
-
-    // Genug Rohstoffe vorhanden
-    mySaveGame.aktuelleStadt.bauwerke.lagerhaus.gold -= mySaveGame.aktuelleStadt.bauwerke.holzfaeller.levelKostenGold;
-    mySaveGame.aktuelleStadt.bauwerke.lagerhaus.holz -= mySaveGame.aktuelleStadt.bauwerke.holzfaeller.levelKostenHolz;
-    mySaveGame.aktuelleStadt.bauwerke.lagerhaus.stein -= mySaveGame.aktuelleStadt.bauwerke.holzfaeller.levelKostenStein;
-    mySaveGame.aktuelleStadt.bauwerke.holzfaeller.levelUp();
-    await storage.saveData(mySaveGame);
-}
-
-async function steinbruchLevelKauf() {
-    if (mySaveGame.aktuelleStadt.bauwerke.lagerhaus.gold < mySaveGame.aktuelleStadt.bauwerke.steinbruch.levelKostenGold) {return;}
-    if (mySaveGame.aktuelleStadt.bauwerke.lagerhaus.holz < mySaveGame.aktuelleStadt.bauwerke.steinbruch.levelKostenHolz) {return;}
-    if (mySaveGame.aktuelleStadt.bauwerke.lagerhaus.stein < mySaveGame.aktuelleStadt.bauwerke.steinbruch.levelKostenStein) {return;}
-
-    // Genug Rohstoffe vorhanden
-    mySaveGame.aktuelleStadt.bauwerke.lagerhaus.gold -= mySaveGame.aktuelleStadt.bauwerke.steinbruch.levelKostenGold;
-    mySaveGame.aktuelleStadt.bauwerke.lagerhaus.holz -= mySaveGame.aktuelleStadt.bauwerke.steinbruch.levelKostenHolz;
-    mySaveGame.aktuelleStadt.bauwerke.lagerhaus.stein -= mySaveGame.aktuelleStadt.bauwerke.steinbruch.levelKostenStein;
-    mySaveGame.aktuelleStadt.bauwerke.steinbruch.levelUp();
-    await storage.saveData(mySaveGame);
+    saveGame();
 }
 
 // --- User Anmeldung ---
@@ -136,18 +96,23 @@ function initInteractions() {
         // "Name im HTML" : Funktion im Code
         "saveGame": saveGame,
         "resetGame": resetGame,
-        "viewStadt": viewStadt,
-        "viewBauwerke": viewBauwerke,
-        "viewRathaus": viewRathaus,
-        "rathausLevelKauf": rathausLevelKauf,
-        "viewLagerhaus": viewLagerhaus,
-        "lagerhausLevelKauf": lagerhausLevelKauf,
-        "viewGoldmine": viewGoldmine,
-        "goldmineLevelKauf": goldmineLevelKauf,
-        "viewHolzfaeller": viewHolzfaeller,
-        "holzfaellerLevelKauf": holzfaellerLevelKauf,
-        "viewSteinbruch": viewSteinbruch,
-        "steinbruchLevelKauf": steinbruchLevelKauf
+        "viewStadt": () => gameView.switchView("view-stadt"),
+        "viewBauwerke": () => gameView.switchView("view-bauwerke"),
+        "viewRathaus": () => gameView.switchView("view-rathaus"),
+        "viewLagerhaus": () => gameView.switchView("view-lagerhaus"),
+        "viewGoldmine": () => gameView.switchView("view-goldmine"),
+        "viewHolzfaeller": () => gameView.switchView("view-holzfaeller"),
+        "viewSteinbruch": () => gameView.switchView("view-steinbruch"),
+        "viewStadtmauer": () => gameView.switchView("view-stadtmauer"),
+
+        "rathausLevelKauf": () => gebaeudeLevelKauf("rathaus"),
+        "lagerhausLevelKauf": () => gebaeudeLevelKauf("lagerhaus"),
+        "goldmineLevelKauf": () => gebaeudeLevelKauf("goldmine"),
+        "holzfaellerLevelKauf": () => gebaeudeLevelKauf("holzfaeller"),
+        "steinbruchLevelKauf": () => gebaeudeLevelKauf("steinbruch"),
+        "stadtmauerLevelKauf": () => gebaeudeLevelKauf("stadtmauer"),
+
+        "stadtUmbenennen": stadtUmbenennen
     };
 
     ui.registerActions(myActions); // Dem uiManager geben
@@ -156,7 +121,7 @@ function initInteractions() {
 // --- Auto-Save ---
 setInterval(async () => {
     await storage.saveData(mySaveGame);
-    console.log("Auto-Save durchgeführt");
+    console.log("💾 Auto-Save durchgeführt");
 }, 60000);
 
 
@@ -183,6 +148,7 @@ async function gameStart() {
     requestAnimationFrame(gameLoop); // GameLoop starten
 }
 
+// --- Game Dauerschleife ---
 function gameLoop() {
     updateData(); // Daten aktualisieren
     updateView(); // Darstellung aktualisieren

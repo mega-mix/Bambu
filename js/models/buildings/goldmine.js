@@ -1,9 +1,16 @@
 // js/models/buildings/goldmine.js
 
 export class Goldmine {
-    static MS_PRODUKTION = 30000; // 30 Sekunden
+    static MS_PRODUKTION = 30000;       // 30 Sekunden
+    static BASIS_ROHSTOFF = 5;          // Grundwert für Rohstoffproduktion
+    static FAKTOR_ROHSTOFF = 1.3;       // Faktor für Rohstoffproduktion
+    static BASIS_KOSTEN_GOLD = 118;     // Grundwert Goldkosten
+    static BASIS_KOSTEN_HOLZ = 133;     // Grundwert Holzkosten
+    static BASIS_KOSTEN_STEIN = 123;    // Grundwert Steinkosten
+    static FAKTOR_KOSTEN = 1.8;         // Faktor für Kostenrechnung
 
     constructor() {
+        this.name = "Goldmine";
         this.level = 1;
         this.letzterProduktTick = Date.now();
     }
@@ -27,12 +34,18 @@ export class Goldmine {
         this.level ++;
     }
 
-    get mengeProTick() { return this.berechnung(5, 1.3); }
-    get mengeProMin() { return (60000 / Goldmine.MS_PRODUKTION) * this.mengeProTick; }
+    get mengeProTick() {
+        if (this.level <= 0) return 0;
+        return this.berechnung(Goldmine.BASIS_ROHSTOFF, Goldmine.FAKTOR_ROHSTOFF);
+    }
+    get mengeProMin() {
+        if (this.level <= 0) return 0;
+        return (60000 / Goldmine.MS_PRODUKTION) * this.mengeProTick;
+    }
 
-    get levelKostenGold() { return this.berechnung(118, 1.8); }
-    get levelKostenHolz() { return this.berechnung(133, 1.8); }
-    get levelKostenStein() { return this.berechnung(123, 1.8); }
+    get levelKostenGold() { return this.berechnung(Goldmine.BASIS_KOSTEN_GOLD, Goldmine.FAKTOR_KOSTEN); }
+    get levelKostenHolz() { return this.berechnung(Goldmine.BASIS_KOSTEN_HOLZ, Goldmine.FAKTOR_KOSTEN); }
+    get levelKostenStein() { return this.berechnung(Goldmine.BASIS_KOSTEN_STEIN, Goldmine.FAKTOR_KOSTEN); }
 
     // --- Rohstoff einsammeln ---
     einsammeln() {

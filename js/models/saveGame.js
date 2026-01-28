@@ -19,7 +19,19 @@ export class SaveGame {
         // Vermisch alten Spielstand mit neuem, falls neue Variablen dazu gekommen sind.
         if (!data) return;
 
-        this.staedte[0].applyData(data.staedte[0]);
+        if (data.playerName) this.playerName = data.playerName;
+        if (data.aktuelleStadtIndex) this.aktuelleStadtIndex = data.aktuelleStadtIndex;
+
+        // Städte Array abgleichen
+        if (data.staedte && Array.isArray(data.staedte)) {
+            this.staedte = [];
+
+            data.staedte.forEach(stadtDaten => {
+                const stadt = new Stadt(stadtDaten.name);
+                stadt.applyData(stadtDaten);
+                this.staedte.push(stadt);
+            });
+        }
     }
 
     get aktuelleStadt() {

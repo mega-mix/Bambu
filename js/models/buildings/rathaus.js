@@ -1,9 +1,14 @@
 // js/models/buildings/rathaus.js
 
 export class Rathaus {
-    static MAX_LEVEL = 2; // Maximales level für das Rathaus
+    static MAX_LEVEL = 2;               // Maximales level für das Rathaus
+    static BASIS_KOSTEN_GOLD = 158;     // Grundwert Goldkosten
+    static BASIS_KOSTEN_HOLZ = 143;     // Grundwert Holzkosten
+    static BASIS_KOSTEN_STEIN = 188;    // Grundwert Steinkosten
+    static FAKTOR_KOSTEN = 1.8;         // Faktor für Kostenrechnung
 
     constructor() {
+        this.name = "Rathaus";
         this.level = 1;
     }
 
@@ -25,7 +30,7 @@ export class Rathaus {
         if (this.level < Rathaus.MAX_LEVEL) { this.level++; }
     }
 
-    get levelKostenGold() { return this.berechnung(158, 1.8); }
-    get levelKostenHolz() { return this.berechnung(143, 1.8); }
-    get levelKostenStein() { return this.berechnung(188, 1.8); }
+    get levelKostenGold() { return this.berechnung(Rathaus.BASIS_KOSTEN_GOLD, Rathaus.FAKTOR_KOSTEN); }
+    get levelKostenHolz() { return this.berechnung(Rathaus.BASIS_KOSTEN_HOLZ, Rathaus.FAKTOR_KOSTEN); }
+    get levelKostenStein() { return this.berechnung(Rathaus.BASIS_KOSTEN_STEIN, Rathaus.FAKTOR_KOSTEN); }
 }

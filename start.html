@@ -32,7 +32,6 @@
                 </div>
 
                 <div class="btn-group btn-group-sm">
-                    <button id="topBtnSave" class="btn btn-dark-success" data-action="saveGame">💾 Save</button>
                     <button id="topBtnReset" class="btn btn-dark-danger" data-action="resetGame">⚠️ Reset</button>
                     <button id="topBtnLogout" class="btn btn-dark">Logout</button>
                 </div>
@@ -48,9 +47,6 @@
                 <div class="d-grid gap-2">
                     <button id="btnStadt" class="btn btn-dark text-start" data-action="viewStadt">
                         Stadtübersicht
-                    </button>
-                    <button id="btnBauwerke" class="btn btn-dark text-start" data-action="viewBauwerke">
-                        Bauwerke
                     </button>
                 </div>
             </div>
@@ -68,12 +64,7 @@
                 </div>
 
                 <div id="view-stadt" class="view">
-                    <h2 class="mb-4 border-bottom pb-2">Stadtübersicht</h2>
-                    <p>Hier entsteht deine Metropole.</p>
-                </div>
-
-                <div id="view-bauwerke" class="view">
-                    <h2 class="mb-4 border-bottom pb-2">Bauwerke verwalten</h2>
+                    <h2 class="mb-4 border-bottom pb-2">Bauwerke von <span data-bind="name">Unbekannt</span></h2>
                     
                     <div class="row g-4">
                         <div class="col-sm-6 col-lg-4">
@@ -171,6 +162,17 @@
                                 </li>
                             </ul>
                         </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                    <span class="col-md-6">Name dieser Stadt:</span>
+                                    <div class="input-group mb-2">
+                                        <input id="inputStadtName" data-bind="name" placeholder="Stadtname eintragen..." type ="text">
+                                        <button class="btn btn-sm btn-secondary" data-action="stadtUmbenennen" onmousedown="event.preventDefault()">Speichern</button>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                     <br>
                     <br>
@@ -202,8 +204,7 @@
                     <div class="card">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <span>📦 Lagerhaus Details</span>
-                            <span>Stufe - <span data-bind="bauwerke.lagerhaus.level">0</span></span>
-                            <button class="btn btn-sm btn-secondary" data-action="viewBauwerke">Zurück</button>
+                            <span>Stufe <span data-bind="bauwerke.lagerhaus.level">0</span></span>
                         </div>
                         <div class="card-body">
                             <ul class="list-group list-group-flush">
@@ -372,6 +373,47 @@
                                 <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
                                     Kosten Stein
                                     <span class="badge bg-secondary rounded-pill" data-bind="bauwerke.steinbruch.levelKostenStein">0</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="view-stadtmauer" class="view">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span>Stadtmauer Details</span>
+                            <span>Stufe <span data-bind="bauwerke.stadtmauer.level">0</span></span>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                    <span class="col-md-8">Verteidigung der Stadtmauer</span>
+                                    <span data-bind="bauwerke.stadtmauer.verteidigung">0</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <br>
+                    <br>
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span>Gebäudestufe erhöhen</span>
+                            <button class="btn btn-sm btn-secondary" data-action="stadtmauerLevelKauf" data-check-cost="bauwerke.stadtmauer">Kaufen</button>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                    Kosten Gold
+                                    <span class="badge bg-warning text-dark rounded-pill" data-bind="bauwerke.stadtmauer.levelKostenGold">0</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                    Kosten Holz
+                                    <span class="badge bg-success rounded-pill" data-bind="bauwerke.stadtmauer.levelKostenHolz">0</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                    Kosten Stein
+                                    <span class="badge bg-secondary rounded-pill" data-bind="bauwerke.stadtmauer.levelKostenStein">0</span>
                                 </li>
                             </ul>
                         </div>
