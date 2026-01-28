@@ -1,12 +1,14 @@
 // js/models/saveGame.js
 
 import { Stadt } from "./stadt.js";
+import { version } from "../config.js";
 
 
 // ### Gesamter Spielstand ###
 
 export class SaveGame {
     constructor(player) {
+        this.version = version;     // Release Version
         this.playerName = player;
         this.staedte = [];
 

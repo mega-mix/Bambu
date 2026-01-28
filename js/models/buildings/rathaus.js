@@ -2,9 +2,9 @@
 
 export class Rathaus {
     static MAX_LEVEL = 2;               // Maximales level für das Rathaus
-    static BASIS_KOSTEN_GOLD = 158;     // Grundwert Goldkosten
-    static BASIS_KOSTEN_HOLZ = 143;     // Grundwert Holzkosten
-    static BASIS_KOSTEN_STEIN = 188;    // Grundwert Steinkosten
+    static BASIS_KOSTEN_GOLD = 400;     // Grundwert Goldkosten
+    static BASIS_KOSTEN_HOLZ = 380;     // Grundwert Holzkosten
+    static BASIS_KOSTEN_STEIN = 420;    // Grundwert Steinkosten
     static FAKTOR_KOSTEN = 1.8;         // Faktor für Kostenrechnung
 
     constructor() {

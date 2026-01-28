@@ -4,9 +4,9 @@ export class Goldmine {
     static MS_PRODUKTION = 30000;       // 30 Sekunden
     static BASIS_ROHSTOFF = 5;          // Grundwert für Rohstoffproduktion
     static FAKTOR_ROHSTOFF = 1.3;       // Faktor für Rohstoffproduktion
-    static BASIS_KOSTEN_GOLD = 118;     // Grundwert Goldkosten
-    static BASIS_KOSTEN_HOLZ = 133;     // Grundwert Holzkosten
-    static BASIS_KOSTEN_STEIN = 123;    // Grundwert Steinkosten
+    static BASIS_KOSTEN_GOLD = 150;     // Grundwert Goldkosten
+    static BASIS_KOSTEN_HOLZ = 250;     // Grundwert Holzkosten
+    static BASIS_KOSTEN_STEIN = 200;    // Grundwert Steinkosten
     static FAKTOR_KOSTEN = 1.8;         // Faktor für Kostenrechnung
 
     constructor() {
