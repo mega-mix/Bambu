@@ -18,6 +18,8 @@ export class Lagerhaus {
         this.stein = 100;
     }
 
+    get tag() { return "BAUWERK"; }
+
     // --- Abgleich SaveGame ---
     load(data) {
         if (!data) return;
@@ -43,9 +45,9 @@ export class Lagerhaus {
     get maxHolz() { return this.berechnung(Lagerhaus.BASIS_MAX_HOLZ, Lagerhaus.FAKTOR_MAX); }
     get maxStein() { return this.berechnung(Lagerhaus.BASIS_MAX_STEIN, Lagerhaus.FAKTOR_MAX); }
 
-    get levelKostenGold() { return this.berechnung(Lagerhaus.BASIS_KOSTEN_GOLD, Lagerhaus.FAKTOR_KOSTEN); }
-    get levelKostenHolz() { return this.berechnung(Lagerhaus.BASIS_KOSTEN_HOLZ, Lagerhaus.FAKTOR_KOSTEN); }
-    get levelKostenStein() { return this.berechnung(Lagerhaus.BASIS_KOSTEN_STEIN, Lagerhaus.FAKTOR_KOSTEN); }
+    get kostenGold() { return this.berechnung(Lagerhaus.BASIS_KOSTEN_GOLD, Lagerhaus.FAKTOR_KOSTEN); }
+    get kostenHolz() { return this.berechnung(Lagerhaus.BASIS_KOSTEN_HOLZ, Lagerhaus.FAKTOR_KOSTEN); }
+    get kostenStein() { return this.berechnung(Lagerhaus.BASIS_KOSTEN_STEIN, Lagerhaus.FAKTOR_KOSTEN); }
 
 
     // ------------------------------

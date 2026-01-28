@@ -7,7 +7,7 @@ export class Stadt {
     constructor(name) {
         this.name = name;
         this.bauwerke = new Bauwerke();
-        this.einheiten = new Einheiten();
+        this.einheiten = new Einheiten(this.bauwerke.kaserne);
 
     }
 
@@ -18,5 +18,6 @@ export class Stadt {
 
         this.bauwerke.applyData(data.bauwerke);
         this.einheiten.applyData(data.einheiten);
+        this.einheiten.updateKaserne(this.bauwerke.kaserne);
     }
 }

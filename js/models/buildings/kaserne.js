@@ -9,8 +9,9 @@ export class Kaserne {
     constructor() {
         this.name ="Kaserne";
         this.level = 0;
-
     }
+
+    get tag() { return "BAUWERK"; }
 
     // --- Abgleich SaveGame ---
     load(data) {
@@ -30,7 +31,7 @@ export class Kaserne {
         this.level ++;
     }
 
-    get levelKostenGold() { return this.berechnung(Kaserne.BASIS_KOSTEN_GOLD, Kaserne.FAKTOR_KOSTEN); }
-    get levelKostenHolz() { return this.berechnung(Kaserne.BASIS_KOSTEN_HOLZ, Kaserne.FAKTOR_KOSTEN); }
-    get levelKostenStein() { return this.berechnung(Kaserne.BASIS_KOSTEN_STEIN, Kaserne.FAKTOR_KOSTEN); }
+    get kostenGold() { return this.berechnung(Kaserne.BASIS_KOSTEN_GOLD, Kaserne.FAKTOR_KOSTEN); }
+    get kostenHolz() { return this.berechnung(Kaserne.BASIS_KOSTEN_HOLZ, Kaserne.FAKTOR_KOSTEN); }
+    get kostenStein() { return this.berechnung(Kaserne.BASIS_KOSTEN_STEIN, Kaserne.FAKTOR_KOSTEN); }
 }

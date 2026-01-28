@@ -20,6 +20,7 @@ async function saveGame() {
 
 async function resetGame() {
     mySaveGame = new SaveGame(playerName);
+    gameView.updateSaveGame(mySaveGame);
     await storage.saveData(mySaveGame);
     gameView.setTopInfo("⚠️ Spielstand resettet!");
     console.log("⚠️ Spielstand resettet!");
@@ -44,9 +45,9 @@ function gebaeudeLevelKauf(gebaeudeName) {
     }
 
     // Kosten holen
-    const kostenGold = gebaeude.levelKostenGold || 0;
-    const kostenHolz = gebaeude.levelKostenHolz || 0;
-    const kostenStein = gebaeude.levelKostenStein || 0;
+    const kostenGold = gebaeude.kostenGold || 0;
+    const kostenHolz = gebaeude.kostenHolz || 0;
+    const kostenStein = gebaeude.kostenStein || 0;
 
     // Prüfung auf Liquidität
     if (lager.gold < kostenGold || lager.holz < kostenHolz || lager.stein < kostenStein) {
@@ -66,6 +67,49 @@ function gebaeudeLevelKauf(gebaeudeName) {
     saveGame();
     console.log(`Erfolgreich gekauft!`);
     console.log(`🏠 ${gebaeude.name} ist nun Stufe ${gebaeude.level}`);
+}
+
+// --- Einheiten kaufen ---
+function einheitenKauf(einheitName) {
+    // Gebäude holen
+    const stadt = mySaveGame.aktuelleStadt;
+    const lager = stadt.bauwerke.lagerhaus;
+    const kaserne = stadt.bauwerke.kaserne;
+    const einheit = stadt.einheiten[einheitName];
+
+    if (!einheit) return; // Abbruch wenn leer
+
+    // Kaserne Level prüfen
+    if (kaserne.level < 1) {
+        gameView.setTopInfo("Stufe von Kaserne zu niedrig!");
+        console.log("Kauf abgebrochen!");
+        console.log("❌ Stufe von Kaserne zu niedrig!");
+        return; // Abbruch wenn Kasere Stufe zu niedrig
+    }
+
+    // Kosten holen
+    const kostenGold = einheit.kostenGold || 0;
+    const kostenHolz = einheit.kostenHolz || 0;
+    const kostenStein = einheit.kostenStein || 0;
+
+    // Prüfung auf Liquidität
+    if (lager.gold < kostenGold || lager.holz < kostenHolz || lager.stein < kostenStein) {
+        gameView.setTopInfo(`${einheit.name} zu teuer`);
+        console.log("Kauf abgebrochen!");
+        console.log(`❌ ${einheit.name} ist zu teuer`);
+        return; // Abbruch wenn nicht genug
+    }
+
+    // Bezahlen
+    lager.gold -= kostenGold;
+    lager.holz -= kostenHolz;
+    lager.stein -= kostenStein;
+
+    // Level erhöhen und speichern
+    stadt.einheiten.addEinheit(einheit);
+    saveGame();
+    console.log(`Erfolgreich gekauft!`);
+    console.log(`🙍‍♂️ ${einheit.name} wurde gekauft!`);
 }
 
 // --- Name der Stadt ändern ---
@@ -113,6 +157,10 @@ function initInteractions() {
         "steinbruchLevelKauf": () => gebaeudeLevelKauf("steinbruch"),
         "stadtmauerLevelKauf": () => gebaeudeLevelKauf("stadtmauer"),
         "kaserneLevelKauf": () => gebaeudeLevelKauf("kaserne"),
+
+        "einheitSchwertKauf": () => einheitenKauf("schwert"),
+        "einheitSpeerKauf": () => einheitenKauf("speer"),
+        "einheitBogenKauf": () => einheitenKauf("bogen"),
 
         "stadtUmbenennen": stadtUmbenennen
     };
@@ -167,6 +215,5 @@ function updateData() {
 
 // --- Darstellung aktualisieren ---
 function updateView() {
-    gameView.updateSaveGame(mySaveGame); // aktuelles Savegame an viewHandler geben
     gameView.update(); // Werte in HTML aktualisieren
 }

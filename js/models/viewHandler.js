@@ -106,13 +106,23 @@ export class ViewHandler {
         // 2. Buttons (aus ButtonCache) prüfen
         const lager = this.aktuelleStadt.bauwerke.lagerhaus;
         const rathaus = this.aktuelleStadt.bauwerke.rathaus;
+        const kaserne = this.aktuelleStadt.bauwerke.kaserne;
 
         this.buttonCache.forEach(item => {
-            const gebaeude = this.resolvePath(item.targetName, this.aktuelleStadt); // Gebäude holen
+            const data = this.resolvePath(item.targetName, this.aktuelleStadt); // Objekt holen
 
-            if (gebaeude) {
-                const preisOk = this.checkAffordability(lager, gebaeude); // Prüfen ob genug Rohstoffe vorhanden sind
-                const levelOk = gebaeude.level < rathaus.level || gebaeude === rathaus; // Prüfen ob Rathaus Level ok oder Rathaus selbst
+            if (data.tag === "BAUWERK") {
+                const preisOk = this.checkAffordability(lager, data); // Prüfen ob genug Rohstoffe vorhanden sind
+                const levelOk = data.level < rathaus.level || data === rathaus; // Prüfen ob Rathaus Level ok oder Rathaus selbst
+                const kannKaufen = (preisOk && levelOk); // Vorprüfungen sind ok?
+                
+                // Button aktivieren oder deaktivieren
+                item.element.disabled = !kannKaufen; // disabled = true (wenn man es NICHT kaufen kann)
+            }
+
+            if (data.tag === "EINHEIT") {
+                const preisOk = this.checkAffordability(lager, data); // Prüfen ob genug Rohstoffe vorhanden sind
+                const levelOk = kaserne.level > 0; // Prüfen ob Kaserne Level ok
                 const kannKaufen = (preisOk && levelOk); // Vorprüfungen sind ok?
                 
                 // Button aktivieren oder deaktivieren
@@ -130,12 +140,12 @@ export class ViewHandler {
     }
 
     // --- Liquiditätsprüfung ---
-    checkAffordability(lager, gebaeude) {
+    checkAffordability(lager, data) {
         // Prüfen ob Kosten definiert sind
         // Falls undefined, nehme 0
-        const kostenGold = gebaeude.levelKostenGold || 0;
-        const kostenHolz = gebaeude.levelKostenHolz || 0;
-        const kostenStein = gebaeude.levelKostenStein || 0;
+        const kostenGold = data.kostenGold || 0;
+        const kostenHolz = data.kostenHolz || 0;
+        const kostenStein = data.kostenStein || 0;
 
         return (
             lager.gold >= kostenGold &&

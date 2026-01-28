@@ -3,10 +3,11 @@
 import { Schwert } from "./units/schwert.js";
 
 export class Einheiten {
-    constructor() {
+    constructor(kaserne) {
         this.unitsSchwert = [];
         this.unitsSpeer = [];
         this.unitsBogen = [];
+        this.kaserne = kaserne;
     }
 
     // --- Spielstände angleichen ---
@@ -31,11 +32,17 @@ export class Einheiten {
         }
     }
 
-    addSchwert() {
-        this.unitsSchwert.push(new Schwert());
+    addEinheit(einheit) {
+        if (einheit.name === "Schwertkämpfer") { this.unitsSchwert.push(new Schwert()); }
+    }
+
+    updateKaserne(kaserne) {
+        this.kaserne = kaserne;
     }
 
     get anzahlSchwert() { return this.unitsSchwert.length; }
     get anzahlSpeer() { return this.unitsSpeer.length; }
     get anzahlBogen() { return this.unitsBogen.length; }
+
+    get schwert() { return new Schwert(); }
 }

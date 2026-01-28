@@ -10,12 +10,19 @@ export class Schwert {
     static FAKTOR_KOSTEN = 1;       // Faktor für Kostenrechnung
 
     constructor() {
-        this.id = 0; // ++++++ Platzhalter noch verwenden???
+        this.name = "Schwertkämpfer";
         this.level = 1;
         this.hp = 100;
     }
 
-    get addKostenGold() { return this.berechnung(Schwert.BASIS_KOSTEN_GOLD, Schwert.FAKTOR_KOSTEN); }
-    get addKostenHolz() { return this.berechnung(Schwert.BASIS_KOSTEN_HOLZ, Schwert.FAKTOR_KOSTEN); }
-    get addKostenStein() { return this.berechnung(Schwert.BASIS_KOSTEN_STEIN, Schwert.FAKTOR_KOSTEN); }
+    get tag() { return "EINHEIT"; }
+
+    // --- Hilfsrechnung Wert * Level ---
+    berechnung(basis, faktor) {
+        return Math.floor(basis * Math.pow(faktor, this.level - 1));
+    }
+
+    get kostenGold() { return this.berechnung(Schwert.BASIS_KOSTEN_GOLD, Schwert.FAKTOR_KOSTEN); }
+    get kostenHolz() { return this.berechnung(Schwert.BASIS_KOSTEN_HOLZ, Schwert.FAKTOR_KOSTEN); }
+    get kostenStein() { return this.berechnung(Schwert.BASIS_KOSTEN_STEIN, Schwert.FAKTOR_KOSTEN); }
 }
