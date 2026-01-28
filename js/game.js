@@ -104,6 +104,7 @@ function initInteractions() {
         "viewHolzfaeller": () => gameView.switchView("view-holzfaeller"),
         "viewSteinbruch": () => gameView.switchView("view-steinbruch"),
         "viewStadtmauer": () => gameView.switchView("view-stadtmauer"),
+        "viewKaserne": () => gameView.switchView("view-kaserne"),
 
         "rathausLevelKauf": () => gebaeudeLevelKauf("rathaus"),
         "lagerhausLevelKauf": () => gebaeudeLevelKauf("lagerhaus"),
@@ -111,6 +112,7 @@ function initInteractions() {
         "holzfaellerLevelKauf": () => gebaeudeLevelKauf("holzfaeller"),
         "steinbruchLevelKauf": () => gebaeudeLevelKauf("steinbruch"),
         "stadtmauerLevelKauf": () => gebaeudeLevelKauf("stadtmauer"),
+        "kaserneLevelKauf": () => gebaeudeLevelKauf("kaserne"),
 
         "stadtUmbenennen": stadtUmbenennen
     };

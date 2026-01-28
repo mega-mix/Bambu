@@ -70,13 +70,14 @@
                     <h2 class="mb-4 border-bottom pb-2">Bauwerke von <span data-bind="name">Unbekannt</span></h2>
                     
                     <div class="row g-4">
+
                         <div class="col-sm-6 col-lg-4">
                             <div class="card h-100">
                                 <div class="card-header"><h5>Rathaus</h5></div>
                                 <div class="card-body">
                                     <h6 class="card-title">Stufe - <span data-bind="bauwerke.rathaus.level">0</span></h6>
-                                    <p class="card-text text-secondary">Zentrale deiner Macht.</p>
-                                    <button id="bauwerkeBtnRathaus" class="btn btn-outline-light w-100" data-action="viewRathaus">
+                                    <p class="card-text text-secondary">Bestimmt die maximale Bauwerksstufe</p>
+                                    <button class="btn btn-outline-light w-100" data-action="viewRathaus">
                                         Öffnen
                                     </button>
                                 </div>
@@ -88,8 +89,8 @@
                                 <div class="card-header"><h5>Lagerhaus</h5></div>
                                 <div class="card-body">
                                     <h6 class="card-title">Stufe - <span data-bind="bauwerke.lagerhaus.level">0</span></h6>
-                                    <p class="card-text text-secondary">Erhöht Lagerkapazität.</p>
-                                    <button id="bauwerkeBtnLagerhaus" class="btn btn-outline-light w-100" data-action="viewLagerhaus">
+                                    <p class="card-text text-secondary">Bestimmt die Lagerkapazität.</p>
+                                    <button class="btn btn-outline-light w-100" data-action="viewLagerhaus">
                                         Öffnen
                                     </button>
                                 </div>
@@ -101,8 +102,8 @@
                                 <div class="card-header"><h5>Goldmine</h5></div>
                                 <div class="card-body">
                                     <h6 class="card-title">Stufe - <span data-bind="bauwerke.goldmine.level">0</span></h6>
-                                    <p class="card-text text-secondary">Schürft glänzendes Gold.</p>
-                                    <button id="bauwerkeBtnGoldmine" class="btn btn-outline-light w-100" data-action="viewGoldmine">
+                                    <p class="card-text text-secondary">Produziert Gold.</p>
+                                    <button class="btn btn-outline-light w-100" data-action="viewGoldmine">
                                         Öffnen
                                     </button>
                                 </div>
@@ -114,8 +115,8 @@
                                 <div class="card-header"><h5>Holzfäller</h5></div>
                                 <div class="card-body">
                                     <h6 class="card-title">Stufe - <span data-bind="bauwerke.holzfaeller.level">0</span></h6>
-                                    <p class="card-text text-secondary">Fällt Bäume in deinem Wald.</p>
-                                    <button id="bauwerkeBtnHolzfaeller" class="btn btn-outline-light w-100" data-action="viewHolzfaeller">
+                                    <p class="card-text text-secondary">Produziert Holz.</p>
+                                    <button class="btn btn-outline-light w-100" data-action="viewHolzfaeller">
                                         Öffnen
                                     </button>
                                 </div>
@@ -127,8 +128,8 @@
                                 <div class="card-header"><h5>Steinbruch</h5></div>
                                 <div class="card-body">
                                     <h6 class="card-title">Stufe - <span data-bind="bauwerke.steinbruch.level">0</span></h6>
-                                    <p class="card-text text-secondary">Schwere Steine werden hier abgebaut.</p>
-                                    <button id="bauwerkeBtnSteinbruch" class="btn btn-outline-light w-100" data-action="viewSteinbruch">
+                                    <p class="card-text text-secondary">Produziert Stein.</p>
+                                    <button class="btn btn-outline-light w-100" data-action="viewSteinbruch">
                                         Öffnen
                                     </button>
                                 </div>
@@ -140,8 +141,21 @@
                                 <div class="card-header"><h5>Stadtmauer</h5></div>
                                 <div class="card-body">
                                     <h6 class="card-title">Stufe - <span data-bind="bauwerke.stadtmauer.level">0</span></h6>
-                                    <p class="card-text text-secondary">Schützt deine Stadt vor Angreifern.</p>
-                                    <button id="bauwerkeBtnStadtmauer" class="btn btn-outline-light w-100" data-action="viewStadtmauer">
+                                    <p class="card-text text-secondary">Erhöht die Stadtverteidigung.</p>
+                                    <button class="btn btn-outline-light w-100" data-action="viewStadtmauer">
+                                        Öffnen
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6 col-lg-4">
+                            <div class="card h-100">
+                                <div class="card-header"><h5>Kaserne</h5></div>
+                                <div class="card-body">
+                                    <h6 class="card-title">Stufe - <span data-bind="bauwerke.kaserne.level">0</span></h6>
+                                    <p class="card-text text-secondary">Produziert Kämpfer.</p>
+                                    <button class="btn btn-outline-light w-100" data-action="viewKaserne">
                                         Öffnen
                                     </button>
                                 </div>
@@ -417,6 +431,55 @@
                                 <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
                                     Kosten Stein
                                     <span class="badge bg-secondary rounded-pill" data-bind="bauwerke.stadtmauer.levelKostenStein">0</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="view-kaserne" class="view">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span>Kaserne Details</span>
+                            <span>Stufe <span data-bind="bauwerke.kaserne.level">0</span></span>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                    <span class="col-md-8">Schwertkämpfer</span>
+                                    <span data-bind="einheiten.anzahlSchwert">0</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                    <span class="col-md-8">Speerträger</span>
+                                    <span data-bind="einheiten.anzahlSpeer">0</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                    <span class="col-md-8">Bogenschützen</span>
+                                    <span data-bind="einheiten.anzahlBogen">0</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <br>
+                    <br>
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span>Gebäudestufe erhöhen</span>
+                            <button class="btn btn-sm btn-secondary" data-action="kaserneLevelKauf" data-check-cost="bauwerke.kaserne">Kaufen</button>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                    Kosten Gold
+                                    <span class="badge bg-warning text-dark rounded-pill" data-bind="bauwerke.kaserne.levelKostenGold">0</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                    Kosten Holz
+                                    <span class="badge bg-success rounded-pill" data-bind="bauwerke.kaserne.levelKostenHolz">0</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                    Kosten Stein
+                                    <span class="badge bg-secondary rounded-pill" data-bind="bauwerke.kaserne.levelKostenStein">0</span>
                                 </li>
                             </ul>
                         </div>
