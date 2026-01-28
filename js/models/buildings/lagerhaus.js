@@ -1,14 +1,14 @@
 // js/models/buildings/lagerhaus.js
 
 export class Lagerhaus {
-    static BASIS_KOSTEN_GOLD = 102;     // Grundwert Goldkosten
-    static BASIS_KOSTEN_HOLZ = 88;      // Grundwert Holzkosten
-    static BASIS_KOSTEN_STEIN = 93;     // Grundwert Steinkosten
+    static BASIS_KOSTEN_GOLD = 200;     // Grundwert Goldkosten
+    static BASIS_KOSTEN_HOLZ = 180;      // Grundwert Holzkosten
+    static BASIS_KOSTEN_STEIN = 150;     // Grundwert Steinkosten
     static FAKTOR_KOSTEN = 1.8;         // Faktor für Kostenrechnung
-    static BASIS_MAX_GOLD = 300;        // Grundwert Lagergröße Gold
-    static BASIS_MAX_HOLZ = 300;        // Grundwert Lagergröße Holz
-    static BASIS_MAX_STEIN = 300;       // Grundwert Lagergröße Stein
-    static FAKTOR_MAX = 1.5;            // Faktor für Lagergröße
+    static BASIS_MAX_GOLD = 500;        // Grundwert Lagergröße Gold
+    static BASIS_MAX_HOLZ = 500;        // Grundwert Lagergröße Holz
+    static BASIS_MAX_STEIN = 500;       // Grundwert Lagergröße Stein
+    static FAKTOR_MAX = 1.8;            // Faktor für Lagergröße
 
     constructor() {
         this.name = "Lagerhaus";

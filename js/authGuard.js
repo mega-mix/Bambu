@@ -2,7 +2,7 @@
 
 import { onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-import { auth, db } from "./config.js";
+import { auth, db, version } from "./config.js";
 
 // ### Anmeldung über Google ###
 
@@ -11,6 +11,7 @@ const provider = new GoogleAuthProvider();
 // HTML Elemente prüfen ob sie existieren
 const btnLogin = document.getElementById("btnLogin");
 const topBtnLogout = document.getElementById("topBtnLogout");
+const versionLabel = document.getElementById("versionLabel");
 
 // --- LOGIN / LOGOUT BUTTONS ---
 if (btnLogin) {
@@ -18,6 +19,11 @@ if (btnLogin) {
 }
 if (topBtnLogout) {
     topBtnLogout.addEventListener("click", () => signOut(auth));
+}
+
+// --- Versionsanzeige ---
+if (versionLabel) {
+    versionLabel.innerHTML = version;
 }
 
 // --- ÜBERWACHUNG ---

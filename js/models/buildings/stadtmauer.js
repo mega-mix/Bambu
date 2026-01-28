@@ -1,9 +1,9 @@
 // js/models/buildings/stadtmauer.js
 
 export class Stadtmauer {
-    static BASIS_KOSTEN_GOLD = 103;     // Grundwert Goldkosten
-    static BASIS_KOSTEN_HOLZ = 156;     // Grundwert Holzkosten
-    static BASIS_KOSTEN_STEIN = 180;    // Grundwert Steinkosten
+    static BASIS_KOSTEN_GOLD = 100;     // Grundwert Goldkosten
+    static BASIS_KOSTEN_HOLZ = 200;     // Grundwert Holzkosten
+    static BASIS_KOSTEN_STEIN = 450;    // Grundwert Steinkosten
     static FAKTOR_KOSTEN = 1.8;         // Faktor für Kostenrechnung
     static BASIS_VERTEIDIGUNG = 100;    // Grundwert Verteidigung
     static FAKTOR_VERTEIDIGUNG = 1.2;   // Faktor für Verteidigung
