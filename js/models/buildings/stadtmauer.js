@@ -13,6 +13,8 @@ export class Stadtmauer {
         this.level = 0;
     }
 
+    get tag() { return "BAUWERK"; }
+
     // --- Abgleich SaveGame ---
     load(data) {
         if (!data) return;
@@ -31,9 +33,9 @@ export class Stadtmauer {
         this.level ++;
     }
 
-    get levelKostenGold() { return this.berechnung(Stadtmauer.BASIS_KOSTEN_GOLD, Stadtmauer.FAKTOR_KOSTEN); }
-    get levelKostenHolz() { return this.berechnung(Stadtmauer.BASIS_KOSTEN_HOLZ, Stadtmauer.FAKTOR_KOSTEN); }
-    get levelKostenStein() { return this.berechnung(Stadtmauer.BASIS_KOSTEN_STEIN, Stadtmauer.FAKTOR_KOSTEN); }
+    get kostenGold() { return this.berechnung(Stadtmauer.BASIS_KOSTEN_GOLD, Stadtmauer.FAKTOR_KOSTEN); }
+    get kostenHolz() { return this.berechnung(Stadtmauer.BASIS_KOSTEN_HOLZ, Stadtmauer.FAKTOR_KOSTEN); }
+    get kostenStein() { return this.berechnung(Stadtmauer.BASIS_KOSTEN_STEIN, Stadtmauer.FAKTOR_KOSTEN); }
 
     get verteidigung() {
         if (this.level <= 0) return 0;

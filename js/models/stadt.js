@@ -1,11 +1,13 @@
 // js/models/stadt.js
 
 import { Bauwerke } from "./bauwerke.js";
+import { Einheiten } from "./einheiten.js";
 
 export class Stadt {
     constructor(name) {
         this.name = name;
         this.bauwerke = new Bauwerke();
+        this.einheiten = new Einheiten();
 
     }
 
@@ -15,5 +17,23 @@ export class Stadt {
         if (!data) return;
 
         this.bauwerke.applyData(data.bauwerke);
+        this.einheiten.applyData(data.einheiten);
+    }
+
+    get verteidigungGesamt() {
+        let verteidigung = 0;
+
+        verteidigung += this.bauwerke.stadtmauer.verteidigung;
+        verteidigung += this.einheiten.verteidigungGesamt;
+
+        return verteidigung;
+    }
+
+    get angriffGesamt() {
+        let angriff = 0;
+
+        angriff += this.einheiten.angriffGesamt;
+
+        return angriff;
     }
 }

@@ -20,6 +20,7 @@ async function saveGame() {
 
 async function resetGame() {
     mySaveGame = new SaveGame(playerName);
+    gameView.updateSaveGame(mySaveGame);
     await storage.saveData(mySaveGame);
     gameView.setTopInfo("⚠️ Spielstand resettet!");
     console.log("⚠️ Spielstand resettet!");
@@ -44,9 +45,9 @@ function gebaeudeLevelKauf(gebaeudeName) {
     }
 
     // Kosten holen
-    const kostenGold = gebaeude.levelKostenGold || 0;
-    const kostenHolz = gebaeude.levelKostenHolz || 0;
-    const kostenStein = gebaeude.levelKostenStein || 0;
+    const kostenGold = gebaeude.kostenGold || 0;
+    const kostenHolz = gebaeude.kostenHolz || 0;
+    const kostenStein = gebaeude.kostenStein || 0;
 
     // Prüfung auf Liquidität
     if (lager.gold < kostenGold || lager.holz < kostenHolz || lager.stein < kostenStein) {
@@ -66,6 +67,48 @@ function gebaeudeLevelKauf(gebaeudeName) {
     saveGame();
     console.log(`Erfolgreich gekauft!`);
     console.log(`🏠 ${gebaeude.name} ist nun Stufe ${gebaeude.level}`);
+}
+
+// --- Einheiten kaufen ---
+function einheitenKauf(einheitName) {
+    // Gebäude holen
+    const stadt = mySaveGame.aktuelleStadt;
+    const lager = stadt.bauwerke.lagerhaus;
+    const kaserne = stadt.bauwerke.kaserne;
+    const einheit = stadt.einheiten[einheitName];
+
+    if (!einheit) return; // Abbruch wenn leer
+
+    // Kaserne Level prüfen
+    if (kaserne.level < 1) {
+        gameView.setTopInfo("Stufe von Kaserne zu niedrig!");
+        console.log("Kauf abgebrochen!");
+        console.log("❌ Stufe von Kaserne zu niedrig!");
+        return; // Abbruch wenn Kasere Stufe zu niedrig
+    }
+
+    // Kosten holen
+    const kostenGold = einheit.kostenGold || 0;
+    const kostenHolz = einheit.kostenHolz || 0;
+    const kostenStein = einheit.kostenStein || 0;
+
+    // Prüfung auf Liquidität
+    if (lager.gold < kostenGold || lager.holz < kostenHolz || lager.stein < kostenStein) {
+        gameView.setTopInfo(`${einheit.name} zu teuer`);
+        console.log("Kauf abgebrochen!");
+        console.log(`❌ ${einheit.name} ist zu teuer`);
+        return; // Abbruch wenn nicht genug
+    }
+
+    // Bezahlen
+    lager.gold -= kostenGold;
+    lager.holz -= kostenHolz;
+    lager.stein -= kostenStein;
+
+    // Level erhöhen und speichern
+    stadt.einheiten.addEinheit(einheit);
+    saveGame();
+    console.log(`🙍‍♂️ ${einheit.name} wird ausgebildet!`);
 }
 
 // --- Name der Stadt ändern ---
@@ -104,6 +147,8 @@ function initInteractions() {
         "viewHolzfaeller": () => gameView.switchView("view-holzfaeller"),
         "viewSteinbruch": () => gameView.switchView("view-steinbruch"),
         "viewStadtmauer": () => gameView.switchView("view-stadtmauer"),
+        "viewKaserne": () => gameView.switchView("view-kaserne"),
+        "viewKaserneAusbildung": () => gameView.switchView("view-kaserneAusbildung"),
 
         "rathausLevelKauf": () => gebaeudeLevelKauf("rathaus"),
         "lagerhausLevelKauf": () => gebaeudeLevelKauf("lagerhaus"),
@@ -111,6 +156,11 @@ function initInteractions() {
         "holzfaellerLevelKauf": () => gebaeudeLevelKauf("holzfaeller"),
         "steinbruchLevelKauf": () => gebaeudeLevelKauf("steinbruch"),
         "stadtmauerLevelKauf": () => gebaeudeLevelKauf("stadtmauer"),
+        "kaserneLevelKauf": () => gebaeudeLevelKauf("kaserne"),
+
+        "einheitSchwertKauf": () => einheitenKauf("schwert"),
+        "einheitSpeerKauf": () => einheitenKauf("speer"),
+        "einheitBogenKauf": () => einheitenKauf("bogen"),
 
         "stadtUmbenennen": stadtUmbenennen
     };
@@ -161,10 +211,10 @@ function updateData() {
     mySaveGame.aktuelleStadt.bauwerke.lagerhaus.addGold(mySaveGame.aktuelleStadt.bauwerke.goldmine.einsammeln());     // Gold einsammeln
     mySaveGame.aktuelleStadt.bauwerke.lagerhaus.addHolz(mySaveGame.aktuelleStadt.bauwerke.holzfaeller.einsammeln());  // Holz einsammeln
     mySaveGame.aktuelleStadt.bauwerke.lagerhaus.addStein(mySaveGame.aktuelleStadt.bauwerke.steinbruch.einsammeln());  // Stein einsammeln
+    mySaveGame.aktuelleStadt.einheiten.updateBauschleife();
 }
 
 // --- Darstellung aktualisieren ---
 function updateView() {
-    gameView.updateSaveGame(mySaveGame); // aktuelles Savegame an viewHandler geben
     gameView.update(); // Werte in HTML aktualisieren
 }

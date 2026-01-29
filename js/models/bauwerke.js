@@ -2,6 +2,7 @@
 
 import { Goldmine } from "./buildings/goldmine.js";
 import { Holzfaeller } from "./buildings/holzfaeller.js";
+import { Kaserne } from "./buildings/kaserne.js";
 import { Lagerhaus } from "./buildings/lagerhaus.js";
 import { Rathaus } from "./buildings/rathaus.js";
 import { Stadtmauer } from "./buildings/stadtmauer.js";
@@ -15,6 +16,7 @@ export class Bauwerke {
         this.holzfaeller = new Holzfaeller();
         this.steinbruch = new Steinbruch();
         this.stadtmauer = new Stadtmauer();
+        this.kaserne = new Kaserne();
     }
 
     // --- Spielstände angleichen ---
@@ -40,5 +42,8 @@ export class Bauwerke {
 
         this.stadtmauer = new Stadtmauer();
         if (data.stadtmauer) { this.stadtmauer.load(data.stadtmauer); }
+
+        this.kaserne = new Kaserne();
+        if (data.kaserne) { this.kaserne.load(data.kaserne); }
     }
 }

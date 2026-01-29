@@ -15,6 +15,8 @@ export class Steinbruch {
         this.letzterProduktTick = Date.now();
     }
 
+    get tag() { return "BAUWERK"; }
+
     // --- Abgleich SaveGame ---
     load(data) {
         if (!data) return;
@@ -43,9 +45,9 @@ export class Steinbruch {
         return (60000 / Steinbruch.MS_PRODUKTION) * this.mengeProTick;
     }
 
-    get levelKostenGold() { return this.berechnung(Steinbruch.BASIS_KOSTEN_GOLD, Steinbruch.FAKTOR_KOSTEN); }
-    get levelKostenHolz() { return this.berechnung(Steinbruch.BASIS_KOSTEN_HOLZ, Steinbruch.FAKTOR_KOSTEN); }
-    get levelKostenStein() { return this.berechnung(Steinbruch.BASIS_KOSTEN_STEIN, Steinbruch.FAKTOR_KOSTEN); }
+    get kostenGold() { return this.berechnung(Steinbruch.BASIS_KOSTEN_GOLD, Steinbruch.FAKTOR_KOSTEN); }
+    get kostenHolz() { return this.berechnung(Steinbruch.BASIS_KOSTEN_HOLZ, Steinbruch.FAKTOR_KOSTEN); }
+    get kostenStein() { return this.berechnung(Steinbruch.BASIS_KOSTEN_STEIN, Steinbruch.FAKTOR_KOSTEN); }
 
     // --- Rohstoff einsammeln ---
     einsammeln() {

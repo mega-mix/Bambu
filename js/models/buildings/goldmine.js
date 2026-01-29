@@ -15,6 +15,8 @@ export class Goldmine {
         this.letzterProduktTick = Date.now();
     }
 
+    get tag() { return "BAUWERK"; }
+
     // --- Abgleich SaveGame ---
     load(data) {
         if (!data) return;
@@ -43,9 +45,9 @@ export class Goldmine {
         return (60000 / Goldmine.MS_PRODUKTION) * this.mengeProTick;
     }
 
-    get levelKostenGold() { return this.berechnung(Goldmine.BASIS_KOSTEN_GOLD, Goldmine.FAKTOR_KOSTEN); }
-    get levelKostenHolz() { return this.berechnung(Goldmine.BASIS_KOSTEN_HOLZ, Goldmine.FAKTOR_KOSTEN); }
-    get levelKostenStein() { return this.berechnung(Goldmine.BASIS_KOSTEN_STEIN, Goldmine.FAKTOR_KOSTEN); }
+    get kostenGold() { return this.berechnung(Goldmine.BASIS_KOSTEN_GOLD, Goldmine.FAKTOR_KOSTEN); }
+    get kostenHolz() { return this.berechnung(Goldmine.BASIS_KOSTEN_HOLZ, Goldmine.FAKTOR_KOSTEN); }
+    get kostenStein() { return this.berechnung(Goldmine.BASIS_KOSTEN_STEIN, Goldmine.FAKTOR_KOSTEN); }
 
     // --- Rohstoff einsammeln ---
     einsammeln() {

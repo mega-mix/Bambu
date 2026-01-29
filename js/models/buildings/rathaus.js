@@ -12,6 +12,8 @@ export class Rathaus {
         this.level = 1;
     }
 
+    get tag() { return "BAUWERK"; }
+
     // --- Abgleich SaveGame ---
     load(data) {
         if (!data) return;
@@ -30,7 +32,7 @@ export class Rathaus {
         if (this.level < Rathaus.MAX_LEVEL) { this.level++; }
     }
 
-    get levelKostenGold() { return this.berechnung(Rathaus.BASIS_KOSTEN_GOLD, Rathaus.FAKTOR_KOSTEN); }
-    get levelKostenHolz() { return this.berechnung(Rathaus.BASIS_KOSTEN_HOLZ, Rathaus.FAKTOR_KOSTEN); }
-    get levelKostenStein() { return this.berechnung(Rathaus.BASIS_KOSTEN_STEIN, Rathaus.FAKTOR_KOSTEN); }
+    get kostenGold() { return this.berechnung(Rathaus.BASIS_KOSTEN_GOLD, Rathaus.FAKTOR_KOSTEN); }
+    get kostenHolz() { return this.berechnung(Rathaus.BASIS_KOSTEN_HOLZ, Rathaus.FAKTOR_KOSTEN); }
+    get kostenStein() { return this.berechnung(Rathaus.BASIS_KOSTEN_STEIN, Rathaus.FAKTOR_KOSTEN); }
 }

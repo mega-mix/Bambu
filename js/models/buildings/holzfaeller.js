@@ -15,6 +15,8 @@ export class Holzfaeller {
         this.letzterProduktTick = Date.now();
     }
 
+    get tag() { return "BAUWERK"; }
+
     // --- Abgleich SaveGame ---
     load(data) {
         if (!data) return;
@@ -43,9 +45,9 @@ export class Holzfaeller {
         return (60000 / Holzfaeller.MS_PRODUKTION) * this.mengeProTick;
     }
 
-    get levelKostenGold() { return this.berechnung(Holzfaeller.BASIS_KOSTEN_GOLD, Holzfaeller.FAKTOR_KOSTEN); }
-    get levelKostenHolz() { return this.berechnung(Holzfaeller.BASIS_KOSTEN_HOLZ, Holzfaeller.FAKTOR_KOSTEN); }
-    get levelKostenStein() { return this.berechnung(Holzfaeller.BASIS_KOSTEN_STEIN, Holzfaeller.FAKTOR_KOSTEN); }
+    get kostenGold() { return this.berechnung(Holzfaeller.BASIS_KOSTEN_GOLD, Holzfaeller.FAKTOR_KOSTEN); }
+    get kostenHolz() { return this.berechnung(Holzfaeller.BASIS_KOSTEN_HOLZ, Holzfaeller.FAKTOR_KOSTEN); }
+    get kostenStein() { return this.berechnung(Holzfaeller.BASIS_KOSTEN_STEIN, Holzfaeller.FAKTOR_KOSTEN); }
 
     // --- Rohstoff einsammeln ---
     einsammeln() {
