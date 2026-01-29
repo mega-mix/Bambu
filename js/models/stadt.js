@@ -7,7 +7,7 @@ export class Stadt {
     constructor(name) {
         this.name = name;
         this.bauwerke = new Bauwerke();
-        this.einheiten = new Einheiten(this.bauwerke.kaserne);
+        this.einheiten = new Einheiten();
 
     }
 
@@ -18,6 +18,22 @@ export class Stadt {
 
         this.bauwerke.applyData(data.bauwerke);
         this.einheiten.applyData(data.einheiten);
-        this.einheiten.updateKaserne(this.bauwerke.kaserne);
+    }
+
+    get verteidigungGesamt() {
+        let verteidigung = 0;
+
+        verteidigung += this.bauwerke.stadtmauer.verteidigung;
+        verteidigung += this.einheiten.verteidigungGesamt;
+
+        return verteidigung;
+    }
+
+    get angriffGesamt() {
+        let angriff = 0;
+
+        angriff += this.einheiten.angriffGesamt;
+
+        return angriff;
     }
 }

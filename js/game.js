@@ -108,8 +108,7 @@ function einheitenKauf(einheitName) {
     // Level erhöhen und speichern
     stadt.einheiten.addEinheit(einheit);
     saveGame();
-    console.log(`Erfolgreich gekauft!`);
-    console.log(`🙍‍♂️ ${einheit.name} wurde gekauft!`);
+    console.log(`🙍‍♂️ ${einheit.name} wird ausgebildet!`);
 }
 
 // --- Name der Stadt ändern ---
@@ -149,6 +148,7 @@ function initInteractions() {
         "viewSteinbruch": () => gameView.switchView("view-steinbruch"),
         "viewStadtmauer": () => gameView.switchView("view-stadtmauer"),
         "viewKaserne": () => gameView.switchView("view-kaserne"),
+        "viewKaserneAusbildung": () => gameView.switchView("view-kaserneAusbildung"),
 
         "rathausLevelKauf": () => gebaeudeLevelKauf("rathaus"),
         "lagerhausLevelKauf": () => gebaeudeLevelKauf("lagerhaus"),
@@ -211,6 +211,7 @@ function updateData() {
     mySaveGame.aktuelleStadt.bauwerke.lagerhaus.addGold(mySaveGame.aktuelleStadt.bauwerke.goldmine.einsammeln());     // Gold einsammeln
     mySaveGame.aktuelleStadt.bauwerke.lagerhaus.addHolz(mySaveGame.aktuelleStadt.bauwerke.holzfaeller.einsammeln());  // Holz einsammeln
     mySaveGame.aktuelleStadt.bauwerke.lagerhaus.addStein(mySaveGame.aktuelleStadt.bauwerke.steinbruch.einsammeln());  // Stein einsammeln
+    mySaveGame.aktuelleStadt.einheiten.updateBauschleife();
 }
 
 // --- Darstellung aktualisieren ---

@@ -13,9 +13,9 @@ export class Lagerhaus {
     constructor() {
         this.name = "Lagerhaus";
         this.level = 1;
-        this.gold = 100;
-        this.holz = 100;
-        this.stein = 100;
+        this.gold = 500;
+        this.holz = 500;
+        this.stein = 500;
     }
 
     get tag() { return "BAUWERK"; }
