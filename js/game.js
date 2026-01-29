@@ -123,12 +123,22 @@ function stadtUmbenennen() {
     saveGame();
 }
 
+// --- Spielernamen ändern ---
+function spielerUmbenennen() {
+    const input = document.getElementById("inputPlayerName");
+
+    mySaveGame.playerName = input.value;
+
+    gameView.setTopInfo(`Spielername zu ${mySaveGame.playerName} geändert`);
+    console.log(`Spielername zu ${mySaveGame.playerName} geändert`);
+
+    saveGame();
+}
+
 // --- User Anmeldung ---
 onAuthStateChanged(auth, (user) => {
     if (user) { 
-        playerName = user.displayName;    
-        gameView.setStartName(playerName);
-
+        playerName = user.displayName;
         gameStart(); // Spiel initialisieren
     }
 });
@@ -139,6 +149,7 @@ function initInteractions() {
         // "Name im HTML" : Funktion im Code
         "saveGame": saveGame,
         "resetGame": resetGame,
+        "viewPlayer": () => gameView.switchView("view-player"),
         "viewStadt": () => gameView.switchView("view-stadt"),
         "viewBauwerke": () => gameView.switchView("view-bauwerke"),
         "viewRathaus": () => gameView.switchView("view-rathaus"),
@@ -162,7 +173,8 @@ function initInteractions() {
         "einheitSpeerKauf": () => einheitenKauf("speer"),
         "einheitBogenKauf": () => einheitenKauf("bogen"),
 
-        "stadtUmbenennen": stadtUmbenennen
+        "stadtUmbenennen": stadtUmbenennen,
+        "spielerUmbenennen": spielerUmbenennen
     };
 
     ui.registerActions(myActions); // Dem uiManager geben
@@ -187,15 +199,66 @@ async function gameStart() {
     if (oldSaveGame) {
         mySaveGame.applyData(oldSaveGame); // Altes SaveGame mit neuem verschmelzen
     }
+
+    await checkAttacks(); // Inbox auf Angriff prüfen
+
     storage.saveData(mySaveGame); // SaveGame in Datenbank speichern
 
     gameView.setTopInfo("Spielstand geladen");
+    gameView.setStartName(mySaveGame.playerName);
 
     gameView.setGame(mySaveGame); // View initialisieren
     gameView.updateStadt(mySaveGame.aktuelleStadt); // View aktuelle Stadt geben
 
     initInteractions(); // Buttons initialisieren
     requestAnimationFrame(gameLoop); // GameLoop starten
+}
+
+// --- Hilfsfunktion zum Prüfen auf einen Angriff ---
+async function checkAttacks() {
+    const attacks = await storage.checkInbox();
+
+    if (attacks.length > 0) {
+        let verlorenGold = 0;
+        let verlorenHolz = 0;
+        let verlorenStein = 0;
+        let deadSchwert = 0;
+        let deadSpeer = 0;
+        let deadBogen = 0;
+
+        attacks.forEach(attack => {
+            // Rohstoffe summieren
+            if (attack.lootGold) verlorenGold += attack.lootGold;
+            if (attack.lootHolz) verlorenHolz += attack.lootHolz;
+            if (attack.lootStein) verlorenStein += attack.lootStein;
+
+            // Tote Einheiten summieren
+            if (attack.deadSchwert) deadSchwert += attack.deadSchwert;
+            if (attack.deadSpeer) deadSpeer += attack.deadSpeer;
+            if (attack.deadBogen) deadBogen += attack.deadBogen;
+        });
+
+        // 1. Rohstoffe abziehen (Verhindern, dass es unter 0 geht)
+        const lager = mySaveGame.aktuelleStadt.bauwerke.lagerhaus;
+        lager.gold = Math.max(0, lager.gold - verlorenGold);
+        lager.holz = Math.max(0, lager.holz - verlorenHolz);
+        lager.stein = Math.max(0, lager.stein - verlorenStein);
+
+        // 2. Einheiten töten (Arrays kürzen)
+        const armee = mySaveGame.aktuelleStadt.einheiten;
+        
+        // Hilfsfunktion zum Löschen
+        const killUnits = (array, count) => {
+            for(let i=0; i<count; i++) { array.pop(); } // Entfernt die letzten Einheiten
+        };
+
+        killUnits(armee.unitsSchwert, deadSchwert);
+        killUnits(armee.unitsSpeer, deadSpeer);
+        killUnits(armee.unitsBogen, deadBogen);
+
+        // Meldung an den Spieler
+        alert(`ALARM! Du wurdest während deiner Abwesenheit ${attacks.length}x angegriffen!\n\nVerluste:\nGold: ${verlorenGold}\nHolz: ${verlorenHolz}\nStein: ${verlorenStein}\n\nGefallene Truppen:\nSchwert: ${deadSchwert}\nSpeer: ${deadSpeer}\nBogen: ${deadBogen}`);
+    }
 }
 
 // --- Game Dauerschleife ---

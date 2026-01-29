@@ -11,6 +11,7 @@ export class ViewHandler {
         this.aktuelleStadt = aktuelleStadt; // Daten der aktuellen Stadt für Werte
         this.cache = []; // Cache für HTML Elemente die Daten ziehen
         this.buttonCache = []; // Cache für Buttons die Liquidität prüfen
+        this.globalCache = []; // Cache für HTML Elemente mit Globalen Daten
     }
 
     // --- Seitenwechsel ---
@@ -69,7 +70,19 @@ export class ViewHandler {
             });
         });
 
-        // 5. Update der Daten durchführen
+        // 5. Cache mit Element und Pfad aus "data-bind" füllen
+        this.globalCache = []; // Reset
+        document.querySelectorAll("[data-bind-global]").forEach(el => {
+            this.globalCache.push({
+                element: el,          // Das HTML-Element selbst
+                path: el.dataset.bindGlobal // Der Pfad z.B. "lagerhaus.gold"
+                // data-bind wird angesprochen über
+                // .dateset (aus data-)
+                // .bind (aus bind) Bindestrich entfällt und CamelCase wird angewendet
+            });
+        });
+
+        // 6. Update der Daten durchführen
         this.update();
     }
 
@@ -128,6 +141,32 @@ export class ViewHandler {
                 // Button aktivieren oder deaktivieren
                 item.element.disabled = !kannKaufen; // disabled = true (wenn man es NICHT kaufen kann)
             }
+        });
+
+        // 3. Werte in HTML Elemente (aus globalCache) schreiben
+        this.globalCache.forEach(item => {
+            const wert = this.resolvePath(item.path, this.mySaveGame);
+            
+            if (item.element.tagName === "INPUT" || item.element.tagName === "TEXTAREA") {
+                // Input feld
+                if (document.activeElement === item.element) { return; } // Nicht überschreiben wenn Item Fokus hat
+
+                if (item.element.value != wert) {
+                    item.element.value = wert;
+                }
+
+            } else {
+                // Kein Input oder Textarea
+                if (item.element.innerText != wert) {
+                    // Nur schreiben wenn sich etwas geändert hat
+                    if (typeof wert === 'number') {
+                        item.element.innerText = Math.floor(wert);
+                    } else {
+                        item.element.innerText = wert;
+                    }
+                }
+            }
+            
         });
     }
 

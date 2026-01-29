@@ -32,7 +32,6 @@
                 </div>
 
                 <div class="btn-group btn-group-sm">
-                    <button id="topBtnReset" class="btn btn-dark-danger" data-action="resetGame">⚠️ Reset</button>
                     <button id="topBtnLogout" class="btn btn-dark">Logout</button>
                 </div>
             </div>
@@ -45,11 +44,14 @@
             <div class="col-md-2 bg-body-tertiary border-end border-secondary p-3 d-flex flex-column">
                 <h5 class="text-secondary mb-3">Menü</h5>
                 <div class="d-grid gap-2">
-                    <button id="btnStadt" class="btn btn-dark text-start" data-action="viewStadt">
+                    <button class="btn btn-dark text-start" data-action="viewStadt">
                         Stadtübersicht
                     </button>
-                    <button id="btnStadt" class="btn btn-dark text-start" data-action="viewKaserne">
+                    <button class="btn btn-dark text-start" data-action="viewKaserne">
                         Kaserne
+                    </button>
+                    <button class="btn btn-dark text-start" data-action="viewPlayer">
+                        Account
                     </button>
                 </div>
                 <div class="mt-auto">
@@ -65,6 +67,39 @@
                             <h1 class="display-5 fw-bold">Willkommen!</h1>
                             <p class="col-md-8 fs-4" id="startName">Lade Daten...</p>
                             <button class="btn btn-dark btn-lg" data-action="viewStadt">Zur Stadt</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="view-player" class="view">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span>Account Details</span>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                    <span class="col-md-6">Spielername:</span>
+                                    <div class="input-group mb-2">
+                                        <input id="inputPlayerName" data-bind-global="playerName" placeholder="Spielername eintragen..." type ="text">
+                                        <button class="btn btn-sm btn-secondary" data-action="spielerUmbenennen" onmousedown="event.preventDefault()">Speichern</button>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span>Spielstand</span>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                    <span class="col-md-6">Spielstand zurücksetzen:</span>
+                                    <button class="btn btn-sm btn-secondary" data-action="resetGame">⚠️ Reset</button>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
