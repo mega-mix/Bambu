@@ -21,4 +21,5 @@ const app = initializeApp(firebaseConfig);
 // Exportieren (damit andere Skripte es nutzen können)
 export const auth = getAuth(app);
 export const db = getFirestore(app);
-export const version = "v0.3.0 - Alpha";
+
+export const version = "v0.3.1 - Alpha";

@@ -57,7 +57,7 @@ export class Einheiten {
             const fertig = this.bauschleife[0];
 
             switch (fertig.name) {
-                case "Schwertträger": this.unitsSchwert.push(new Schwert()); break;
+                case "Schwertkämpfer": this.unitsSchwert.push(new Schwert()); break;
                 case "Speerträger": this.unitsSpeer.push(new Speer()); break;
                 case "Bogenschütze": this.unitsBogen.push(new Bogen()); break;
             }
@@ -112,4 +112,5 @@ export class Einheiten {
         }
         return 0;
     }
+
 }
