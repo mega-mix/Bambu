@@ -19,6 +19,22 @@ export default class FirebaseStorage {
         return user;
     }
 
+    // Admin check
+    async checkIsAdmin() {
+        try {
+            const user = this._getUser();
+            // Prüfen ob ein Dokument mit meiner ID in der Sammlung "admins" liegt
+            const docRef = doc(this.db, "admins", user.uid);
+            const docSnap = await getDoc(docRef);
+
+            // true zurückgeben, wenn das Dokument existiert
+            return docSnap.exists(); 
+        } catch (error) {
+            console.warn("Admin-Check fehlgeschlagen (evtl. Rechte?):", error);
+            return false;
+        }
+    }
+
     /**
      * Speichert ein beliebiges Objekt in die Cloud
      * @param {Object} data - Das komplette SaveGame Objekt

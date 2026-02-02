@@ -9,6 +9,7 @@ import { UIManager } from "./models/uiManager.js";
 
 let playerName;
 let mySaveGame;
+export let isAdmin = false;
 const storage = new StorageModul();
 const gameView = new ViewHandler(mySaveGame);
 const ui = new UIManager();
@@ -35,6 +36,22 @@ function gebaeudeLevelKauf(gebaeudeName) {
     const gebaeude = stadt.bauwerke[gebaeudeName];
 
     if (!gebaeude) return; // Abbruch wenn leer
+
+    // Bauschleife auf bereits vorhanden prüfen
+    if (stadt.bauwerke.isGebaeudeInBauschleife()) {
+        gameView.setTopInfo("Gebäude wird schon gebaut!");
+        console.log("Kauf abgebrochen!");
+        console.log("❌ Wird schon gebaut!");
+        return; // Abbruch wenn schon in Bauschleife vorhanden
+    }
+
+    // Bauschleife auf Platz prüfen
+    if (stadt.bauwerke.isBauschleifeVoll()) {
+        gameView.setTopInfo("Bauschleife ist voll!");
+        console.log("Kauf abgebrochen!");
+        console.log("❌ Bauschleife ist voll!");
+        return; // Abbruch wenn Bauschleife voll ist
+    }
 
     // Rathaus Level prüfen
     if (gebaeude.level >= rathaus.level && gebaeude !== rathaus) {
@@ -63,10 +80,10 @@ function gebaeudeLevelKauf(gebaeudeName) {
     lager.stein -= kostenStein;
 
     // Level erhöhen und speichern
-    gebaeude.levelUp();
+    stadt.bauwerke.addBauwerk(gebaeude);
     saveGame();
     console.log(`Erfolgreich gekauft!`);
-    console.log(`🏠 ${gebaeude.name} ist nun Stufe ${gebaeude.level}`);
+    console.log(`🏠 ${gebaeude.name} wird gebaut.`);
 }
 
 // --- Einheiten kaufen ---
@@ -135,6 +152,18 @@ function spielerUmbenennen() {
     saveGame();
 }
 
+// --- Admin Seite anzeigen ---
+function openAdminView() {
+    if (!isAdmin) {
+        console.warn("⛔ Zugriff verweigert! Du bist kein Admin.");
+        gameView.setTopInfo("⛔ Zugriff verweigert!");
+        return; // Sofortiger Abbruch
+    }
+
+    // Wenn Admin: Erlaubt
+    gameView.switchView("view-admin");
+}
+
 // --- User Anmeldung ---
 onAuthStateChanged(auth, (user) => {
     if (user) { 
@@ -142,6 +171,20 @@ onAuthStateChanged(auth, (user) => {
         gameStart(); // Spiel initialisieren
     }
 });
+
+// --- Admin Rohstoffpaket ---
+function adminAddResources() {
+    if (!isAdmin) return; 
+
+    const lager = mySaveGame.aktuelleStadt.bauwerke.lagerhaus;
+    lager.addGold(10000);
+    lager.addHolz(10000);
+    lager.addStein(10000);
+
+    updateView();
+    saveGame(); // Speichern
+    gameView.setTopInfo("💰 Admin-Paket erhalten!");
+}
 
 // --- Button click Tabelle ---
 function initInteractions() {
@@ -174,7 +217,10 @@ function initInteractions() {
         "einheitBogenKauf": () => einheitenKauf("bogen"),
 
         "stadtUmbenennen": stadtUmbenennen,
-        "spielerUmbenennen": spielerUmbenennen
+        "spielerUmbenennen": spielerUmbenennen,
+
+        "viewAdmin": openAdminView,
+        "rohstoffPaket": adminAddResources
     };
 
     ui.registerActions(myActions); // Dem uiManager geben
@@ -194,6 +240,16 @@ setInterval(async () => {
 
 // --- Initialer Start ---
 async function gameStart() {
+    // Admin prüfen
+    isAdmin = await storage.checkIsAdmin();
+    
+    if (isAdmin) {
+        console.log("👮‍♂️ ADMIN-RECHTE ERKANNT");
+        document.body.classList.add("admin-mode"); 
+        gameView.setTopInfo("🛡️ Admin Modus aktiv");
+    }
+
+    // Savegame laden
     mySaveGame = new SaveGame(playerName); // Neues SaveGame erstellen
     let oldSaveGame = await storage.loadData(); // Altes SaveGame laden
     if (oldSaveGame) {
@@ -274,7 +330,8 @@ function updateData() {
     mySaveGame.aktuelleStadt.bauwerke.lagerhaus.addGold(mySaveGame.aktuelleStadt.bauwerke.goldmine.einsammeln());     // Gold einsammeln
     mySaveGame.aktuelleStadt.bauwerke.lagerhaus.addHolz(mySaveGame.aktuelleStadt.bauwerke.holzfaeller.einsammeln());  // Holz einsammeln
     mySaveGame.aktuelleStadt.bauwerke.lagerhaus.addStein(mySaveGame.aktuelleStadt.bauwerke.steinbruch.einsammeln());  // Stein einsammeln
-    mySaveGame.aktuelleStadt.einheiten.updateBauschleife();
+    mySaveGame.aktuelleStadt.einheiten.updateAusbildungsschleife();
+    mySaveGame.aktuelleStadt.bauwerke.updateBauschleife();
 }
 
 // --- Darstellung aktualisieren ---

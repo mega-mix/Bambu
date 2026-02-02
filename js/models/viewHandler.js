@@ -125,18 +125,22 @@ export class ViewHandler {
             const data = this.resolvePath(item.targetName, this.aktuelleStadt); // Objekt holen
 
             if (data.tag === "BAUWERK") {
+                const inSchleife = this.aktuelleStadt.bauwerke.isGebaeudeInBauschleife(data.name); // Prüfen ob schon in Bauschleife vorhanden
+                const schleifeVoll = this.aktuelleStadt.bauwerke.isBauschleifeVoll(); // Prüfen ob Bauschleife voll ist
                 const preisOk = this.checkAffordability(lager, data); // Prüfen ob genug Rohstoffe vorhanden sind
                 const levelOk = data.level < rathaus.level || data === rathaus; // Prüfen ob Rathaus Level ok oder Rathaus selbst
-                const kannKaufen = (preisOk && levelOk); // Vorprüfungen sind ok?
+                const kannKaufen = (!inSchleife && !schleifeVoll && preisOk && levelOk); // Vorprüfungen sind ok?
                 
                 // Button aktivieren oder deaktivieren
                 item.element.disabled = !kannKaufen; // disabled = true (wenn man es NICHT kaufen kann)
             }
 
             if (data.tag === "EINHEIT") {
+                const schleifeVoll = this.aktuelleStadt.einheiten.isAusbildungsschleifeVoll(); // Prüfen ob Ausbildungsschleife voll ist
+                const inSchleife = this.aktuelleStadt.einheiten.isEinheitInSchleife(data); // Prüfen ob bereits in Ausbildungsschleife drin
                 const preisOk = this.checkAffordability(lager, data); // Prüfen ob genug Rohstoffe vorhanden sind
                 const levelOk = kaserne.level > 0; // Prüfen ob Kaserne Level ok
-                const kannKaufen = (preisOk && levelOk); // Vorprüfungen sind ok?
+                const kannKaufen = ((!schleifeVoll || inSchleife) && preisOk && levelOk); // Vorprüfungen sind ok?
                 
                 // Button aktivieren oder deaktivieren
                 item.element.disabled = !kannKaufen; // disabled = true (wenn man es NICHT kaufen kann)

@@ -8,6 +8,7 @@ export class Holzfaeller {
     static BASIS_KOSTEN_HOLZ = 150;     // Grundwert Holzkosten
     static BASIS_KOSTEN_STEIN = 200;    // Grundwert Steinkosten
     static FAKTOR_KOSTEN = 1.8;         // Faktor für Kostenrechnung
+    static BAUZEIT = 10000;             // Bauzeit des Gebäudes
 
     constructor() {
         this.name = "Holzfäller";
@@ -48,6 +49,7 @@ export class Holzfaeller {
     get kostenGold() { return this.berechnung(Holzfaeller.BASIS_KOSTEN_GOLD, Holzfaeller.FAKTOR_KOSTEN); }
     get kostenHolz() { return this.berechnung(Holzfaeller.BASIS_KOSTEN_HOLZ, Holzfaeller.FAKTOR_KOSTEN); }
     get kostenStein() { return this.berechnung(Holzfaeller.BASIS_KOSTEN_STEIN, Holzfaeller.FAKTOR_KOSTEN); }
+    get bauzeit() { return Holzfaeller.BAUZEIT; }
 
     // --- Rohstoff einsammeln ---
     einsammeln() {

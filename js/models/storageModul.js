@@ -8,6 +8,11 @@ export class StorageModul {
         this.storage = new FirebaseStorage(db, auth);
     }
 
+    async checkIsAdmin() {
+        if (!auth.currentUser) return false;
+        return await this.storage.checkIsAdmin();
+    }
+
     async saveData(saveGame) {
         if (!auth.currentUser) return; 
         await this.storage.save(saveGame);

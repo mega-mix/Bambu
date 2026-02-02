@@ -8,6 +8,7 @@ export class Goldmine {
     static BASIS_KOSTEN_HOLZ = 250;     // Grundwert Holzkosten
     static BASIS_KOSTEN_STEIN = 200;    // Grundwert Steinkosten
     static FAKTOR_KOSTEN = 1.8;         // Faktor für Kostenrechnung
+    static BAUZEIT = 10000;             // Bauzeit des Gebäudes
 
     constructor() {
         this.name = "Goldmine";
@@ -48,6 +49,7 @@ export class Goldmine {
     get kostenGold() { return this.berechnung(Goldmine.BASIS_KOSTEN_GOLD, Goldmine.FAKTOR_KOSTEN); }
     get kostenHolz() { return this.berechnung(Goldmine.BASIS_KOSTEN_HOLZ, Goldmine.FAKTOR_KOSTEN); }
     get kostenStein() { return this.berechnung(Goldmine.BASIS_KOSTEN_STEIN, Goldmine.FAKTOR_KOSTEN); }
+    get bauzeit() { return Goldmine.BAUZEIT; }
 
     // --- Rohstoff einsammeln ---
     einsammeln() {

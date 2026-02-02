@@ -8,6 +8,7 @@ export class Steinbruch {
     static BASIS_KOSTEN_HOLZ = 200;     // Grundwert Holzkosten
     static BASIS_KOSTEN_STEIN = 150;     // Grundwert Steinkosten
     static FAKTOR_KOSTEN = 1.8;         // Faktor für Kostenrechnung
+    static BAUZEIT = 10000;             // Bauzeit des Gebäudes
 
     constructor() {
         this.name = "Steinbruch";
@@ -48,6 +49,7 @@ export class Steinbruch {
     get kostenGold() { return this.berechnung(Steinbruch.BASIS_KOSTEN_GOLD, Steinbruch.FAKTOR_KOSTEN); }
     get kostenHolz() { return this.berechnung(Steinbruch.BASIS_KOSTEN_HOLZ, Steinbruch.FAKTOR_KOSTEN); }
     get kostenStein() { return this.berechnung(Steinbruch.BASIS_KOSTEN_STEIN, Steinbruch.FAKTOR_KOSTEN); }
+    get bauzeit() { return Steinbruch.BAUZEIT; }
 
     // --- Rohstoff einsammeln ---
     einsammeln() {

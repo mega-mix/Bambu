@@ -9,7 +9,7 @@ export class Einheiten {
         this.unitsSchwert = [];
         this.unitsSpeer = [];
         this.unitsBogen = [];
-        this.bauschleife = [];
+        this.ausbildungsschleife = [];
     }
 
     // --- Spielstände angleichen ---
@@ -21,7 +21,7 @@ export class Einheiten {
         this.unitsSchwert = this._loadUnitArray(data.unitsSchwert, Schwert);
         this.unitsSpeer   = this._loadUnitArray(data.unitsSpeer, Speer);
         this.unitsBogen   = this._loadUnitArray(data.unitsBogen, Bogen);
-        this.bauschleife  = data.bauschleife;
+        this.ausbildungsschleife  = data.ausbildungsschleife;
     }
 
     // --- Hilfsfunktion zum laden des Spielstandes ---
@@ -37,34 +37,101 @@ export class Einheiten {
         .filter(unit => unit.hp > 0);
     }
 
-    // --- Einheiten zur Bauschleife hinzufügen ---
+    // --- Einheiten zur Ausbildungsschleife hinzufügen ---
     addEinheit(einheit) {
-        let fertigZeit = 0;
+        const now = Date.now();
+        // SICHERHEIT: Fallback auf 0, falls dauer fehlt. Mal 1000 für Sekunden -> ms
+        const dauerMs = einheit.bauzeit; 
+    
+        const index = this.ausbildungsschleife.findIndex(e => e.name === einheit.name);
 
-        if (this.bauschleife.length === 0) {
-            fertigZeit = Date.now();
+        if (index !== -1) {
+            // FALL A: Stapeln
+            const gruppe = this.ausbildungsschleife[index];
+            gruppe.anzahl++;
+            gruppe.groupEndzeit += dauerMs;
+
+            // Ripple-Effect für nachfolgende
+            for (let i = index + 1; i < this.ausbildungsschleife.length; i++) {
+                this.ausbildungsschleife[i].nextUnitEndzeit += dauerMs;
+                this.ausbildungsschleife[i].groupEndzeit += dauerMs;
+            }
         } else {
-            fertigZeit = this.bauschleife[this.bauschleife.length - 1].time;
-        }
+            // FALL B: Neu
+            const letztesElement = this.ausbildungsschleife[this.ausbildungsschleife.length - 1];
+            const startZeit = letztesElement ? letztesElement.groupEndzeit : now;
         
-        fertigZeit += einheit.bauzeit;
-        this.bauschleife.push( {name: einheit.name, time: fertigZeit} );
+            this.ausbildungsschleife.push({
+                name: einheit.name,
+                anzahl: 1,
+                einzelDauer: dauerMs,
+                nextUnitEndzeit: startZeit + dauerMs, 
+                groupEndzeit: startZeit + dauerMs 
+            });
+        }
     }
 
-    // --- Update Bauschleife ---
-    updateBauschleife() {
-        while (this.bauschleife.length > 0 && this.bauschleife[0].time <= Date.now()) {
-            const fertig = this.bauschleife[0];
+    // --- Update Ausbildungsschleife ---
+    updateAusbildungsschleife() {
+        // while statt if, um bei Lag mehrere Einheiten sofort abzuarbeiten
+        while (this.ausbildungsschleife.length > 0) {
+            const gruppe = this.ausbildungsschleife[0];
+            const now = Date.now();
 
-            switch (fertig.name) {
-                case "Schwertkämpfer": this.unitsSchwert.push(new Schwert()); break;
-                case "Speerträger": this.unitsSpeer.push(new Speer()); break;
-                case "Bogenschütze": this.unitsBogen.push(new Bogen()); break;
+            // Wenn Zeit noch nicht reif, brich die ganze Schleife ab
+            if (now < gruppe.nextUnitEndzeit) break;
+
+            // 1. Einheit tatsächlich erstellen und speichern!
+            this.spawnEinheit(gruppe.name);
+            console.log(gruppe.name + " fertiggestellt.");
+
+            // 2. Zähler verringern
+            gruppe.anzahl--;
+
+            if (gruppe.anzahl > 0) {
+                // Nächste Einheit der Gruppe anvisieren
+                gruppe.nextUnitEndzeit += gruppe.einzelDauer;
+            } else {
+                // Gruppe entfernen
+                this.ausbildungsschleife.shift();
+                // Kein Ripple-Update nötig, da absolute Zeiten verwendet werden
             }
-
-            console.log(`Einheit ${fertig.name} fertig Ausgebildet!`);
-            this.bauschleife.shift(); // Erste Element aus Array entfernen
         }
+    }
+
+    // --- Hilfsfunktion zum Spawnen ---
+    spawnEinheit(name) {
+        // Hier musst du mappen. Strings sind dumm, sie wissen nicht, welche Klasse sie sind.
+        switch (name) {
+            case "Schwertkämpfer":
+                this.unitsSchwert.push(new Schwert());
+                break;
+            case "Speerträger":
+                this.unitsSpeer.push(new Speer());
+                break;
+            case "Bogenschütze":
+                this.unitsBogen.push(new Bogen());
+                break;
+            default:
+                console.warn("Unbekannter Einheitentyp in Ausbildungsschleife:", name);
+        }
+    }
+
+    // --- Abfrage ob Ausbildungsschleife voll ist ---
+    isAusbildungsschleifeVoll() {
+        if (this.ausbildungsschleife.length < 3) { return false; }
+        return true;
+    }
+
+    // --- Abfrage ob Ausbildungsschleife leer ist ---
+    isAusbildungsschleifeLeer() {
+        if (this.ausbildungsschleife.length < 1) { return true; }
+        return false;
+    }
+
+    // --- Abfrage ob Einheitentyp schon in Ausbildungsschleife ist ---
+    isEinheitInSchleife(einheit) {
+        return this.ausbildungsschleife.some(element => element.name === einheit.name);
     }
 
     get anzahlSchwert() { return this.unitsSchwert.length; }
@@ -86,7 +153,6 @@ export class Einheiten {
 
         return verteidigung;
     }
-
     get angriffGesamt() {
         // Summiert den Angriff von allen Einheiten
         let angriff = 0;
@@ -98,19 +164,87 @@ export class Einheiten {
         return angriff;
     }
 
-    get bauschleifeMenge() { return this.bauschleife.length; }
-    get bauschleifeNextName() {
-        if (this.bauschleife.length > 0) {
-            return this.bauschleife[0].name;
+    // --- Werte Ausbildungsschleife ---
+    get ausbildungsschleifeFirstMenge() {
+        if (this.ausbildungsschleife.length > 0) {
+            return `${this.ausbildungsschleife[0].anzahl} Stk.`;
         }
-        return "Keine Einheit in Ausbildung";
+        return "";
     }
-
-    get bauschleifeRestZeitSek() {
-        if (this.bauschleife.length > 0) {
-            return (this.bauschleife[0].time - Date.now() + 1000) / 1000;
+    get ausbildungsschleifeSecondMenge() {
+        if (this.ausbildungsschleife.length > 1) {
+            return `${this.ausbildungsschleife[1].anzahl} Stk.`;
         }
-        return 0;
+        return "";
+    }
+    get ausbildungsschleifeThirdMenge() {
+        if (this.ausbildungsschleife.length > 2) {
+            return `${this.ausbildungsschleife[2].anzahl} Stk.`;
+        }
+        return "";
+    }
+    get ausbildungsschleifeFirstName() {
+        if (this.ausbildungsschleife.length > 0) {
+            return this.ausbildungsschleife[0].name;
+        }
+        return "Keine Einheit in Ausbildung.";
+    }
+    get ausbildungsschleifeSecondName() {
+        if (this.ausbildungsschleife.length > 1) {
+            return this.ausbildungsschleife[1].name;
+        }
+        return "";
+    }
+    get ausbildungsschleifeThirdName() {
+        if (this.ausbildungsschleife.length > 2) {
+            return this.ausbildungsschleife[2].name;
+        }
+        return "";
+    }
+    get ausbildungsschleifeFirstRestZeitSek() {
+        let string = "";
+        if (this.ausbildungsschleife.length > 0) {
+            const diff = this.ausbildungsschleife[0].nextUnitEndzeit - Date.now();
+            // Math.max(0, ...) verhindert negative Zahlen bei Lag
+            string = `${Math.floor(Math.max(0, diff) / 1000 + 1)} Sek.`;
+            if (this.ausbildungsschleife[0].anzahl > 1) {
+                const diffGrp = this.ausbildungsschleife[0].groupEndzeit - Date.now();
+                // Math.max(0, ...) verhindert negative Zahlen bei Lag
+                string = string + ` / ${Math.floor(Math.max(0, diffGrp) / 1000 + 1)} Sek.`;
+            }
+        }
+        
+        return string;
+    }
+    get ausbildungsschleifeSecondRestZeitSek() {
+        let string = "";
+        if (this.ausbildungsschleife.length > 1) {
+            const diff = this.ausbildungsschleife[1].nextUnitEndzeit - Date.now();
+            // Math.max(0, ...) verhindert negative Zahlen bei Lag
+            string = `${Math.floor(Math.max(0, diff) / 1000 + 1)} Sek.`;
+            if (this.ausbildungsschleife[1].anzahl > 1) {
+                const diffGrp = this.ausbildungsschleife[1].groupEndzeit - Date.now();
+                // Math.max(0, ...) verhindert negative Zahlen bei Lag
+                string = string + ` / ${Math.floor(Math.max(0, diffGrp) / 1000 + 1)} Sek.`;
+            }
+        }
+        
+        return string;
+    }
+    get ausbildungsschleifeThirdRestZeitSek() {
+        let string = "";
+        if (this.ausbildungsschleife.length > 2) {
+            const diff = this.ausbildungsschleife[2].nextUnitEndzeit - Date.now();
+            // Math.max(0, ...) verhindert negative Zahlen bei Lag
+            string = `${Math.floor(Math.max(0, diff) / 1000 + 1)} Sek.`;
+            if (this.ausbildungsschleife[2].anzahl > 1) {
+                const diffGrp = this.ausbildungsschleife[2].groupEndzeit - Date.now();
+                // Math.max(0, ...) verhindert negative Zahlen bei Lag
+                string = string + ` / ${Math.floor(Math.max(0, diffGrp) / 1000 + 1)} Sek.`;
+            }
+        }
+        
+        return string;
     }
 
 }
