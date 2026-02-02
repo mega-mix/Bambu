@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Multiplayer Daten-Strukturen</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { padding: 20px; -webkit-print-color-adjust: exact; font-family: sans-serif; }
+        
+        /* Deine Styles aus HTMLformate.html */
+        .example-box { border: 1px dashed #ccc; padding: 15px; background: #f8f9fa; margin-bottom: 15px; border-radius: 5px; }
+        h2 { border-bottom: 2px solid #212529; padding-bottom: 10px; margin-top: 40px; }
+        code { color: #d63384; font-weight: bold; font-family: Consolas, monospace; }
+        pre { background: #212529; color: #fff; padding: 15px; border-radius: 5px; }
+        
+        /* Extra Styles für JSON Darstellung */
+        .key { color: #66d9ef; } /* Blau für Keys */
+        .str { color: #a6e22e; } /* Grün für Strings */
+        .num { color: #ae81ff; } /* Lila für Zahlen */
+        .com { color: #75715e; font-style: italic; } /* Kommentare */
+    </style>
+</head>
+<body>
+
+    <div class="container" style="max-width: 900px;">
+        <div class="text-center mb-5">
+            <h1>📄 Multiplayer API Spickzettel</h1>
+            <p class="lead">Datenstrukturen für <code>FirebaseStorage.js</code></p>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <h2>1. Rückgabewert von <code>loadEnemyPlayers()</code></h2>
+                <p>
+                    Diese Funktion gibt ein <strong>Array</strong> zurück. Jedes Element darin repräsentiert einen Gegner.<br>
+                    Du nutzt dies, um die <strong>Karte (Map)</strong> zu bauen.
+                </p>
+
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <strong>Struktur eines einzelnen Gegners (Objekt)</strong>
+                    </div>
+                    <div class="card-body bg-dark">
+<pre class="m-0">
+{
+  <span class="key">"userId"</span>: <span class="str">"J8sfd7sdf87..."</span>,      <span class="com">// WICHTIG: Die ID für den Angriff (targetId)</span>
+  <span class="key">"playerName"</span>: <span class="str">"DerImperator"</span>,   <span class="com">// Anzeigename</span>
+  <span class="key">"lastUpdate"</span>: <span class="num">1738245123000</span>,    <span class="com">// Zeitstempel (Date.now())</span>
+  
+  <span class="key">"cities"</span>: [                     <span class="com">// Array aller Städte des Spielers</span>
+    {
+      <span class="key">"name"</span>: <span class="str">"Hauptstadt"</span>,       <span class="com">// Name der Stadt</span>
+      <span class="key">"verteidigung"</span>: <span class="num">1500</span>,       <span class="com">// Gesamtwert (Mauer + Einheiten)</span>
+      <span class="key">"mauerLevel"</span>: <span class="num">5</span>,            <span class="com">// Visuelle Info für Map</span>
+      
+      <span class="com">// --- Spionage Infos (Einheiten Anzahl) ---</span>
+      <span class="key">"anzahlSchwert"</span>: <span class="num">10</span>,
+      <span class="key">"anzahlSpeer"</span>: <span class="num">5</span>,
+      <span class="key">"anzahlBogen"</span>: <span class="num">20</span>,
+
+      <span class="com">// --- Beute-Vorschau (Was kann man hier klauen?) ---</span>
+      <span class="key">"lootableGold"</span>: <span class="num">250</span>,        <span class="com">// z.B. 50% vom Lagerbestand</span>
+      <span class="key">"lootableHolz"</span>: <span class="num">100</span>,
+      <span class="key">"lootableStein"</span>: <span class="num">50</span>
+    },
+    <span class="com">// ... weitere Städte ...</span>
+  ]
+}
+</pre>
+                    </div>
+                </div>
+
+                <div class="example-box mt-3">
+                    <h5>🛠️ Anwendungs-Beispiel (Map bauen):</h5>
+                    <code>const enemies = await storage.loadEnemyPlayers();</code><br>
+                    <code>enemies.forEach(enemy => {</code><br>
+                    &nbsp;&nbsp;<code>console.log(enemy.playerName);</code><br>
+                    &nbsp;&nbsp;<code>enemy.cities.forEach(city => { ...Zeige Stadt auf Karte... });</code><br>
+                    <code>});</code>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <h2>2. Parameter für <code>sendBattleResult()</code></h2>
+                <p>
+                    Wenn der Kampf vorbei ist, rufst du diese Funktion auf.<br>
+                    Signatur: <code>sendBattleResult(targetUserId, lootData)</code>
+                </p>
+
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-header fw-bold">Parameter 1: targetUserId</div>
+                            <div class="card-body">
+                                <p>Das ist ein <strong>String</strong>.</p>
+                                <p>Du nimmst ihn direkt aus dem Gegner-Objekt (siehe oben: <code>userId</code>).</p>
+                                
+                                <div class="alert alert-warning py-2 mb-0">
+                                    ⚠️ Ohne die korrekte ID kommt der "Brief" nie beim Gegner an!
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-header bg-danger text-white">
+                                <strong>Parameter 2: lootData (Das Objekt)</strong>
+                            </div>
+                            <div class="card-body bg-dark">
+<pre class="m-0">
+{
+  <span class="com">// 1. Was hast du geklaut? (Positive Zahlen)</span>
+  <span class="key">"lootGold"</span>: <span class="num">100</span>,
+  <span class="key">"lootHolz"</span>: <span class="num">50</span>,
+  <span class="key">"lootStein"</span>: <span class="num">0</span>,
+
+  <span class="com">// 2. Was hast du getötet? (Anzahl der Toten)</span>
+  <span class="key">"deadSchwert"</span>: <span class="num">2</span>,
+  <span class="key">"deadSpeer"</span>: <span class="num">0</span>,
+  <span class="key">"deadBogen"</span>: <span class="num">5</span>
+}
+</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="example-box mt-3">
+                    <h5>🛠️ Anwendungs-Beispiel (Nach dem Kampf):</h5>
+                    <p>Du hast gewonnen. Der Gegner hat die ID <code>"AbCdEf123"</code>.</p>
+                    <pre style="background: #e9ecef; color: #212529; border: 1px solid #ccc;">
+// Beute-Paket schnüren
+const beute = {
+    lootGold: 500,        // Du hast 500 Gold erbeutet
+    lootHolz: 0,
+    lootStein: 0,
+    deadSchwert: 3,       // Du hast 3 seiner Schwertkämpfer getötet
+    deadSpeer: 0,
+    deadBogen: 0
+};
+
+// Absenden
+await storage.sendBattleResult("AbCdEf123", beute);</pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-5 text-secondary">
+            <small>Generiert für Bambu v0.3.1 Alpha</small>
+        </div>
+
+    </div>
+</body>
+</html>

@@ -1,16 +1,20 @@
-// js/models/storageModule.js
+// js/models/storageModul.js
 
 import { auth, db } from "../config.js";
 import FirebaseStorage from "./FirebaseStorage.js";
 
-export class StorageModul{
+export class StorageModul {
     constructor() {
         this.storage = new FirebaseStorage(db, auth);
     }
 
+    async checkIsAdmin() {
+        if (!auth.currentUser) return false;
+        return await this.storage.checkIsAdmin();
+    }
+
     async saveData(saveGame) {
         if (!auth.currentUser) return; 
-
         await this.storage.save(saveGame);
     }
 
@@ -21,7 +25,24 @@ export class StorageModul{
         if (data) {
             return data;
         } else {
-            return null
+            return null;
         }
+    }
+
+    // --- Multiplayer Funktionen durchreichen ---
+
+    async loadEnemyPlayers() {
+        if (!auth.currentUser) return [];
+        return await this.storage.loadEnemyPlayers();
+    }
+
+    async sendBattleResult(targetUserId, lootData) {
+        if (!auth.currentUser) return;
+        await this.storage.sendBattleResult(targetUserId, lootData);
+    }
+
+    async checkInbox() {
+        if (!auth.currentUser) return [];
+        return await this.storage.checkInbox();
     }
 }

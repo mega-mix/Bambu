@@ -32,7 +32,6 @@
                 </div>
 
                 <div class="btn-group btn-group-sm">
-                    <button id="topBtnReset" class="btn btn-dark-danger" data-action="resetGame">⚠️ Reset</button>
                     <button id="topBtnLogout" class="btn btn-dark">Logout</button>
                 </div>
             </div>
@@ -45,11 +44,17 @@
             <div class="col-md-2 bg-body-tertiary border-end border-secondary p-3 d-flex flex-column">
                 <h5 class="text-secondary mb-3">Menü</h5>
                 <div class="d-grid gap-2">
-                    <button id="btnStadt" class="btn btn-dark text-start" data-action="viewStadt">
+                    <button class="btn btn-dark text-start" data-action="viewStadt">
                         Stadtübersicht
                     </button>
-                    <button id="btnStadt" class="btn btn-dark text-start" data-action="viewKaserne">
+                    <button class="btn btn-dark text-start" data-action="viewKaserne">
                         Kaserne
+                    </button>
+                    <button class="btn btn-dark text-start" data-action="viewPlayer">
+                        Account
+                    </button>
+                    <button class="btn btn-dark text-start admin-only" data-action="viewAdmin">
+                        Admin
                     </button>
                 </div>
                 <div class="mt-auto">
@@ -69,8 +74,81 @@
                     </div>
                 </div>
 
+                <div id="view-player" class="view">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span>Account Details</span>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                    <span class="col-md-6">Spielername:</span>
+                                    <div class="input-group mb-2">
+                                        <input id="inputPlayerName" data-bind-global="playerName" placeholder="Spielername eintragen..." type ="text">
+                                        <button class="btn btn-sm btn-secondary" data-action="spielerUmbenennen" onmousedown="event.preventDefault()">Speichern</button>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span>Spielstand</span>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                    <span class="col-md-6">Spielstand zurücksetzen:</span>
+                                    <button class="btn btn-sm btn-secondary" data-action="resetGame">⚠️ Reset</button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="view-admin" class="view">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span>Admin Funktionen</span>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                    <span class="col-md-6">Rohstoffpaket</span>
+                                    <button class="btn btn-sm btn-secondary" data-action="rohstoffPaket">💰 Anwenden</button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
                 <div id="view-stadt" class="view">
                     <h2 class="mb-4 border-bottom pb-2">Bauwerke von <span data-bind="name">Unbekannt</span></h2>
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span>Baustellen</span>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                    <span class="col-md-3" data-bind="bauwerke.bauschleifeFirstName">Bauschleifenplatz frei</span>
+                                    <span class="col-md-5" data-bind="bauwerke.bauschleifeFirstLevelToGo">Stufe 0</span>
+                                    <span class="col-md-1" data-bind="bauwerke.bauschleifeFirstRestZeitSek">0 Sek.</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                    <span class="col-md-3" data-bind="bauwerke.bauschleifeSecondName">Bauschleifenplatz frei</span>
+                                    <span class="col-md-5" data-bind="bauwerke.bauschleifeSecondLevelToGo">Stufe 0</span>
+                                    <span class="col-md-1" data-bind="bauwerke.bauschleifeSecondRestZeitSek">0 Sek.</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <br>
                     <div class="card">
                         <div class="card-body">
                             <ul class="list-group list-group-flush">
@@ -482,8 +560,23 @@
                         <div class="card-body">
                             <ul class="list-group list-group-flush">
                                 <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
-                                    <span class="col-md-8" data-bind="einheiten.bauschleifeNextName">Keine Einheit in Ausbildung</span>
-                                    <span data-bind="einheiten.bauschleifeRestZeitSek">0</span>
+                                    <span class="col-md-7" data-bind="einheiten.ausbildungsschleifeFirstName">Keine Einheit in Ausbildung</span>
+                                    <span class="col-md-1" data-bind="einheiten.ausbildungsschleifeFirstMenge">0 Stk</span>
+                                    <span class="col-md-2" data-bind="einheiten.ausbildungsschleifeFirstRestZeitSek">0 Sek.</span>
+                                </li>
+                            </ul>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                    <span class="col-md-7" data-bind="einheiten.ausbildungsschleifeSecondName">Keine Einheit in Ausbildung</span>
+                                    <span class="col-md-1" data-bind="einheiten.ausbildungsschleifeSecondMenge">0 Stk</span>
+                                    <span class="col-md-2" data-bind="einheiten.ausbildungsschleifeSecondRestZeitSek">0 Sek.</span>
+                                </li>
+                            </ul>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                    <span class="col-md-7" data-bind="einheiten.ausbildungsschleifeThirdName">Keine Einheit in Ausbildung</span>
+                                    <span class="col-md-1" data-bind="einheiten.ausbildungsschleifeThirdMenge">0 Stk</span>
+                                    <span class="col-md-2" data-bind="einheiten.ausbildungsschleifeThirdRestZeitSek">0 Sek.</span>
                                 </li>
                             </ul>
                         </div>

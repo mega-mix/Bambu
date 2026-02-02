@@ -9,6 +9,7 @@ export class Lagerhaus {
     static BASIS_MAX_HOLZ = 500;        // Grundwert Lagergröße Holz
     static BASIS_MAX_STEIN = 500;       // Grundwert Lagergröße Stein
     static FAKTOR_MAX = 1.8;            // Faktor für Lagergröße
+    static BAUZEIT = 10000;             // Bauzeit des Gebäudes
 
     constructor() {
         this.name = "Lagerhaus";
@@ -48,6 +49,7 @@ export class Lagerhaus {
     get kostenGold() { return this.berechnung(Lagerhaus.BASIS_KOSTEN_GOLD, Lagerhaus.FAKTOR_KOSTEN); }
     get kostenHolz() { return this.berechnung(Lagerhaus.BASIS_KOSTEN_HOLZ, Lagerhaus.FAKTOR_KOSTEN); }
     get kostenStein() { return this.berechnung(Lagerhaus.BASIS_KOSTEN_STEIN, Lagerhaus.FAKTOR_KOSTEN); }
+    get bauzeit() { return Lagerhaus.BAUZEIT; }
 
 
     // ------------------------------
