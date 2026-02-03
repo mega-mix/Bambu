@@ -37,7 +37,7 @@ export class SaveGame {
             });
         }
 
-        if (data.quests) this.quests = data.quests;
+        this.quests = new Quests();
     }
 
     get aktuelleStadt() {

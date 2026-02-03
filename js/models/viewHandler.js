@@ -179,23 +179,23 @@ export class ViewHandler {
         // 4. Elemente Ein- und Ausblenden
         if (this.questCard1) {
             if (this.mySaveGame.quests.questList.length >= 1) {
-                questCard1.classList.remove("hidden");
+                this.questCard1.classList.remove("hidden");
             } else {
-                questCard1.classList.add("hidden");
+                this.questCard1.classList.add("hidden");
             }
         }
         if (this.questCard2) {
             if (this.mySaveGame.quests.questList.length >= 2) {
-                questCard2.classList.remove("hidden");
+                this.questCard2.classList.remove("hidden");
             } else {
-                questCard2.classList.add("hidden");
+                this.questCard2.classList.add("hidden");
             }
         }
         if (this.questCard3) {
             if (this.mySaveGame.quests.questList.length >= 3) {
-                questCard3.classList.remove("hidden");
+                this.questCard3.classList.remove("hidden");
             } else {
-                questCard3.classList.add("hidden");
+                this.questCard3.classList.add("hidden");
             }
         }
     }

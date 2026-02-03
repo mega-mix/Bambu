@@ -6,9 +6,12 @@ import { StorageModul } from "./models/storageModul.js";
 import { SaveGame } from "./models/saveGame.js";
 import { ViewHandler } from "./models/viewHandler.js";
 import { UIManager } from "./models/uiManager.js";
+import { Armee } from "./models/armee.js";
+import { KampfSystem } from "./models/kampfSystem.js";
 
 let playerName;
 let mySaveGame;
+let aktuellesAngriffsZiel = null;
 export let isAdmin = false;
 const storage = new StorageModul();
 const gameView = new ViewHandler(mySaveGame);
@@ -128,6 +131,40 @@ function einheitenKauf(einheitName) {
     console.log(`🙍‍♂️ ${einheit.name} wird ausgebildet!`);
 }
 
+// --- Angriffsziel holen ---
+function getZielDaten(zielId) {
+    if (!zielId) return null;
+
+    // --- Prüfung auf Quest-ID (z.B. "quest_0") ---
+    if (zielId.startsWith("quest_")) {
+        const index = parseInt(zielId.split("_")[1]);
+        const quest = mySaveGame.quests.getQuest(index);
+        if (!quest) return null;
+
+        // Wir bauen ein "Mock"-Objekt, das für dein KampfSystem 
+        // wie eine Stadt aussieht, aber Quest-Werte nutzt.
+        return {
+            name: quest.name,
+            einheiten: {
+                anzahlSchwert: quest.einheiten.anzahlSchwert,
+                anzahlSpeer: quest.einheiten.anzahlSpeer,
+                anzahlBogen: quest.einheiten.anzahlBogen,
+                // Dummy-Arrays für die Power-Berechnung (Counter-System)
+                unitsSchwert: Array(quest.einheiten.anzahlSchwert).fill({ angriff: 10, verteidigung: 15 }),
+                unitsSpeer: Array(quest.einheiten.anzahlSpeer).fill({ angriff: 15, verteidigung: 12 }),
+                unitsBogen: Array(quest.einheiten.anzahlBogen).fill({ angriff: 18, verteidigung: 5 })
+            },
+            bauwerke: {
+                stadtmauer: { verteidigung: 0 } // Quests haben keine Mauer
+            },
+            beute: quest.beute // Beute für die Vergabe nach dem Sieg
+        };
+    }
+
+    // Hier könnte später die Logik für echte Spieler (via Firebase) folgen
+    return null;
+}
+
 // --- Armee los schicken ---
 function starteMarsch(sMenge, pMenge, bMenge, zielId) {
     const stadt = mySaveGame.aktuelleStadt;
@@ -144,6 +181,46 @@ function starteMarsch(sMenge, pMenge, bMenge, zielId) {
     stadt.marschierendeArmeen.push(neueArmee);
     
     saveGame(); // Sofort speichern
+}
+
+// --- Armee Update ---
+function updateArmee() {
+    const stadt = mySaveGame.aktuelleStadt;
+    const now = Date.now();
+
+    for (let i = stadt.marschierendeArmeen.length - 1; i >= 0; i--) {
+        const armee = stadt.marschierendeArmeen[i];
+    
+        if (now >= armee.ankunftZeit) {
+            const zielDaten = getZielDaten(armee.zielId); 
+        
+            if (zielDaten) {
+                const kampf = new KampfSystem();
+                const ergebnis = kampf.berechneKampf(armee, zielDaten);
+
+                // 1. Verluste beim Angreifer abziehen
+                armee.entferneVerluste(ergebnis.attackerLosses);
+
+                // 2. Beute bei Sieg vergeben
+                if (ergebnis.win) {
+                    const lager = stadt.bauwerke.lagerhaus;
+                    lager.addGold(zielDaten.beute.gold || 0);
+                    lager.addHolz(zielDaten.beute.holz || 0);
+                    lager.addStein(zielDaten.beute.stein || 0);
+                    gameView.setTopInfo(`⚔️ Sieg gegen ${zielDaten.name}!`);
+                } else {
+                    gameView.setTopInfo(`💀 Niederlage bei ${zielDaten.name}...`);
+                }
+
+                // 3. Überlebende Truppen zurück in die Stadt schicken
+                stadt.einheiten.rueckkehrTruppen(armee);
+            }
+
+            // 4. Aus der Marschliste löschen & Speichern
+            stadt.marschierendeArmeen.splice(i, 1);
+            saveGame();
+        }
+    }
 }
 
 // --- Name der Stadt ändern ---
@@ -365,34 +442,7 @@ function updateData() {
     mySaveGame.aktuelleStadt.einheiten.updateAusbildungsschleife();
     mySaveGame.aktuelleStadt.bauwerke.updateBauschleife();
 
-    const stadt = mySaveGame.aktuelleStadt;
-    const now = Date.now();
-
-    // Schleife rückwärts laufen lassen, um Elemente sicher zu entfernen
-    for (let i = stadt.marschierendeArmeen.length - 1; i >= 0; i--) {
-        const armee = stadt.marschierendeArmeen[i];
-    
-        if (now >= armee.ankunftZeit) {
-            // 1. Kampf ausführen (Logik wird später in KampfSystem verfeinert)
-            // Hier muss das Ziel-Objekt geladen werden (z.B. aus einer Liste oder Firebase)
-            const zielDaten = getZielDaten(armee.zielId); 
-        
-            const kampf = new KampfSystem();
-            const ergebnis = kampf.berechneKampf(armee, zielDaten);
-
-            // 2. Verluste beim Angreifer (der marschierenden Armee) abziehen
-            armee.entferneVerluste(ergebnis.attackerLosses);
-
-            // 3. Überlebende zurück in die Stadt
-            stadt.einheiten.rueckkehrTruppen(armee);
-
-            // 4. Aus der Marschliste löschen & Speichern
-            stadt.marschierendeArmeen.splice(i, 1);
-            saveGame();
-        
-            console.log("Kampf beendet, Truppen sind zurück!");
-        }
-    }
+    updateArmee();
 }
 
 // --- Darstellung aktualisieren ---
