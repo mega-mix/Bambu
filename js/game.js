@@ -199,7 +199,6 @@ function adminAddResources() {
     lager.addHolz(10000);
     lager.addStein(10000);
 
-    updateView();
     saveGame(); // Speichern
     gameView.setTopInfo("💰 Admin-Paket erhalten!");
 }
@@ -241,7 +240,9 @@ function initInteractions() {
         "viewAdmin": openAdminView,
         "rohstoffPaket": adminAddResources,
 
-        "prepareAngriff": () => {
+        "prepareAngriff": (event) => {
+            // Hier musst du die Ziel-ID mitgeben (z.B. aus einem Data-Attribut des Buttons)
+            aktuellesAngriffsZiel = event.target.dataset.targetId; 
             gameView.prepareAttackView();
             gameView.switchView("view-angriff");
         },
@@ -250,7 +251,7 @@ function initInteractions() {
             const p = parseInt(document.getElementById("ui-range-speer").value);
             const b = parseInt(document.getElementById("ui-range-bogen").value);
         
-            starteMarsch(s, p, b); // Wir starten erst mal nur den Marsch
+            starteMarsch(s, p, b, aktuellesAngriffsZiel); // Wir starten erst mal nur den Marsch
         }
     };
 
@@ -370,14 +371,26 @@ function updateData() {
     // Schleife rückwärts laufen lassen, um Elemente sicher zu entfernen
     for (let i = stadt.marschierendeArmeen.length - 1; i >= 0; i--) {
         const armee = stadt.marschierendeArmeen[i];
-        
+    
         if (now >= armee.ankunftZeit) {
-            // Logik: Kampf ausführen und Armee entfernen
-            console.log("Armee ist am Ziel angekommen!");
-            
-            // Hier folgt der Aufruf deines KampfSystems
-            // Danach: stadt.marschierendeArmeen.splice(i, 1);
-            // Danach: saveGame();
+            // 1. Kampf ausführen (Logik wird später in KampfSystem verfeinert)
+            // Hier muss das Ziel-Objekt geladen werden (z.B. aus einer Liste oder Firebase)
+            const zielDaten = getZielDaten(armee.zielId); 
+        
+            const kampf = new KampfSystem();
+            const ergebnis = kampf.berechneKampf(armee, zielDaten);
+
+            // 2. Verluste beim Angreifer (der marschierenden Armee) abziehen
+            armee.entferneVerluste(ergebnis.attackerLosses);
+
+            // 3. Überlebende zurück in die Stadt
+            stadt.einheiten.rueckkehrTruppen(armee);
+
+            // 4. Aus der Marschliste löschen & Speichern
+            stadt.marschierendeArmeen.splice(i, 1);
+            saveGame();
+        
+            console.log("Kampf beendet, Truppen sind zurück!");
         }
     }
 }

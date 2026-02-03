@@ -18,7 +18,7 @@ export class Armee {
         this.ankunftZeit = 0;
         this.zielId = null;
 
-        // Falls stadtEinheiten übergeben werden -> Truppen aus Stadt entnehmen (Marschstart)
+        // Nur splicten, wenn stadtEinheiten wirklich mitgegeben wurden (beim Start des Marsches)
         if (stadtEinheiten) {
             this.unitsSchwert = stadtEinheiten.unitsSchwert.splice(0, s);
             this.unitsSpeer = stadtEinheiten.unitsSpeer.splice(0, p);
@@ -31,19 +31,18 @@ export class Armee {
         if (!data) return;
         this.ankunftZeit = data.ankunftZeit || 0;
         this.zielId = data.zielId || null;
-
-        // Nutze die vorhandene Logik zum Wiederherstellen der Instanzen
+        // Nutzt die Ladelogik der Einheiten
         this.unitsSchwert = this._loadUnitArray(data.unitsSchwert, Schwert);
-        this.unitsSpeer   = this._loadUnitArray(data.unitsSpeer, Speer);
-        this.unitsBogen   = this._loadUnitArray(data.unitsBogen, Bogen);
+        this.unitsSpeer = this._loadUnitArray(data.unitsSpeer, Speer);
+        this.unitsBogen = this._loadUnitArray(data.unitsBogen, Bogen);
     }
 
     // Hilfsfunktion analog zu einheiten.js
     _loadUnitArray(dataArray, UnitClass) {
         if (!dataArray) return [];
-        return dataArray.map(data => {
+        return dataArray.map(d => {
             const unit = new UnitClass();
-            unit.applyData(data);
+            unit.applyData(d);
             return unit;
         });
     }

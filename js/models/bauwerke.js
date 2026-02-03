@@ -112,16 +112,6 @@ export class Bauwerke {
         return this.bauschleife.some(element => element.name === gebaeudeName);
     }
 
-    // --- Hilfsfunktion Sonderzeichen ersetzen ---
-    _nameToKey(name) {
-        return name.toLowerCase()
-            .replace(/ä/g, 'ae')
-            .replace(/ö/g, 'oe')
-            .replace(/ü/g, 'ue')
-            .replace(/ß/g, 'ss')
-            .replace(/ /g, '');
-    }
-
     // --- Werte Bauschleife ---
     get bauschleifeFirstName() {
         if (this.bauschleife.length > 0) {
