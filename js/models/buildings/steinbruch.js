@@ -3,12 +3,13 @@
 export class Steinbruch {
     static MS_PRODUKTION = 30000;       // 30 Sekunden
     static BASIS_ROHSTOFF = 5;          // Grundwert für Rohstoffproduktion
-    static FAKTOR_ROHSTOFF = 1.3;       // Faktor für Rohstoffproduktion
-    static BASIS_KOSTEN_GOLD = 250;      // Grundwert Goldkosten
+    static FAKTOR_ROHSTOFF = 1.6;       // Faktor für Rohstoffproduktion
+    static BASIS_KOSTEN_GOLD = 250;     // Grundwert Goldkosten
     static BASIS_KOSTEN_HOLZ = 200;     // Grundwert Holzkosten
-    static BASIS_KOSTEN_STEIN = 150;     // Grundwert Steinkosten
-    static FAKTOR_KOSTEN = 1.8;         // Faktor für Kostenrechnung
-    static BAUZEIT = 10000;             // Bauzeit des Gebäudes
+    static BASIS_KOSTEN_STEIN = 150;    // Grundwert Steinkosten
+    static FAKTOR_KOSTEN = 1.7;         // Faktor für Kostenrechnung
+    static BAUZEIT = 60000;             // Bauzeit des Gebäudes in ms
+    static FAKTOR_BAUZEIT = 1.2;        // Faktor für Bauzeit
 
     constructor() {
         this.name = "Steinbruch";
@@ -49,7 +50,7 @@ export class Steinbruch {
     get kostenGold() { return this.berechnung(Steinbruch.BASIS_KOSTEN_GOLD, Steinbruch.FAKTOR_KOSTEN); }
     get kostenHolz() { return this.berechnung(Steinbruch.BASIS_KOSTEN_HOLZ, Steinbruch.FAKTOR_KOSTEN); }
     get kostenStein() { return this.berechnung(Steinbruch.BASIS_KOSTEN_STEIN, Steinbruch.FAKTOR_KOSTEN); }
-    get bauzeit() { return Steinbruch.BAUZEIT; }
+    get bauzeit() { return this.berechnung(Steinbruch.BAUZEIT, Steinbruch.FAKTOR_BAUZEIT); }
 
     // --- Rohstoff einsammeln ---
     einsammeln() {

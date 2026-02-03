@@ -128,6 +128,24 @@ function einheitenKauf(einheitName) {
     console.log(`🙍‍♂️ ${einheit.name} wird ausgebildet!`);
 }
 
+// --- Armee los schicken ---
+function starteMarsch(sMenge, pMenge, bMenge, zielId) {
+    const stadt = mySaveGame.aktuelleStadt;
+    
+    // 1. Armee-Objekt erstellen (entnimmt Truppen aus stadt.einheiten)
+    const neueArmee = new Armee(sMenge, pMenge, bMenge, stadt.einheiten);
+    
+    // 2. Ziel und Zeit festlegen (wie in der Bauschleife)
+    const marschDauer = 30000; // 30 Sekunden Marschzeit
+    neueArmee.ankunftZeit = Date.now() + marschDauer;
+    neueArmee.zielId = zielId; // Wer wird angegriffen?
+
+    // 3. In die Liste der Stadt eintragen -> Wird jetzt mitgespeichert!
+    stadt.marschierendeArmeen.push(neueArmee);
+    
+    saveGame(); // Sofort speichern
+}
+
 // --- Name der Stadt ändern ---
 function stadtUmbenennen() {
     const input = document.getElementById("inputStadtName");
@@ -194,6 +212,7 @@ function initInteractions() {
         "resetGame": resetGame,
         "viewPlayer": () => gameView.switchView("view-player"),
         "viewStadt": () => gameView.switchView("view-stadt"),
+        "viewQuests": () => gameView.switchView("view-quests"),
         "viewBauwerke": () => gameView.switchView("view-bauwerke"),
         "viewRathaus": () => gameView.switchView("view-rathaus"),
         "viewLagerhaus": () => gameView.switchView("view-lagerhaus"),
@@ -220,7 +239,19 @@ function initInteractions() {
         "spielerUmbenennen": spielerUmbenennen,
 
         "viewAdmin": openAdminView,
-        "rohstoffPaket": adminAddResources
+        "rohstoffPaket": adminAddResources,
+
+        "prepareAngriff": () => {
+            gameView.prepareAttackView();
+            gameView.switchView("view-angriff");
+        },
+        "execAngriff": () => {
+            const s = parseInt(document.getElementById("ui-range-schwert").value);
+            const p = parseInt(document.getElementById("ui-range-speer").value);
+            const b = parseInt(document.getElementById("ui-range-bogen").value);
+        
+            starteMarsch(s, p, b); // Wir starten erst mal nur den Marsch
+        }
     };
 
     ui.registerActions(myActions); // Dem uiManager geben
@@ -332,6 +363,23 @@ function updateData() {
     mySaveGame.aktuelleStadt.bauwerke.lagerhaus.addStein(mySaveGame.aktuelleStadt.bauwerke.steinbruch.einsammeln());  // Stein einsammeln
     mySaveGame.aktuelleStadt.einheiten.updateAusbildungsschleife();
     mySaveGame.aktuelleStadt.bauwerke.updateBauschleife();
+
+    const stadt = mySaveGame.aktuelleStadt;
+    const now = Date.now();
+
+    // Schleife rückwärts laufen lassen, um Elemente sicher zu entfernen
+    for (let i = stadt.marschierendeArmeen.length - 1; i >= 0; i--) {
+        const armee = stadt.marschierendeArmeen[i];
+        
+        if (now >= armee.ankunftZeit) {
+            // Logik: Kampf ausführen und Armee entfernen
+            console.log("Armee ist am Ziel angekommen!");
+            
+            // Hier folgt der Aufruf deines KampfSystems
+            // Danach: stadt.marschierendeArmeen.splice(i, 1);
+            // Danach: saveGame();
+        }
+    }
 }
 
 // --- Darstellung aktualisieren ---

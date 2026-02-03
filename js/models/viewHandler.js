@@ -6,6 +6,9 @@ export class ViewHandler {
     constructor(saveGame, aktuelleStadt) {
         this.startName = document.getElementById("startName"); // Feld für Spielernamen erstellen
         this.topInfo = document.getElementById("topInfo");  // Konsole in TopBar erstellen
+        this.questCard1 = document.getElementById("questCard1");
+        this.questCard2 = document.getElementById("questCard2");
+        this.questCard3 = document.getElementById("questCard3");
 
         this.mySaveGame = saveGame; // Spielstand für Werte zum anzeigen
         this.aktuelleStadt = aktuelleStadt; // Daten der aktuellen Stadt für Werte
@@ -172,12 +175,38 @@ export class ViewHandler {
             }
             
         });
+
+        // 4. Elemente Ein- und Ausblenden
+        if (this.questCard1) {
+            if (this.mySaveGame.quests.questList.length >= 1) {
+                questCard1.classList.remove("hidden");
+            } else {
+                questCard1.classList.add("hidden");
+            }
+        }
+        if (this.questCard2) {
+            if (this.mySaveGame.quests.questList.length >= 2) {
+                questCard2.classList.remove("hidden");
+            } else {
+                questCard2.classList.add("hidden");
+            }
+        }
+        if (this.questCard3) {
+            if (this.mySaveGame.quests.questList.length >= 3) {
+                questCard3.classList.remove("hidden");
+            } else {
+                questCard3.classList.add("hidden");
+            }
+        }
     }
 
     // --- Wert aus Pfad lesen ---
     resolvePath(path, obj) {
-        // Teilt String an Punkten und gibt Werte passend zurück
-        return path.split('.').reduce((prev, curr) => {
+        // 1. Ersetze Klammern durch Punkte: "list[0]" wird zu "list.0"
+        const cleanPath = path.replace(/\[/g, '.').replace(/\]/g, '');
+
+        // 2. Teilt String an Punkten und gibt Werte passend zurück
+        return cleanPath.split('.').reduce((prev, curr) => {
             return prev ? prev[curr] : undefined;
         }, obj);
     }
@@ -208,5 +237,25 @@ export class ViewHandler {
     /// --- Element StartName schreiben ---
     setStartName(name) {
         this.startName.innerHTML = name;
+    }
+
+    // --- Schieberegler in Armee vorbereiten ---
+    prepareAttackView() {
+        const einheiten = this.aktuelleStadt.einheiten; //
+    
+        const setupRange = (id, max, outId) => {
+            const el = document.getElementById(id);
+            const out = document.getElementById(outId);
+            if (el && out) {
+                el.max = max;
+                el.value = 0;
+                out.innerText = "0";
+                el.oninput = () => { out.innerText = el.value; };
+            }
+        };
+
+        setupRange("ui-range-schwert", einheiten.anzahlSchwert, "ui-out-schwert");
+        setupRange("ui-range-speer", einheiten.anzahlSpeer, "ui-out-speer");
+        setupRange("ui-range-bogen", einheiten.anzahlBogen, "ui-out-bogen");
     }
 }

@@ -2,13 +2,14 @@
 
 import { Bauwerke } from "./bauwerke.js";
 import { Einheiten } from "./einheiten.js";
+import { Armee } from "./armee.js";
 
 export class Stadt {
     constructor(name) {
         this.name = name;
         this.bauwerke = new Bauwerke();
         this.einheiten = new Einheiten();
-
+        this.marschierendeArmeen = [];
     }
 
     // --- Spielstände angleichen ---
@@ -18,6 +19,15 @@ export class Stadt {
 
         this.bauwerke.applyData(data.bauwerke);
         this.einheiten.applyData(data.einheiten);
+        
+        // Armeen als echte Objekte wiederherstellen
+        if (data.marschierendeArmeen) {
+            this.marschierendeArmeen = data.marschierendeArmeen.map(aData => {
+                const armee = new Armee();
+                armee.applyData(aData);
+                return armee;
+            });
+        }
     }
 
     get verteidigungGesamt() {

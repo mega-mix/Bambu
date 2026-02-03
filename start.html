@@ -53,6 +53,9 @@
                     <button class="btn btn-dark text-start" data-action="viewPlayer">
                         Account
                     </button>
+                    <button class="btn btn-dark text-start" data-action="viewQuests">
+                        Quests
+                    </button>
                     <button class="btn btn-dark text-start admin-only" data-action="viewAdmin">
                         Admin
                     </button>
@@ -666,6 +669,126 @@
                                     </span>
                                 </li>
                             </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="view-quests" class="view">
+                    <h2 class="mb-4 border-bottom pb-2">Abenteueraufgaben</h2>
+                    <div id="questCard1" class="card hidden">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span data-bind-global="quests.questList[0].name">Aufgabe 1</span>
+                            <button class="btn btn-sm btn-secondary" data-action="quest1Start">Angriff planen</button>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                    <span>Angriff: <span data-bind-global="quests.questList[0].angriff">0</span></span>
+                                    <span>Verteidigung: <span data-bind-global="quests.questList[0].verteidigung">0</span></span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                    Beute
+                                    <span class="badge bg-warning text-dark border border-warning">
+                                        Gold: <span data-bind-global="quests.questList[0].beute.gold">0</span>
+                                    </span>
+                                    <span class="badge bg-success border border-success">
+                                        Holz: <span data-bind-global="quests.questList[0].beute.holz">0</span>
+                                    </span>
+                                    <span class="badge bg-secondary border border-secondary">
+                                        Stein: <span data-bind-global="quests.questList[0].beute.stein">0</span>
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <br>
+                    <div id="questCard2" class="card hidden">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span data-bind-global="quests.questList[1].name">Aufgabe 2</span>
+                            <button class="btn btn-sm btn-secondary" data-action="quest2Start">Angriff planen</button>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                    <span>Angriff: <span data-bind-global="quests.questList[1].angriff">0</span></span>
+                                    <span>Verteidigung: <span data-bind-global="quests.questList[1].verteidigung">0</span></span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                    Beute
+                                    <span class="badge bg-warning text-dark border border-warning">
+                                        Gold: <span data-bind-global="quests.questList[1].beute.gold">0</span>
+                                    </span>
+                                    <span class="badge bg-success border border-success">
+                                        Holz: <span data-bind-global="quests.questList[1].beute.holz">0</span>
+                                    </span>
+                                    <span class="badge bg-secondary border border-secondary">
+                                        Stein: <span data-bind-global="quests.questList[1].beute.stein">0</span>
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <br>
+                    <div id="questCard3" class="card hidden">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span data-bind-global="quests.questList[2].name">Aufgabe 3</span>
+                            <button class="btn btn-sm btn-secondary" data-action="quest3Start">Angriff planen</button>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                    <span>Angriff: <span data-bind-global="quests.questList[2].angriff">0</span></span>
+                                    <span>Verteidigung: <span data-bind-global="quests.questList[2].verteidigung">0</span></span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                    Beute
+                                    <span class="badge bg-warning text-dark border border-warning">
+                                        Gold: <span data-bind-global="quests.questList[2].beute.gold">0</span>
+                                    </span>
+                                    <span class="badge bg-success border border-success">
+                                        Holz: <span data-bind-global="quests.questList[2].beute.holz">0</span>
+                                    </span>
+                                    <span class="badge bg-secondary border border-secondary">
+                                        Stein: <span data-bind-global="quests.questList[2].beute.stein">0</span>
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="view-angriff" class="view">
+                    <h2 class="mb-4 border-bottom pb-2">Armee zusammenstellen</h2>
+    
+                    <div class="card bg-dark border-secondary">
+                        <div class="card-body">
+                            <div class="mb-4">
+                                <div class="d-flex justify-content-between">
+                                    <label>Schwertkämpfer (Max: <span data-bind="einheiten.anzahlSchwert">0</span>)</label>
+                                    <span class="badge bg-primary"><span id="ui-out-schwert">0</span> Stk.</span>
+                                </div>
+                                <input type="range" class="form-range" id="ui-range-schwert" min="0" value="0">
+                            </div>
+
+                            <div class="mb-4">
+                                <div class="d-flex justify-content-between">
+                                    <label>Speerträger (Max: <span data-bind="einheiten.anzahlSpeer">0</span>)</label>
+                                    <span class="badge bg-primary"><span id="ui-out-speer">0</span> Stk.</span>
+                                </div>
+                                <input type="range" class="form-range" id="ui-range-speer" min="0" value="0">
+                            </div>
+
+                            <div class="mb-4">
+                                <div class="d-flex justify-content-between">
+                                    <label>Bogenschützen (Max: <span data-bind="einheiten.anzahlBogen">0</span>)</label>
+                                    <span class="badge bg-primary"><span id="ui-out-bogen">0</span> Stk.</span>
+                                </div>
+                                <input type="range" class="form-range" id="ui-range-bogen" min="0" value="0">
+                            </div>
+                        </div>
+                        <div class="card-footer d-flex justify-content-between">
+                            <button class="btn btn-outline-light" data-action="viewStadt">Abbrechen</button>
+                            <button class="btn btn-danger" data-action="execAngriff">Angriff Starten!</button>
                         </div>
                     </div>
                 </div>
