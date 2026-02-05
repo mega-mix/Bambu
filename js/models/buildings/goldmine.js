@@ -3,12 +3,13 @@
 export class Goldmine {
     static MS_PRODUKTION = 30000;       // 30 Sekunden
     static BASIS_ROHSTOFF = 5;          // Grundwert für Rohstoffproduktion
-    static FAKTOR_ROHSTOFF = 1.3;       // Faktor für Rohstoffproduktion
+    static FAKTOR_ROHSTOFF = 1.6;       // Faktor für Rohstoffproduktion
     static BASIS_KOSTEN_GOLD = 150;     // Grundwert Goldkosten
     static BASIS_KOSTEN_HOLZ = 250;     // Grundwert Holzkosten
     static BASIS_KOSTEN_STEIN = 200;    // Grundwert Steinkosten
-    static FAKTOR_KOSTEN = 1.8;         // Faktor für Kostenrechnung
-    static BAUZEIT = 10000;             // Bauzeit des Gebäudes
+    static FAKTOR_KOSTEN = 1.7;         // Faktor für Kostenrechnung
+    static BAUZEIT = 60000;             // Bauzeit des Gebäudes in ms
+    static FAKTOR_BAUZEIT = 1.2;        // Faktor für Bauzeit
 
     constructor() {
         this.name = "Goldmine";
@@ -49,7 +50,7 @@ export class Goldmine {
     get kostenGold() { return this.berechnung(Goldmine.BASIS_KOSTEN_GOLD, Goldmine.FAKTOR_KOSTEN); }
     get kostenHolz() { return this.berechnung(Goldmine.BASIS_KOSTEN_HOLZ, Goldmine.FAKTOR_KOSTEN); }
     get kostenStein() { return this.berechnung(Goldmine.BASIS_KOSTEN_STEIN, Goldmine.FAKTOR_KOSTEN); }
-    get bauzeit() { return Goldmine.BAUZEIT; }
+    get bauzeit() { return this.berechnung(Goldmine.BAUZEIT, Goldmine.FAKTOR_BAUZEIT); }
 
     // --- Rohstoff einsammeln ---
     einsammeln() {

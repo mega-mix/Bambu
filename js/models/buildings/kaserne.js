@@ -4,11 +4,12 @@ export class Kaserne {
     static BASIS_KOSTEN_GOLD = 380;     // Grundwert Goldkosten
     static BASIS_KOSTEN_HOLZ = 400;     // Grundwert Holzkosten
     static BASIS_KOSTEN_STEIN = 410;    // Grundwert Steinkosten
-    static FAKTOR_KOSTEN = 1.8;         // Faktor für Kostenrechnung
-    static BAUZEIT = 10000;             // Bauzeit des Gebäudes
+    static FAKTOR_KOSTEN = 1.7;         // Faktor für Kostenrechnung
+    static BAUZEIT = 120000;            // Bauzeit des Gebäudes in ms
+    static FAKTOR_BAUZEIT = 1.2;        // Faktor für Bauzeit
 
     constructor() {
-        this.name ="Kaserne";
+        this.name = "Kaserne";
         this.level = 0;
     }
 
@@ -35,5 +36,5 @@ export class Kaserne {
     get kostenGold() { return this.berechnung(Kaserne.BASIS_KOSTEN_GOLD, Kaserne.FAKTOR_KOSTEN); }
     get kostenHolz() { return this.berechnung(Kaserne.BASIS_KOSTEN_HOLZ, Kaserne.FAKTOR_KOSTEN); }
     get kostenStein() { return this.berechnung(Kaserne.BASIS_KOSTEN_STEIN, Kaserne.FAKTOR_KOSTEN); }
-    get bauzeit() { return Kaserne.BAUZEIT; }
+    get bauzeit() { return this.berechnung(Kaserne.BAUZEIT, Kaserne.FAKTOR_BAUZEIT); }
 }

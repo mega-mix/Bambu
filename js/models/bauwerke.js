@@ -47,7 +47,7 @@ export class Bauwerke {
         this.kaserne = new Kaserne();
         if (data.kaserne) { this.kaserne.load(data.kaserne); }
 
-        this.bauschleife  = data.bauschleife;
+        this.bauschleife  = data.bauschleife || [];
     }
 
     // --- Bauwerk zur Bauschleife hinzufügen ---
@@ -67,12 +67,31 @@ export class Bauwerke {
     // --- Update Bauschleife ---
     updateBauschleife() {
         while (this.bauschleife.length > 0 && this.bauschleife[0].time <= Date.now()) {
-            const gebaeude = this.bauschleife[0];
-            let objName = this._nameToKey(gebaeude.name.toLowerCase());
-            this[objName].levelUp();
+            const eintrag = this.bauschleife[0];
+
+            const gebaeude = this.getBuildingInstance(eintrag.name);
+            if (gebaeude) {
+                gebaeude.levelUp();
+                console.log(`Bauwerk ${gebaeude.name} fertiggestellt!`);
+            } else {
+                console.error("Fehler: Gebäude aus Bauschleife nicht gefunden:", eintrag.name);
+            }
     
-            console.log(`Bauwerk ${gebaeude.name} fertiggestellt!`);
             this.bauschleife.shift(); // Erste Element aus Array entfernen
+        }
+    }
+
+    // --- Hilfsfunktion um Gebäudeobjekt zu laden ---
+    getBuildingInstance(name) {
+        switch (name) {
+            case this.rathaus.name: return this.rathaus;
+            case this.lagerhaus.name: return this.lagerhaus;
+            case this.goldmine.name: return this.goldmine;
+            case this.holzfaeller.name: return this.holzfaeller;
+            case this.steinbruch.name: return this.steinbruch;
+            case this.stadtmauer.name: return this.stadtmauer;
+            case this.kaserne.name: return this.kaserne;
+            default: return null;
         }
     }
 
@@ -91,16 +110,6 @@ export class Bauwerke {
     // --- Prüft ob Gebäude in Bauschleife ist ---
     isGebaeudeInBauschleife(gebaeudeName) {
         return this.bauschleife.some(element => element.name === gebaeudeName);
-    }
-
-    // --- Hilfsfunktion Sonderzeichen ersetzen ---
-    _nameToKey(name) {
-        return name.toLowerCase()
-            .replace(/ä/g, 'ae')
-            .replace(/ö/g, 'oe')
-            .replace(/ü/g, 'ue')
-            .replace(/ß/g, 'ss')
-            .replace(/ /g, '');
     }
 
     // --- Werte Bauschleife ---
@@ -141,6 +150,3 @@ export class Bauwerke {
         return "";
     }
 }
-
-// ToDo:
-// Wenn Bauwerk Stufe 1 in Schleife, dann soll gleiches Bauwerk Stufe 2 auch hinzugefügt werden können.

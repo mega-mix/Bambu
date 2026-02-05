@@ -2,6 +2,8 @@
 
 import { Stadt } from "./stadt.js";
 import { version } from "../config.js";
+import { Quests } from "./quests.js";
+import { Nachrichten } from "./nachrichten.js";
 
 
 // ### Gesamter Spielstand ###
@@ -11,6 +13,8 @@ export class SaveGame {
         this.version = version;     // Release Version
         this.playerName = player;
         this.staedte = [];
+        this.quests = new Quests();
+        this.post = new Nachrichten();
 
         this.staedte.push(new Stadt("Hauptstadt"));
         this.aktuelleStadtIndex = 0;
@@ -34,6 +38,9 @@ export class SaveGame {
                 this.staedte.push(stadt);
             });
         }
+
+        this.quests = new Quests();
+        this.post.applyData(data.post);
     }
 
     get aktuelleStadt() {

@@ -3,12 +3,13 @@
 export class Holzfaeller {
     static MS_PRODUKTION = 30000;       // 30 Sekunden
     static BASIS_ROHSTOFF = 5;          // Grundwert für Rohstoffproduktion
-    static FAKTOR_ROHSTOFF = 1.3;       // Faktor für Rohstoffproduktion
+    static FAKTOR_ROHSTOFF = 1.6;       // Faktor für Rohstoffproduktion
     static BASIS_KOSTEN_GOLD = 250;     // Grundwert Goldkosten
     static BASIS_KOSTEN_HOLZ = 150;     // Grundwert Holzkosten
     static BASIS_KOSTEN_STEIN = 200;    // Grundwert Steinkosten
-    static FAKTOR_KOSTEN = 1.8;         // Faktor für Kostenrechnung
-    static BAUZEIT = 10000;             // Bauzeit des Gebäudes
+    static FAKTOR_KOSTEN = 1.7;         // Faktor für Kostenrechnung
+    static BAUZEIT = 60000;             // Bauzeit des Gebäudes in ms
+    static FAKTOR_BAUZEIT = 1.2;        // Faktor für Bauzeit
 
     constructor() {
         this.name = "Holzfäller";
@@ -49,7 +50,7 @@ export class Holzfaeller {
     get kostenGold() { return this.berechnung(Holzfaeller.BASIS_KOSTEN_GOLD, Holzfaeller.FAKTOR_KOSTEN); }
     get kostenHolz() { return this.berechnung(Holzfaeller.BASIS_KOSTEN_HOLZ, Holzfaeller.FAKTOR_KOSTEN); }
     get kostenStein() { return this.berechnung(Holzfaeller.BASIS_KOSTEN_STEIN, Holzfaeller.FAKTOR_KOSTEN); }
-    get bauzeit() { return Holzfaeller.BAUZEIT; }
+    get bauzeit() { return this.berechnung(Holzfaeller.BAUZEIT, Holzfaeller.FAKTOR_BAUZEIT); }
 
     // --- Rohstoff einsammeln ---
     einsammeln() {

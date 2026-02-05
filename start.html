@@ -50,6 +50,12 @@
                     <button class="btn btn-dark text-start" data-action="viewKaserne">
                         Kaserne
                     </button>
+                    <button class="btn btn-dark text-start" data-action="viewQuests">
+                        Quests
+                    </button>
+                    <button class="btn btn-dark text-start" data-action="viewPost">
+                        Nachrichten <span id="postMarker" class="hidden" data-bind-global="post.ungeleseneAnzahl">0</span>
+                    </button>
                     <button class="btn btn-dark text-start" data-action="viewPlayer">
                         Account
                     </button>
@@ -117,6 +123,18 @@
                                 <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
                                     <span class="col-md-6">Rohstoffpaket</span>
                                     <button class="btn btn-sm btn-secondary" data-action="rohstoffPaket">💰 Anwenden</button>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                    <span class="col-md-6">Rohstoffe löschen</span>
+                                    <button class="btn btn-sm btn-secondary" data-action="rohstoffRemove">💰❌ Anwenden</button>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                    <span class="col-md-6">Einheitenpaket</span>
+                                    <button class="btn btn-sm btn-secondary" data-action="einheitenPaket">🧙 Anwenden</button>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                    <span class="col-md-6">Kaserne Stufe +</span>
+                                    <button class="btn btn-sm btn-secondary" data-action="bauKaserne">🏰 Anwenden</button>
                                 </li>
                             </ul>
                         </div>
@@ -667,6 +685,54 @@
                                 </li>
                             </ul>
                         </div>
+                    </div>
+                </div>
+
+                <div id="view-quests" class="view">
+                    <h2 class="mb-4 border-bottom pb-2">Abenteueraufgaben</h2>
+                    <div class="list-group" id="quest-liste-container">
+                    </div> 
+                </div>
+
+                <div id="view-angriffQuest" class="view">
+                    <h2 class="mb-4 border-bottom pb-2">Armee zusammenstellen</h2>
+    
+                    <div class="card bg-dark border-secondary">
+                        <div class="card-body">
+                            <div class="mb-4">
+                                <div class="d-flex justify-content-between">
+                                    <label>Schwertkämpfer (Max: <span data-bind="einheiten.anzahlSchwert">0</span>)</label>
+                                    <span><span id="ui-out-schwert">0</span> Stk.</span>
+                                </div>
+                                <input type="range" class="form-range" id="ui-range-schwert" min="0" value="0">
+                            </div>
+
+                            <div class="mb-4">
+                                <div class="d-flex justify-content-between">
+                                    <label>Speerträger (Max: <span data-bind="einheiten.anzahlSpeer">0</span>)</label>
+                                    <span><span id="ui-out-speer">0</span> Stk.</span>
+                                </div>
+                                <input type="range" class="form-range" id="ui-range-speer" min="0" value="0">
+                            </div>
+
+                            <div class="mb-4">
+                                <div class="d-flex justify-content-between">
+                                    <label>Bogenschützen (Max: <span data-bind="einheiten.anzahlBogen">0</span>)</label>
+                                    <span><span id="ui-out-bogen">0</span> Stk.</span>
+                                </div>
+                                <input type="range" class="form-range" id="ui-range-bogen" min="0" value="0">
+                            </div>
+                        </div>
+                        <div class="card-footer d-flex justify-content-between">
+                            <button class="btn btn-outline-light" data-action="viewQuests">Abbrechen</button>
+                            <button class="btn btn-danger" data-action="execAngriffQuest">Angriff Starten!</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="view-post" class="view">
+                    <h2 class="mb-4 border-bottom pb-2">Postfach (<span data-bind-global="post.ungeleseneAnzahl">0</span>)</h2>
+                    <div class="list-group" id="post-liste-container">
                     </div>
                 </div>
 

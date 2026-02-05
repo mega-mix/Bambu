@@ -6,6 +6,7 @@ export class ViewHandler {
     constructor(saveGame, aktuelleStadt) {
         this.startName = document.getElementById("startName"); // Feld für Spielernamen erstellen
         this.topInfo = document.getElementById("topInfo");  // Konsole in TopBar erstellen
+        this.postMarker = document.getElementById("postMarker");
 
         this.mySaveGame = saveGame; // Spielstand für Werte zum anzeigen
         this.aktuelleStadt = aktuelleStadt; // Daten der aktuellen Stadt für Werte
@@ -172,12 +173,24 @@ export class ViewHandler {
             }
             
         });
+
+        // 4. Elemente Ein- und Ausblenden
+        if (this.postMarker) {
+            if (this.mySaveGame.post.ungeleseneAnzahl > 0) {
+                this.postMarker.classList.remove("hidden");
+            } else {
+                this.postMarker.classList.add("hidden");
+            }
+        }
     }
 
     // --- Wert aus Pfad lesen ---
     resolvePath(path, obj) {
-        // Teilt String an Punkten und gibt Werte passend zurück
-        return path.split('.').reduce((prev, curr) => {
+        // 1. Ersetze Klammern durch Punkte: "list[0]" wird zu "list.0"
+        const cleanPath = path.replace(/\[/g, '.').replace(/\]/g, '');
+
+        // 2. Teilt String an Punkten und gibt Werte passend zurück
+        return cleanPath.split('.').reduce((prev, curr) => {
             return prev ? prev[curr] : undefined;
         }, obj);
     }
@@ -208,5 +221,131 @@ export class ViewHandler {
     /// --- Element StartName schreiben ---
     setStartName(name) {
         this.startName.innerHTML = name;
+    }
+
+    // --- Schieberegler in Armee vorbereiten ---
+    prepareAttackView() {
+        const einheiten = this.aktuelleStadt.einheiten; //
+    
+        const setupRange = (id, max, outId) => {
+            const el = document.getElementById(id);
+            const out = document.getElementById(outId);
+            if (el && out) {
+                el.max = max;
+                el.value = 0;
+                out.innerText = "0";
+                el.oninput = () => { out.innerText = el.value; };
+            }
+        };
+
+        setupRange("ui-range-schwert", einheiten.anzahlSchwert, "ui-out-schwert");
+        setupRange("ui-range-speer", einheiten.anzahlSpeer, "ui-out-speer");
+        setupRange("ui-range-bogen", einheiten.anzahlBogen, "ui-out-bogen");
+    }
+
+    // --- Postfach View updaten ---
+    updatePostfach() {
+        const container = document.getElementById("post-liste-container");
+        if (!container || !this.mySaveGame.post) return;
+
+        container.innerHTML = ""; // Container leeren
+
+        this.mySaveGame.post.liste.forEach(msg => {
+            const div = document.createElement("div");
+            div.className = `list-group-item bg-dark text-white border-secondary mb-2 ${msg.gelesen ? 'opacity-75' : 'fw-bold border-start border-info border-4'}`;
+        
+            div.innerHTML = `
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-1">${msg.betreff}</h5>
+                    <small class="text-muted">${msg.datum}</small>
+                </div>
+                <p class="mb-2">${msg.text}</p>
+    
+                <div class="row g-2 mb-3">
+                    <div class="col-6">
+                        <div class="p-2 bg-body-tertiary rounded border border-secondary h-100">
+                            <p class="fw-bold mb-1 small text-success">Verluste Angreifer:</p>
+                            <p class="mb-0 small">Schwert: ${msg.daten.verluste.angreifer.schwert} / ${msg.daten.armee.angreifer.schwert}</p>
+                            <p class="mb-0 small">Speer: ${msg.daten.verluste.angreifer.speer} / ${msg.daten.armee.angreifer.speer}</p>
+                            <p class="mb-0 small">Bogen: ${msg.daten.verluste.angreifer.bogen} / ${msg.daten.armee.angreifer.bogen}</p>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="p-2 bg-body-tertiary rounded border border-secondary h-100">
+                            <p class="fw-bold mb-1 small text-success">Verluste Verteidiger:</p>
+                            <p class="mb-0 small">Schwert: ${msg.daten.verluste.verteidiger.schwert} / ${msg.daten.armee.verteidiger.schwert}</p>
+                            <p class="mb-0 small">Speer: ${msg.daten.verluste.verteidiger.speer} / ${msg.daten.armee.verteidiger.speer}</p>
+                            <p class="mb-0 small">Bogen: ${msg.daten.verluste.verteidiger.bogen} / ${msg.daten.armee.verteidiger.bogen}</p>
+                            <p class="mb-0 small">Mauerbonus: ${msg.daten.mauer}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row g-2 mb-3">
+                    <div class="col-12">
+                        <div class="p-2 bg-body-tertiary rounded border border-secondary h-100">
+                            <p class="fw-bold mb-1 small text-success">Beute:</p>
+                            <div class="d-flex gap-3">
+                                <span class="mb-0 small">Gold: ${msg.daten.gold}</span>
+                                <span class="mb-0 small">Holz: ${msg.daten.holz}</span>
+                                <span class="mb-0 small">Stein: ${msg.daten.stein}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2">
+                    ${!msg.gelesen ? `<button class="btn btn-sm btn-info" onclick="window.msgGelesen('${msg.id}')">Gelesen</button>` : ''}
+                    <button class="btn btn-sm btn-outline-danger" onclick="window.msgLoeschen('${msg.id}')">Löschen</button>
+                </div>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    // --- Quest View update ---
+    updateQuests() {
+        const container = document.getElementById("quest-liste-container");
+        if (!container || !this.mySaveGame.quests) return;
+
+        container.innerHTML = ""; // Container leeren
+
+        this.mySaveGame.quests.questList.forEach((quest, index) => {
+            const div = document.createElement("div");
+        
+            div.innerHTML = `
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span>${quest.name}</span>
+                        <button class="btn btn-sm btn-secondary" data-action="prepareAngriffQuest" data-target-id="quest_${index}">Angriff planen</button>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                <span>Schwertkämpfer: <span>${quest.einheiten.anzahlSchwert}</span></span>
+                                <span>Speerträger: <span>${quest.einheiten.anzahlSpeer}</span></span>
+                                <span>Bogenschützen: <span>${quest.einheiten.anzahlBogen}</span></span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                <span>Mauer Stufe: <span>${quest.bauwerke.stadtmauer.verteidigung}</span></span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                Beute
+                                <span class="badge bg-warning text-dark border border-warning">
+                                    Gold: <span>${quest.beute.gold}</span>
+                                </span>
+                                <span class="badge bg-success border border-success">
+                                    Holz: <span>${quest.beute.holz}</span>
+                                </span>
+                                <span class="badge bg-secondary border border-secondary">
+                                    Stein: <span>${quest.beute.stein}</span>
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <br>
+            `;
+            container.appendChild(div);
+        });
     }
 }

@@ -21,7 +21,7 @@ export class Einheiten {
         this.unitsSchwert = this._loadUnitArray(data.unitsSchwert, Schwert);
         this.unitsSpeer   = this._loadUnitArray(data.unitsSpeer, Speer);
         this.unitsBogen   = this._loadUnitArray(data.unitsBogen, Bogen);
-        this.ausbildungsschleife  = data.ausbildungsschleife;
+        this.ausbildungsschleife  = data.ausbildungsschleife || [];
     }
 
     // --- Hilfsfunktion zum laden des Spielstandes ---
@@ -103,13 +103,13 @@ export class Einheiten {
     spawnEinheit(name) {
         // Hier musst du mappen. Strings sind dumm, sie wissen nicht, welche Klasse sie sind.
         switch (name) {
-            case "Schwertkämpfer":
+            case this.schwert.name:
                 this.unitsSchwert.push(new Schwert());
                 break;
-            case "Speerträger":
+            case this.speer.name:
                 this.unitsSpeer.push(new Speer());
                 break;
-            case "Bogenschütze":
+            case this.bogen.name:
                 this.unitsBogen.push(new Bogen());
                 break;
             default:
@@ -132,6 +132,20 @@ export class Einheiten {
     // --- Abfrage ob Einheitentyp schon in Ausbildungsschleife ist ---
     isEinheitInSchleife(einheit) {
         return this.ausbildungsschleife.some(element => element.name === einheit.name);
+    }
+
+    // --- Entfernt Verluste nach Kampf ---
+    entferneVerluste(verlustObjekt) {
+        for(let i = 0; i < verlustObjekt.schwert; i++) this.unitsSchwert.pop();
+        for(let i = 0; i < verlustObjekt.speer; i++) this.unitsSpeer.pop();
+        for(let i = 0; i < verlustObjekt.bogen; i++) this.unitsBogen.pop();
+    }
+
+    // --- Rückkehrende Truppen hinzufügen ---
+    rueckkehrTruppen(ueberlebendeArmee) {
+        this.unitsSchwert.push(...ueberlebendeArmee.unitsSchwert);
+        this.unitsSpeer.push(...ueberlebendeArmee.unitsSpeer);
+        this.unitsBogen.push(...ueberlebendeArmee.unitsBogen);
     }
 
     get anzahlSchwert() { return this.unitsSchwert.length; }

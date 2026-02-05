@@ -2,14 +2,15 @@
 
 export class Lagerhaus {
     static BASIS_KOSTEN_GOLD = 200;     // Grundwert Goldkosten
-    static BASIS_KOSTEN_HOLZ = 180;      // Grundwert Holzkosten
-    static BASIS_KOSTEN_STEIN = 150;     // Grundwert Steinkosten
-    static FAKTOR_KOSTEN = 1.8;         // Faktor für Kostenrechnung
+    static BASIS_KOSTEN_HOLZ = 180;     // Grundwert Holzkosten
+    static BASIS_KOSTEN_STEIN = 150;    // Grundwert Steinkosten
+    static FAKTOR_KOSTEN = 1.7;         // Faktor für Kostenrechnung
     static BASIS_MAX_GOLD = 500;        // Grundwert Lagergröße Gold
     static BASIS_MAX_HOLZ = 500;        // Grundwert Lagergröße Holz
     static BASIS_MAX_STEIN = 500;       // Grundwert Lagergröße Stein
-    static FAKTOR_MAX = 1.8;            // Faktor für Lagergröße
-    static BAUZEIT = 10000;             // Bauzeit des Gebäudes
+    static FAKTOR_MAX = 1.7;            // Faktor für Lagergröße
+    static BAUZEIT = 900000;            // Bauzeit des Gebäudes in ms
+    static FAKTOR_BAUZEIT = 1.1;        // Faktor für Bauzeit
 
     constructor() {
         this.name = "Lagerhaus";
@@ -49,7 +50,7 @@ export class Lagerhaus {
     get kostenGold() { return this.berechnung(Lagerhaus.BASIS_KOSTEN_GOLD, Lagerhaus.FAKTOR_KOSTEN); }
     get kostenHolz() { return this.berechnung(Lagerhaus.BASIS_KOSTEN_HOLZ, Lagerhaus.FAKTOR_KOSTEN); }
     get kostenStein() { return this.berechnung(Lagerhaus.BASIS_KOSTEN_STEIN, Lagerhaus.FAKTOR_KOSTEN); }
-    get bauzeit() { return Lagerhaus.BAUZEIT; }
+    get bauzeit() { return this.berechnung(Lagerhaus.BAUZEIT, Lagerhaus.FAKTOR_BAUZEIT); }
 
 
     // ------------------------------
@@ -73,6 +74,27 @@ export class Lagerhaus {
         if (stein > 0) {
             this.stein += stein;
             if (this.stein > this.maxStein) {this.stein = this.maxStein;}
+        }
+    }
+
+    removeGold(gold) {
+        if (gold > 0) {
+            this.gold -= gold;
+            if (this.gold < 0) {this.gold = 0;}
+        }
+    }
+
+    removeHolz(holz) {
+        if (holz > 0) {
+            this.holz -= holz;
+            if (this.holz < 0) {this.holz = 0;}
+        }
+    }
+
+    removeStein(stein) {
+        if (stein > 0) {
+            this.stein -= stein;
+            if (this.stein < 0) {this.stein = 0;}
         }
     }
 

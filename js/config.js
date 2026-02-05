@@ -22,4 +22,4 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 
-export const version = "v0.4.0 - Alpha";
+export const version = "v0.5.0 - Alpha";
