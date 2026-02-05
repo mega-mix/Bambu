@@ -179,6 +179,13 @@ function updateArmee() {
         
             if (zielDaten) {
                 const kampf = new KampfSystem();
+
+                const armeeVorher = {
+                    schwert: armee.anzahlSchwert,
+                    speer: armee.anzahlSpeer,
+                    bogen: armee.anzahlBogen
+                };
+
                 const ergebnis = kampf.berechneKampf(armee, zielDaten);
 
                 // 1. Verluste beim Angreifer abziehen
@@ -204,11 +211,19 @@ function updateArmee() {
                     gold: ergebnis.win ? zielDaten.beute.gold : 0,
                     holz: ergebnis.win ? zielDaten.beute.holz : 0,
                     stein: ergebnis.win ? zielDaten.beute.stein : 0,
-                    armee: { angreifer: ergebnis.armeeAngreifer, verteidiger: ergebnis.armeeVerteidiger },
+                    armee: {
+                        angreifer: armeeVorher,
+                        verteidiger: {
+                            schwert: zielDaten.einheiten.anzahlSchwert,
+                            speer: zielDaten.einheiten.anzahlSpeer,
+                            bogen: zielDaten.einheiten.anzahlBogen
+                        }
+                    },
                     mauer: ergebnis.mauerVerteidiger,
                     verluste: { angreifer: ergebnis.attackerLosses, verteidiger: ergebnis.defenderLosses }
                 };
                 mySaveGame.post.add("Kampfbericht", `Angriff auf ${zielDaten.name}`, berichtText, details);
+                gameView.updatePostfach();
 
                 // 4. Überlebende Truppen zurück in die Stadt schicken
                 stadt.einheiten.rueckkehrTruppen(armee);
@@ -276,6 +291,49 @@ function adminAddResources() {
 
     saveGame(); // Speichern
     gameView.setTopInfo("💰 Admin-Paket erhalten!");
+    console.log("💰 Admin-Paket erhalten!");
+}
+
+// --- Admin Rohstoffe löschen ---
+function adminRemoveResources() {
+    if (!isAdmin) return; 
+
+    const lager = mySaveGame.aktuelleStadt.bauwerke.lagerhaus;
+    lager.removeGold(10000);
+    lager.removeHolz(10000);
+    lager.removeStein(10000);
+
+    saveGame(); // Speichern
+    gameView.setTopInfo("💰❌ Rohstoffe gelöscht!");
+    console.log("💰❌ Rohstoffe gelöscht!");
+}
+
+// --- Admin spawn Einheiten ---
+function adminSpawnEinheiten() {
+    if (!isAdmin) return; 
+
+    const einheiten = mySaveGame.aktuelleStadt.einheiten;
+    for (let i = 0; i < 10; i++) {
+        einheiten.spawnEinheit(einheiten.schwert.name);
+        einheiten.spawnEinheit(einheiten.speer.name);
+        einheiten.spawnEinheit(einheiten.bogen.name);
+    }
+
+    saveGame(); // Speichern
+    gameView.setTopInfo("🧙 Einheiten gespawnt!");
+    console.log("🧙 Einheiten gespawnt!");
+}
+
+// --- Admin Kaserne Stufe 1 ---
+function adminBauKaserne() {
+    if (!isAdmin) return; 
+
+    const kaserne = mySaveGame.aktuelleStadt.bauwerke.kaserne;
+    kaserne.levelUp();
+
+    saveGame(); // Speichern
+    gameView.setTopInfo("🏰 Stufe der Kaserne erhöht!");
+    console.log("🏰 Stufe der Kaserne erhöht!");
 }
 
 // --- Button click Tabelle ---
@@ -287,7 +345,7 @@ function initInteractions() {
         "viewPlayer": () => gameView.switchView("view-player"),
         "viewStadt": () => gameView.switchView("view-stadt"),
         "viewPost": () => { gameView.switchView("view-post"); gameView.updatePostfach(); },
-        "viewQuests": () => gameView.switchView("view-quests"),
+        "viewQuests": () => { gameView.switchView("view-quests"); gameView.updateQuests(); },
         "viewBauwerke": () => gameView.switchView("view-bauwerke"),
         "viewRathaus": () => gameView.switchView("view-rathaus"),
         "viewLagerhaus": () => gameView.switchView("view-lagerhaus"),
@@ -315,14 +373,17 @@ function initInteractions() {
 
         "viewAdmin": openAdminView,
         "rohstoffPaket": adminAddResources,
+        "rohstoffRemove": adminRemoveResources,
+        "einheitenPaket": adminSpawnEinheiten,
+        "bauKaserne": adminBauKaserne,
 
-        "prepareAngriff": (event) => {
+        "prepareAngriffQuest": (event) => {
             // Ziel-ID mitgeben (z.B. aus einem Data-Attribut des Buttons)
             aktuellesAngriffsZiel = event.target.dataset.targetId; 
             gameView.prepareAttackView();
-            gameView.switchView("view-angriff");
+            gameView.switchView("view-angriffQuest");
         },
-        "execAngriff": () => {
+        "execAngriffQuest": () => {
             const s = parseInt(document.getElementById("ui-range-schwert").value);
             const p = parseInt(document.getElementById("ui-range-speer").value);
             const b = parseInt(document.getElementById("ui-range-bogen").value);
@@ -343,9 +404,9 @@ setInterval(async () => {
 
 
 
-// ----------------------
-// ----- GAME LOGIK -----
-// ----------------------
+// -----------------------
+// ----- GAME ABLAUF -----
+// -----------------------
 
 // --- Initialer Start ---
 async function gameStart() {

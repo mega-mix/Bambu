@@ -6,9 +6,7 @@ export class ViewHandler {
     constructor(saveGame, aktuelleStadt) {
         this.startName = document.getElementById("startName"); // Feld für Spielernamen erstellen
         this.topInfo = document.getElementById("topInfo");  // Konsole in TopBar erstellen
-        this.questCard1 = document.getElementById("questCard1");
-        this.questCard2 = document.getElementById("questCard2");
-        this.questCard3 = document.getElementById("questCard3");
+        this.postMarker = document.getElementById("postMarker");
 
         this.mySaveGame = saveGame; // Spielstand für Werte zum anzeigen
         this.aktuelleStadt = aktuelleStadt; // Daten der aktuellen Stadt für Werte
@@ -177,25 +175,11 @@ export class ViewHandler {
         });
 
         // 4. Elemente Ein- und Ausblenden
-        if (this.questCard1) {
-            if (this.mySaveGame.quests.questList.length >= 1) {
-                this.questCard1.classList.remove("hidden");
+        if (this.postMarker) {
+            if (this.mySaveGame.post.ungeleseneAnzahl > 0) {
+                this.postMarker.classList.remove("hidden");
             } else {
-                this.questCard1.classList.add("hidden");
-            }
-        }
-        if (this.questCard2) {
-            if (this.mySaveGame.quests.questList.length >= 2) {
-                this.questCard2.classList.remove("hidden");
-            } else {
-                this.questCard2.classList.add("hidden");
-            }
-        }
-        if (this.questCard3) {
-            if (this.mySaveGame.quests.questList.length >= 3) {
-                this.questCard3.classList.remove("hidden");
-            } else {
-                this.questCard3.classList.add("hidden");
+                this.postMarker.classList.add("hidden");
             }
         }
     }
@@ -280,18 +264,19 @@ export class ViewHandler {
                 <div class="row g-2 mb-3">
                     <div class="col-6">
                         <div class="p-2 bg-body-tertiary rounded border border-secondary h-100">
-                            <p class="fw-bold mb-1 small text-danger">Verluste Angreifer:</p>
-                            <p class="mb-0 small">Schwert: ${msg.daten.verluste.angreifer.schwert} / ${msg.daten.armee.angreifer.anzahlSchwert}</p>
-                            <p class="mb-0 small">Speer: ${msg.daten.verluste.angreifer.speer} / ${msg.daten.armee.angreifer.anzahlSpeer}</p>
-                            <p class="mb-0 small">Bogen: ${msg.daten.verluste.angreifer.bogen} / ${msg.daten.armee.angreifer.anzahlBogen}</p>
+                            <p class="fw-bold mb-1 small text-success">Verluste Angreifer:</p>
+                            <p class="mb-0 small">Schwert: ${msg.daten.verluste.angreifer.schwert} / ${msg.daten.armee.angreifer.schwert}</p>
+                            <p class="mb-0 small">Speer: ${msg.daten.verluste.angreifer.speer} / ${msg.daten.armee.angreifer.speer}</p>
+                            <p class="mb-0 small">Bogen: ${msg.daten.verluste.angreifer.bogen} / ${msg.daten.armee.angreifer.bogen}</p>
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="p-2 bg-body-tertiary rounded border border-secondary h-100">
                             <p class="fw-bold mb-1 small text-success">Verluste Verteidiger:</p>
-                            <p class="mb-0 small">Schwert: ${msg.daten.verluste.verteidiger.schwert} / ${msg.daten.armee.verteidiger.anzahlSchwert}</p>
-                            <p class="mb-0 small">Speer: ${msg.daten.verluste.verteidiger.speer} / ${msg.daten.armee.verteidiger.anzahlSpeer}</p>
-                            <p class="mb-0 small">Bogen: ${msg.daten.verluste.verteidiger.bogen} / ${msg.daten.armee.verteidiger.anzahlBogen}</p>
+                            <p class="mb-0 small">Schwert: ${msg.daten.verluste.verteidiger.schwert} / ${msg.daten.armee.verteidiger.schwert}</p>
+                            <p class="mb-0 small">Speer: ${msg.daten.verluste.verteidiger.speer} / ${msg.daten.armee.verteidiger.speer}</p>
+                            <p class="mb-0 small">Bogen: ${msg.daten.verluste.verteidiger.bogen} / ${msg.daten.armee.verteidiger.bogen}</p>
+                            <p class="mb-0 small">Mauerbonus: ${msg.daten.mauer}</p>
                         </div>
                     </div>
                 </div>
@@ -299,9 +284,11 @@ export class ViewHandler {
                     <div class="col-12">
                         <div class="p-2 bg-body-tertiary rounded border border-secondary h-100">
                             <p class="fw-bold mb-1 small text-success">Beute:</p>
-                            <p class="mb-0 small">Gold: ${msg.daten.gold}</p>
-                            <p class="mb-0 small">Holz: ${msg.daten.holz}</p>
-                            <p class="mb-0 small">Stein: ${msg.daten.stein}</p>
+                            <div class="d-flex gap-3">
+                                <span class="mb-0 small">Gold: ${msg.daten.gold}</span>
+                                <span class="mb-0 small">Holz: ${msg.daten.holz}</span>
+                                <span class="mb-0 small">Stein: ${msg.daten.stein}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -310,6 +297,53 @@ export class ViewHandler {
                     ${!msg.gelesen ? `<button class="btn btn-sm btn-info" onclick="window.msgGelesen('${msg.id}')">Gelesen</button>` : ''}
                     <button class="btn btn-sm btn-outline-danger" onclick="window.msgLoeschen('${msg.id}')">Löschen</button>
                 </div>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    // --- Quest View update ---
+    updateQuests() {
+        const container = document.getElementById("quest-liste-container");
+        if (!container || !this.mySaveGame.quests) return;
+
+        container.innerHTML = ""; // Container leeren
+
+        this.mySaveGame.quests.questList.forEach((quest, index) => {
+            const div = document.createElement("div");
+        
+            div.innerHTML = `
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span>${quest.name}</span>
+                        <button class="btn btn-sm btn-secondary" data-action="prepareAngriffQuest" data-target-id="quest_${index}">Angriff planen</button>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                <span>Schwertkämpfer: <span>${quest.einheiten.anzahlSchwert}</span></span>
+                                <span>Speerträger: <span>${quest.einheiten.anzahlSpeer}</span></span>
+                                <span>Bogenschützen: <span>${quest.einheiten.anzahlBogen}</span></span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                <span>Mauer Stufe: <span>${quest.bauwerke.stadtmauer.verteidigung}</span></span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                Beute
+                                <span class="badge bg-warning text-dark border border-warning">
+                                    Gold: <span>${quest.beute.gold}</span>
+                                </span>
+                                <span class="badge bg-success border border-success">
+                                    Holz: <span>${quest.beute.holz}</span>
+                                </span>
+                                <span class="badge bg-secondary border border-secondary">
+                                    Stein: <span>${quest.beute.stein}</span>
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <br>
             `;
             container.appendChild(div);
         });

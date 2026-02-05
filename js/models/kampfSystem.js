@@ -36,8 +36,6 @@ export class KampfSystem {
         // 4. Ergebnis ausgeben
         const result = {
             win: sieg,
-            armeeAngreifer: angreifer,
-            armeeVerteidiger: verteidiger,
             mauerVerteidiger: mauerBonus,
             attackerLosses: this._calculateLosses(angreifer, sieg ? lossRate : 1, sieg ? 0.8 : 1),
             defenderLosses: this._calculateLosses(verteidiger, sieg ? 1 : lossRate, sieg ? 0.8 : 1)

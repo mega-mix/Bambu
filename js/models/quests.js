@@ -13,35 +13,53 @@ export class Quests {
                 // Struktur exakt wie in der Klasse Stadt
                 einheiten: {
                     anzahlSchwert: 10,
-                    anzahlSpeer: 10,
-                    anzahlBogen: 10,
+                    anzahlSpeer: 15,
+                    anzahlBogen: 12,
                     // Array.from, um echte Instanzen für die Berechnung zu haben
                     unitsSchwert: Array.from({ length: 10 }, () => new Schwert()),
-                    unitsSpeer: Array.from({ length: 10 }, () => new Speer()),
-                    unitsBogen: Array.from({ length: 10 }, () => new Bogen())
+                    unitsSpeer: Array.from({ length: 15 }, () => new Speer()),
+                    unitsBogen: Array.from({ length: 12 }, () => new Bogen())
                 },
                 bauwerke: {
-                    stadtmauer: { verteidigung: 0 }
+                    stadtmauer: { verteidigung: 1 }
                 },
-                beute: { gold: 500, holz: 500, stein: 500 }
+                beute: { gold: 500, holz: 450, stein: 450 }
             },
             { 
                 name: "Ogerhöhle", 
-                dauer: 30000, 
+                dauer: 60000, 
                 // Struktur exakt wie in der Klasse Stadt
                 einheiten: {
-                    anzahlSchwert: 15,
-                    anzahlSpeer: 10,
+                    anzahlSchwert: 25,
+                    anzahlSpeer: 15,
                     anzahlBogen: 0,
                     // Array.from, um echte Instanzen für die Berechnung zu haben
-                    unitsSchwert: Array.from({ length: 15 }, () => new Schwert()),
-                    unitsSpeer: Array.from({ length: 10 }, () => new Speer()),
+                    unitsSchwert: Array.from({ length: 25 }, () => new Schwert()),
+                    unitsSpeer: Array.from({ length: 15 }, () => new Speer()),
                     unitsBogen: Array.from({ length: 0 }, () => new Bogen())
                 },
                 bauwerke: {
                     stadtmauer: { verteidigung: 0 }
                 },
-                beute: { gold: 500, holz: 500, stein: 500 }
+                beute: { gold: 675, holz: 750, stein: 750 }
+            },
+            { 
+                name: "Murloc Dorf", 
+                dauer: 120000, 
+                // Struktur exakt wie in der Klasse Stadt
+                einheiten: {
+                    anzahlSchwert: 30,
+                    anzahlSpeer: 25,
+                    anzahlBogen: 20,
+                    // Array.from, um echte Instanzen für die Berechnung zu haben
+                    unitsSchwert: Array.from({ length: 30 }, () => new Schwert()),
+                    unitsSpeer: Array.from({ length: 25 }, () => new Speer()),
+                    unitsBogen: Array.from({ length: 20 }, () => new Bogen())
+                },
+                bauwerke: {
+                    stadtmauer: { verteidigung: 2 }
+                },
+                beute: { gold: 900, holz: 800, stein: 750 }
             }
         ];
     }

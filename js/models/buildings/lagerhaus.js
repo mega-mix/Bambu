@@ -77,6 +77,27 @@ export class Lagerhaus {
         }
     }
 
+    removeGold(gold) {
+        if (gold > 0) {
+            this.gold -= gold;
+            if (this.gold < 0) {this.gold = 0;}
+        }
+    }
+
+    removeHolz(holz) {
+        if (holz > 0) {
+            this.holz -= holz;
+            if (this.holz < 0) {this.holz = 0;}
+        }
+    }
+
+    removeStein(stein) {
+        if (stein > 0) {
+            this.stein -= stein;
+            if (this.stein < 0) {this.stein = 0;}
+        }
+    }
+
     
     // ------------------------------
     // ----- Rohstoffe bezahlen -----

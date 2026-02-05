@@ -50,14 +50,14 @@
                     <button class="btn btn-dark text-start" data-action="viewKaserne">
                         Kaserne
                     </button>
-                    <button class="btn btn-dark text-start" data-action="viewPlayer">
-                        Account
-                    </button>
-                    <button class="btn btn-dark text-start" data-action="viewPost">
-                        Nachrichten
-                    </button>
                     <button class="btn btn-dark text-start" data-action="viewQuests">
                         Quests
+                    </button>
+                    <button class="btn btn-dark text-start" data-action="viewPost">
+                        Nachrichten <span id="postMarker" class="hidden" data-bind-global="post.ungeleseneAnzahl">0</span>
+                    </button>
+                    <button class="btn btn-dark text-start" data-action="viewPlayer">
+                        Account
                     </button>
                     <button class="btn btn-dark text-start admin-only" data-action="viewAdmin">
                         Admin
@@ -123,6 +123,18 @@
                                 <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
                                     <span class="col-md-6">Rohstoffpaket</span>
                                     <button class="btn btn-sm btn-secondary" data-action="rohstoffPaket">💰 Anwenden</button>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                    <span class="col-md-6">Rohstoffe löschen</span>
+                                    <button class="btn btn-sm btn-secondary" data-action="rohstoffRemove">💰❌ Anwenden</button>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                    <span class="col-md-6">Einheitenpaket</span>
+                                    <button class="btn btn-sm btn-secondary" data-action="einheitenPaket">🧙 Anwenden</button>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                    <span class="col-md-6">Kaserne Stufe +</span>
+                                    <button class="btn btn-sm btn-secondary" data-action="bauKaserne">🏰 Anwenden</button>
                                 </li>
                             </ul>
                         </div>
@@ -678,92 +690,11 @@
 
                 <div id="view-quests" class="view">
                     <h2 class="mb-4 border-bottom pb-2">Abenteueraufgaben</h2>
-                    <div id="questCard1" class="card hidden">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                            <span data-bind-global="quests.questList[0].name">Aufgabe 1</span>
-                            <button class="btn btn-sm btn-secondary" data-action="prepareAngriff" data-target-id="quest_0">Angriff planen</button>
-                        </div>
-                        <div class="card-body">
-                            <ul class="list-group list-group-flush">
-                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
-                                    <span>Schwertkämpfer: <span data-bind-global="quests.questList[0].einheiten.anzahlSchwert">0</span></span>
-                                    <span>Speerträger: <span data-bind-global="quests.questList[0].einheiten.anzahlSpeer">0</span></span>
-                                    <span>Bogenschützen: <span data-bind-global="quests.questList[0].einheiten.anzahlBogen">0</span></span>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
-                                    Beute
-                                    <span class="badge bg-warning text-dark border border-warning">
-                                        Gold: <span data-bind-global="quests.questList[0].beute.gold">0</span>
-                                    </span>
-                                    <span class="badge bg-success border border-success">
-                                        Holz: <span data-bind-global="quests.questList[0].beute.holz">0</span>
-                                    </span>
-                                    <span class="badge bg-secondary border border-secondary">
-                                        Stein: <span data-bind-global="quests.questList[0].beute.stein">0</span>
-                                    </span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <br>
-                    <div id="questCard2" class="card hidden">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                            <span data-bind-global="quests.questList[1].name">Aufgabe 2</span>
-                            <button class="btn btn-sm btn-secondary" data-action="prepareAngriff" data-target-id="quest_1">Angriff planen</button>
-                        </div>
-                        <div class="card-body">
-                            <ul class="list-group list-group-flush">
-                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
-                                    <span>Schwertkämpfer: <span data-bind-global="quests.questList[1].einheiten.anzahlSchwert">0</span></span>
-                                    <span>Speerträger: <span data-bind-global="quests.questList[1].einheiten.anzahlSpeer">0</span></span>
-                                    <span>Bogenschützen: <span data-bind-global="quests.questList[1].einheiten.anzahlBogen">0</span></span>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
-                                    Beute
-                                    <span class="badge bg-warning text-dark border border-warning">
-                                        Gold: <span data-bind-global="quests.questList[1].beute.gold">0</span>
-                                    </span>
-                                    <span class="badge bg-success border border-success">
-                                        Holz: <span data-bind-global="quests.questList[1].beute.holz">0</span>
-                                    </span>
-                                    <span class="badge bg-secondary border border-secondary">
-                                        Stein: <span data-bind-global="quests.questList[1].beute.stein">0</span>
-                                    </span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <br>
-                    <div id="questCard3" class="card hidden">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                            <span data-bind-global="quests.questList[2].name">Aufgabe 3</span>
-                            <button class="btn btn-sm btn-secondary" data-action="prepareAngriff" data-target-id="quest_2">Angriff planen</button>
-                        </div>
-                        <div class="card-body">
-                            <ul class="list-group list-group-flush">
-                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
-                                    <span>Schwertkämpfer: <span data-bind-global="quests.questList[2].einheiten.anzahlSchwert">0</span></span>
-                                    <span>Speerträger: <span data-bind-global="quests.questList[2].einheiten.anzahlSpeer">0</span></span>
-                                    <span>Bogenschützen: <span data-bind-global="quests.questList[2].einheiten.anzahlBogen">0</span></span>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
-                                    Beute
-                                    <span class="badge bg-warning text-dark border border-warning">
-                                        Gold: <span data-bind-global="quests.questList[2].beute.gold">0</span>
-                                    </span>
-                                    <span class="badge bg-success border border-success">
-                                        Holz: <span data-bind-global="quests.questList[2].beute.holz">0</span>
-                                    </span>
-                                    <span class="badge bg-secondary border border-secondary">
-                                        Stein: <span data-bind-global="quests.questList[2].beute.stein">0</span>
-                                    </span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
+                    <div class="list-group" id="quest-liste-container">
+                    </div> 
                 </div>
 
-                <div id="view-angriff" class="view">
+                <div id="view-angriffQuest" class="view">
                     <h2 class="mb-4 border-bottom pb-2">Armee zusammenstellen</h2>
     
                     <div class="card bg-dark border-secondary">
@@ -771,7 +702,7 @@
                             <div class="mb-4">
                                 <div class="d-flex justify-content-between">
                                     <label>Schwertkämpfer (Max: <span data-bind="einheiten.anzahlSchwert">0</span>)</label>
-                                    <span class="badge bg-primary"><span id="ui-out-schwert">0</span> Stk.</span>
+                                    <span><span id="ui-out-schwert">0</span> Stk.</span>
                                 </div>
                                 <input type="range" class="form-range" id="ui-range-schwert" min="0" value="0">
                             </div>
@@ -779,7 +710,7 @@
                             <div class="mb-4">
                                 <div class="d-flex justify-content-between">
                                     <label>Speerträger (Max: <span data-bind="einheiten.anzahlSpeer">0</span>)</label>
-                                    <span class="badge bg-primary"><span id="ui-out-speer">0</span> Stk.</span>
+                                    <span><span id="ui-out-speer">0</span> Stk.</span>
                                 </div>
                                 <input type="range" class="form-range" id="ui-range-speer" min="0" value="0">
                             </div>
@@ -787,14 +718,14 @@
                             <div class="mb-4">
                                 <div class="d-flex justify-content-between">
                                     <label>Bogenschützen (Max: <span data-bind="einheiten.anzahlBogen">0</span>)</label>
-                                    <span class="badge bg-primary"><span id="ui-out-bogen">0</span> Stk.</span>
+                                    <span><span id="ui-out-bogen">0</span> Stk.</span>
                                 </div>
                                 <input type="range" class="form-range" id="ui-range-bogen" min="0" value="0">
                             </div>
                         </div>
                         <div class="card-footer d-flex justify-content-between">
-                            <button class="btn btn-outline-light" data-action="viewStadt">Abbrechen</button>
-                            <button class="btn btn-danger" data-action="execAngriff">Angriff Starten!</button>
+                            <button class="btn btn-outline-light" data-action="viewQuests">Abbrechen</button>
+                            <button class="btn btn-danger" data-action="execAngriffQuest">Angriff Starten!</button>
                         </div>
                     </div>
                 </div>
