@@ -33,10 +33,13 @@ export class KampfSystem {
         const randomShift = 1 + (Math.random() * this.VARIANCE * 2 - this.VARIANCE);
         lossRate = Math.min(0.95, Math.max(this.MIN_LOSS_RATE, lossRate * randomShift));
 
-        // 4. Verluste anwenden
+        // 4. Ergebnis ausgeben
         const result = {
             win: sieg,
-            attackerLosses: this._calculateLosses(angreifer, lossRate, sieg ? 1 : 0.8),
+            armeeAngreifer: angreifer,
+            armeeVerteidiger: verteidiger,
+            mauerVerteidiger: mauerBonus,
+            attackerLosses: this._calculateLosses(angreifer, sieg ? lossRate : 1, sieg ? 0.8 : 1),
             defenderLosses: this._calculateLosses(verteidiger, sieg ? 1 : lossRate, sieg ? 0.8 : 1)
         };
 

@@ -258,4 +258,60 @@ export class ViewHandler {
         setupRange("ui-range-speer", einheiten.anzahlSpeer, "ui-out-speer");
         setupRange("ui-range-bogen", einheiten.anzahlBogen, "ui-out-bogen");
     }
+
+    // --- Postfach View updaten ---
+    updatePostfach() {
+        const container = document.getElementById("post-liste-container");
+        if (!container || !this.mySaveGame.post) return;
+
+        container.innerHTML = ""; // Container leeren
+
+        this.mySaveGame.post.liste.forEach(msg => {
+            const div = document.createElement("div");
+            div.className = `list-group-item bg-dark text-white border-secondary mb-2 ${msg.gelesen ? 'opacity-75' : 'fw-bold border-start border-info border-4'}`;
+        
+            div.innerHTML = `
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-1">${msg.betreff}</h5>
+                    <small class="text-muted">${msg.datum}</small>
+                </div>
+                <p class="mb-2">${msg.text}</p>
+    
+                <div class="row g-2 mb-3">
+                    <div class="col-6">
+                        <div class="p-2 bg-body-tertiary rounded border border-secondary h-100">
+                            <p class="fw-bold mb-1 small text-danger">Verluste Angreifer:</p>
+                            <p class="mb-0 small">Schwert: ${msg.daten.verluste.angreifer.schwert} / ${msg.daten.armee.angreifer.anzahlSchwert}</p>
+                            <p class="mb-0 small">Speer: ${msg.daten.verluste.angreifer.speer} / ${msg.daten.armee.angreifer.anzahlSpeer}</p>
+                            <p class="mb-0 small">Bogen: ${msg.daten.verluste.angreifer.bogen} / ${msg.daten.armee.angreifer.anzahlBogen}</p>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="p-2 bg-body-tertiary rounded border border-secondary h-100">
+                            <p class="fw-bold mb-1 small text-success">Verluste Verteidiger:</p>
+                            <p class="mb-0 small">Schwert: ${msg.daten.verluste.verteidiger.schwert} / ${msg.daten.armee.verteidiger.anzahlSchwert}</p>
+                            <p class="mb-0 small">Speer: ${msg.daten.verluste.verteidiger.speer} / ${msg.daten.armee.verteidiger.anzahlSpeer}</p>
+                            <p class="mb-0 small">Bogen: ${msg.daten.verluste.verteidiger.bogen} / ${msg.daten.armee.verteidiger.anzahlBogen}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row g-2 mb-3">
+                    <div class="col-12">
+                        <div class="p-2 bg-body-tertiary rounded border border-secondary h-100">
+                            <p class="fw-bold mb-1 small text-success">Beute:</p>
+                            <p class="mb-0 small">Gold: ${msg.daten.gold}</p>
+                            <p class="mb-0 small">Holz: ${msg.daten.holz}</p>
+                            <p class="mb-0 small">Stein: ${msg.daten.stein}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2">
+                    ${!msg.gelesen ? `<button class="btn btn-sm btn-info" onclick="window.msgGelesen('${msg.id}')">Gelesen</button>` : ''}
+                    <button class="btn btn-sm btn-outline-danger" onclick="window.msgLoeschen('${msg.id}')">Löschen</button>
+                </div>
+            `;
+            container.appendChild(div);
+        });
+    }
 }

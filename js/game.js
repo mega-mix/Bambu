@@ -9,6 +9,7 @@ import { UIManager } from "./models/uiManager.js";
 import { Armee } from "./models/armee.js";
 import { KampfSystem } from "./models/kampfSystem.js";
 
+
 let playerName;
 let mySaveGame;
 let aktuellesAngriffsZiel = null;
@@ -85,7 +86,6 @@ function gebaeudeLevelKauf(gebaeudeName) {
     // Level erhöhen und speichern
     stadt.bauwerke.addBauwerk(gebaeude);
     saveGame();
-    console.log(`Erfolgreich gekauft!`);
     console.log(`🏠 ${gebaeude.name} wird gebaut.`);
 }
 
@@ -135,52 +135,35 @@ function einheitenKauf(einheitName) {
 function getZielDaten(zielId) {
     if (!zielId) return null;
 
-    // --- Prüfung auf Quest-ID (z.B. "quest_0") ---
+    // Prüfung auf Quest-ID (z.B. "quest_0")
     if (zielId.startsWith("quest_")) {
         const index = parseInt(zielId.split("_")[1]);
-        const quest = mySaveGame.quests.getQuest(index);
-        if (!quest) return null;
-
-        // Wir bauen ein "Mock"-Objekt, das für dein KampfSystem 
-        // wie eine Stadt aussieht, aber Quest-Werte nutzt.
-        return {
-            name: quest.name,
-            einheiten: {
-                anzahlSchwert: quest.einheiten.anzahlSchwert,
-                anzahlSpeer: quest.einheiten.anzahlSpeer,
-                anzahlBogen: quest.einheiten.anzahlBogen,
-                // Dummy-Arrays für die Power-Berechnung (Counter-System)
-                unitsSchwert: Array(quest.einheiten.anzahlSchwert).fill({ angriff: 10, verteidigung: 15 }),
-                unitsSpeer: Array(quest.einheiten.anzahlSpeer).fill({ angriff: 15, verteidigung: 12 }),
-                unitsBogen: Array(quest.einheiten.anzahlBogen).fill({ angriff: 18, verteidigung: 5 })
-            },
-            bauwerke: {
-                stadtmauer: { verteidigung: 0 } // Quests haben keine Mauer
-            },
-            beute: quest.beute // Beute für die Vergabe nach dem Sieg
-        };
+        return mySaveGame.quests.getQuest(index);
     }
 
     // Hier könnte später die Logik für echte Spieler (via Firebase) folgen
+    // return await storage.loadEnemyPlayer(zielId);
     return null;
 }
 
 // --- Armee los schicken ---
 function starteMarsch(sMenge, pMenge, bMenge, zielId) {
     const stadt = mySaveGame.aktuelleStadt;
-    
+    const ziel = getZielDaten(zielId);
+
     // 1. Armee-Objekt erstellen (entnimmt Truppen aus stadt.einheiten)
     const neueArmee = new Armee(sMenge, pMenge, bMenge, stadt.einheiten);
     
-    // 2. Ziel und Zeit festlegen (wie in der Bauschleife)
-    const marschDauer = 30000; // 30 Sekunden Marschzeit
+    // 2. Ziel und Zeit festlegen
+    const marschDauer = ziel.dauer || 10000; // Marschzeit
     neueArmee.ankunftZeit = Date.now() + marschDauer;
     neueArmee.zielId = zielId; // Wer wird angegriffen?
 
-    // 3. In die Liste der Stadt eintragen -> Wird jetzt mitgespeichert!
+    // 3. In die Liste der Stadt eintragen
     stadt.marschierendeArmeen.push(neueArmee);
+    console.log(`Armee ist auf dem Weg zu ${ziel.name}`);
     
-    saveGame(); // Sofort speichern
+    saveGame();
 }
 
 // --- Armee Update ---
@@ -208,15 +191,30 @@ function updateArmee() {
                     lager.addHolz(zielDaten.beute.holz || 0);
                     lager.addStein(zielDaten.beute.stein || 0);
                     gameView.setTopInfo(`⚔️ Sieg gegen ${zielDaten.name}!`);
+                    console.log(`⚔️ Sieg gegen ${zielDaten.name}!`);
                 } else {
                     gameView.setTopInfo(`💀 Niederlage bei ${zielDaten.name}...`);
+                    console.log(`💀 Niederlage bei ${zielDaten.name}...`);
                 }
 
-                // 3. Überlebende Truppen zurück in die Stadt schicken
+                // 3. NACHRICHTEN-SYSTEM INTEGRATION
+                // Der Bericht wird hier erstellt, wo alle Daten verfügbar sind
+                const berichtText = `Dein Angriff auf ${zielDaten.name} war ${ergebnis.win ? 'erfolgreich' : 'ein Fehlschlag'}.`;
+                const details = {
+                    gold: ergebnis.win ? zielDaten.beute.gold : 0,
+                    holz: ergebnis.win ? zielDaten.beute.holz : 0,
+                    stein: ergebnis.win ? zielDaten.beute.stein : 0,
+                    armee: { angreifer: ergebnis.armeeAngreifer, verteidiger: ergebnis.armeeVerteidiger },
+                    mauer: ergebnis.mauerVerteidiger,
+                    verluste: { angreifer: ergebnis.attackerLosses, verteidiger: ergebnis.defenderLosses }
+                };
+                mySaveGame.post.add("Kampfbericht", `Angriff auf ${zielDaten.name}`, berichtText, details);
+
+                // 4. Überlebende Truppen zurück in die Stadt schicken
                 stadt.einheiten.rueckkehrTruppen(armee);
             }
 
-            // 4. Aus der Marschliste löschen & Speichern
+            // 5. Aus der Marschliste löschen & Speichern
             stadt.marschierendeArmeen.splice(i, 1);
             saveGame();
         }
@@ -288,6 +286,7 @@ function initInteractions() {
         "resetGame": resetGame,
         "viewPlayer": () => gameView.switchView("view-player"),
         "viewStadt": () => gameView.switchView("view-stadt"),
+        "viewPost": () => { gameView.switchView("view-post"); gameView.updatePostfach(); },
         "viewQuests": () => gameView.switchView("view-quests"),
         "viewBauwerke": () => gameView.switchView("view-bauwerke"),
         "viewRathaus": () => gameView.switchView("view-rathaus"),
@@ -318,7 +317,7 @@ function initInteractions() {
         "rohstoffPaket": adminAddResources,
 
         "prepareAngriff": (event) => {
-            // Hier musst du die Ziel-ID mitgeben (z.B. aus einem Data-Attribut des Buttons)
+            // Ziel-ID mitgeben (z.B. aus einem Data-Attribut des Buttons)
             aktuellesAngriffsZiel = event.target.dataset.targetId; 
             gameView.prepareAttackView();
             gameView.switchView("view-angriff");
@@ -328,7 +327,8 @@ function initInteractions() {
             const p = parseInt(document.getElementById("ui-range-speer").value);
             const b = parseInt(document.getElementById("ui-range-bogen").value);
         
-            starteMarsch(s, p, b, aktuellesAngriffsZiel); // Wir starten erst mal nur den Marsch
+            starteMarsch(s, p, b, aktuellesAngriffsZiel);
+            gameView.switchView("view-quests");
         }
     };
 
@@ -441,7 +441,6 @@ function updateData() {
     mySaveGame.aktuelleStadt.bauwerke.lagerhaus.addStein(mySaveGame.aktuelleStadt.bauwerke.steinbruch.einsammeln());  // Stein einsammeln
     mySaveGame.aktuelleStadt.einheiten.updateAusbildungsschleife();
     mySaveGame.aktuelleStadt.bauwerke.updateBauschleife();
-
     updateArmee();
 }
 
@@ -449,3 +448,23 @@ function updateData() {
 function updateView() {
     gameView.update(); // Werte in HTML aktualisieren
 }
+
+// --- Button gelesen für Nachrichten ---
+window.msgGelesen = (id) => {
+    mySaveGame.post.markiereGelesen(id);
+    saveGame();
+    // Die Ansicht muss sofort aktualisiert werden, um die Änderung zu sehen
+    gameView.update(); 
+    gameView.updatePostfach();
+};
+
+// --- Button löschen für Nachrichten ---
+window.msgLoeschen = (id) => {
+    if (confirm("Nachricht wirklich löschen?")) {
+        mySaveGame.post.loeschen(id);
+        saveGame();
+        // UI aktualisieren
+        gameView.update();
+        gameView.updatePostfach();
+    }
+};

@@ -10,7 +10,7 @@ export class Kaserne {
 
     constructor() {
         this.name = "Kaserne";
-        this.level = 0;
+        this.level = 1;
     }
 
     get tag() { return "BAUWERK"; }

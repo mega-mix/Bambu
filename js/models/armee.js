@@ -32,9 +32,9 @@ export class Armee {
         this.ankunftZeit = data.ankunftZeit || 0;
         this.zielId = data.zielId || null;
         // Nutzt die Ladelogik der Einheiten
-        this.unitsSchwert = this._loadUnitArray(data.unitsSchwert, Schwert);
-        this.unitsSpeer = this._loadUnitArray(data.unitsSpeer, Speer);
-        this.unitsBogen = this._loadUnitArray(data.unitsBogen, Bogen);
+        this.unitsSchwert = this._loadUnitArray(data.unitsSchwert || [], Schwert);
+        this.unitsSpeer = this._loadUnitArray(data.unitsSpeer || [], Speer);
+        this.unitsBogen = this._loadUnitArray(data.unitsBogen || [], Bogen);
     }
 
     // Hilfsfunktion analog zu einheiten.js
