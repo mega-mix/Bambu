@@ -23,7 +23,7 @@ export class Quests {
                     unitsBogen: Array.from({ length: 12 }, () => new Bogen())
                 },
                 bauwerke: {
-                    stadtmauer: { verteidigung: 1 }
+                    stadtmauer: { verteidigung: 100 }
                 },
                 beute: { gold: 500, holz: 450, stein: 450 }
             },
@@ -43,7 +43,7 @@ export class Quests {
                     unitsBogen: Array.from({ length: 0 }, () => new Bogen())
                 },
                 bauwerke: {
-                    stadtmauer: { verteidigung: 2 }
+                    stadtmauer: { verteidigung: 120 }
                 },
                 beute: { gold: 875, holz: 950, stein: 950 }
             },
@@ -63,7 +63,7 @@ export class Quests {
                     unitsBogen: Array.from({ length: 20 }, () => new Bogen())
                 },
                 bauwerke: {
-                    stadtmauer: { verteidigung: 3 }
+                    stadtmauer: { verteidigung: 150 }
                 },
                 beute: { gold: 1400, holz: 1300, stein: 1250 }
             }

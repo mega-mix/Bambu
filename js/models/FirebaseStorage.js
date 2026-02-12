@@ -77,7 +77,7 @@ export default class FirebaseStorage {
                 },
                 bauwerke: {
                     stadtmauer: { 
-                        verteidigung: mauer.level 
+                        verteidigung: mauer.verteidigung 
                     }
                 },
                 // Beute-Informationen
@@ -132,9 +132,9 @@ export default class FirebaseStorage {
             const enemies = [];
             querySnapshot.forEach((doc) => {
                 // Nicht mich selbst in die Liste packen
-                //if (doc.id !== user.uid) {
+                if (doc.id !== user.uid) {
                     enemies.push(doc.data());
-                //}
+                }
             });
             return enemies;
         } catch (error) {
