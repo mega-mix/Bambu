@@ -125,15 +125,21 @@ export class Bauwerke {
         }
         return "";
     }
-    get bauschleifeFirstRestZeitSek() {
+    get bauschleifeFirstZeitString() {
         if (this.bauschleife.length > 0) {
-            return `${Math.floor((this.bauschleife[0].time - Date.now() + 1000) / 1000)} Sek.`;
+            const restMs = Math.floor(this.bauschleife[0].time - Date.now() + 1000);
+            const restSek = Math.floor(restMs / 1000) % 60;
+            const restMin = Math.floor(restMs / 60000);
+            return `${restMin} Min ${restSek} Sek`;
         }
         return "";
     }
-    get bauschleifeSecondRestZeitSek() {
+    get bauschleifeSecondZeitString() {
         if (this.bauschleife.length > 1) {
-            return `${Math.floor((this.bauschleife[1].time - Date.now() + 1000) / 1000)} Sek.`;
+            const restMs = Math.floor(this.bauschleife[1].time - Date.now() + 1000);
+            const restSek = Math.floor(restMs / 1000) % 60;
+            const restMin = Math.floor(restMs / 60000);
+            return `${restMin} Min ${restSek} Sek`;
         }
         return "";
     }

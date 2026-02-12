@@ -9,7 +9,9 @@ export class Quests {
         this.questList = [
             { 
                 name: "Räuberlager", 
-                dauer: 30000, 
+                dauer: 300000,
+                get dauerSek() { return Math.floor(this.dauer / 1000) % 60; },
+                get dauerMin() { return Math.floor(this.dauer / 60000); },
                 // Struktur exakt wie in der Klasse Stadt
                 einheiten: {
                     anzahlSchwert: 10,
@@ -27,11 +29,13 @@ export class Quests {
             },
             { 
                 name: "Ogerhöhle", 
-                dauer: 60000, 
+                dauer: 450000,
+                get dauerSek() { return Math.floor(this.dauer / 1000) % 60; },
+                get dauerMin() { return Math.floor(this.dauer / 60000); },
                 // Struktur exakt wie in der Klasse Stadt
                 einheiten: {
-                    anzahlSchwert: 25,
-                    anzahlSpeer: 15,
+                    anzahlSchwert: 35,
+                    anzahlSpeer: 25,
                     anzahlBogen: 0,
                     // Array.from, um echte Instanzen für die Berechnung zu haben
                     unitsSchwert: Array.from({ length: 25 }, () => new Schwert()),
@@ -39,27 +43,29 @@ export class Quests {
                     unitsBogen: Array.from({ length: 0 }, () => new Bogen())
                 },
                 bauwerke: {
-                    stadtmauer: { verteidigung: 0 }
+                    stadtmauer: { verteidigung: 2 }
                 },
-                beute: { gold: 675, holz: 750, stein: 750 }
+                beute: { gold: 875, holz: 950, stein: 950 }
             },
             { 
                 name: "Murloc Dorf", 
-                dauer: 120000, 
+                dauer: 600000,
+                get dauerSek() { return Math.floor(this.dauer / 1000) % 60; },
+                get dauerMin() { return Math.floor(this.dauer / 60000); },
                 // Struktur exakt wie in der Klasse Stadt
                 einheiten: {
-                    anzahlSchwert: 30,
-                    anzahlSpeer: 25,
-                    anzahlBogen: 20,
+                    anzahlSchwert: 50,
+                    anzahlSpeer: 45,
+                    anzahlBogen: 40,
                     // Array.from, um echte Instanzen für die Berechnung zu haben
                     unitsSchwert: Array.from({ length: 30 }, () => new Schwert()),
                     unitsSpeer: Array.from({ length: 25 }, () => new Speer()),
                     unitsBogen: Array.from({ length: 20 }, () => new Bogen())
                 },
                 bauwerke: {
-                    stadtmauer: { verteidigung: 2 }
+                    stadtmauer: { verteidigung: 3 }
                 },
-                beute: { gold: 900, holz: 800, stein: 750 }
+                beute: { gold: 1400, holz: 1300, stein: 1250 }
             }
         ];
     }

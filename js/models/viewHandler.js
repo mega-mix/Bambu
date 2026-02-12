@@ -6,7 +6,10 @@ export class ViewHandler {
     constructor(saveGame, aktuelleStadt) {
         this.startName = document.getElementById("startName"); // Feld für Spielernamen erstellen
         this.topInfo = document.getElementById("topInfo");  // Konsole in TopBar erstellen
-        this.postMarker = document.getElementById("postMarker");
+        this.postMarker = document.getElementById("postMarker"); // Zeigt Anzahl im Nav Menü
+        this.postLeerMsg = document.getElementById("postLeerMsg"); // Msg bei leeren Postfach
+        this.armeeMarker = document.getElementById("armeeMarker"); // Zeigt Anzahl im Nav Menü
+        this.armeeLeerMsg = document.getElementById("armeeLeerMsg"); // Msg bei leeren Armeen
 
         this.mySaveGame = saveGame; // Spielstand für Werte zum anzeigen
         this.aktuelleStadt = aktuelleStadt; // Daten der aktuellen Stadt für Werte
@@ -182,6 +185,28 @@ export class ViewHandler {
                 this.postMarker.classList.add("hidden");
             }
         }
+        if (this.postLeerMsg) {
+            if (this.mySaveGame.post.ungeleseneAnzahl > 0) {
+                this.postLeerMsg.classList.add("hidden");
+            } else {
+                this.postLeerMsg.classList.remove("hidden");
+            }
+        }
+
+        if (this.armeeMarker) {
+            if (this.mySaveGame.aktuelleStadt.anzahlArmeen > 0) {
+                this.armeeMarker.classList.remove("hidden");
+            } else {
+                this.armeeMarker.classList.add("hidden");
+            }
+        }
+        if (this.armeeLeerMsg) {
+            if (this.mySaveGame.aktuelleStadt.anzahlArmeen > 0) {
+                this.armeeLeerMsg.classList.add("hidden");
+            } else {
+                this.armeeLeerMsg.classList.remove("hidden");
+            }
+        }
     }
 
     // --- Wert aus Pfad lesen ---
@@ -224,7 +249,7 @@ export class ViewHandler {
     }
 
     // --- Schieberegler in Armee vorbereiten ---
-    prepareAttackView() {
+    prepareAttackView(ziel) {
         const einheiten = this.aktuelleStadt.einheiten; //
     
         const setupRange = (id, max, outId) => {
@@ -241,6 +266,49 @@ export class ViewHandler {
         setupRange("ui-range-schwert", einheiten.anzahlSchwert, "ui-out-schwert");
         setupRange("ui-range-speer", einheiten.anzahlSpeer, "ui-out-speer");
         setupRange("ui-range-bogen", einheiten.anzahlBogen, "ui-out-bogen");
+
+        const container = document.getElementById("quest-angriff-container");
+        if (!container || !this.mySaveGame.quests) return;
+        container.innerHTML = ""; // Container leeren
+
+        const div = document.createElement("div");
+        
+            div.innerHTML = `
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span>Ziel: ${ziel.name}</span>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                <span>Schwertkämpfer: <span>${ziel.einheiten.anzahlSchwert}</span></span>
+                                <span>Speerträger: <span>${ziel.einheiten.anzahlSpeer}</span></span>
+                                <span>Bogenschützen: <span>${ziel.einheiten.anzahlBogen}</span></span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                <span>Mauer Stufe: <span>${ziel.bauwerke.stadtmauer.verteidigung}</span></span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                <span>Dauer: <span>${ziel.dauerMin}</span> Min <span>${ziel.dauerSek}</span> Sek</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                Beute
+                                <span class="badge bg-warning text-dark border border-warning">
+                                    Gold: <span>${ziel.beute.gold}</span>
+                                </span>
+                                <span class="badge bg-success border border-success">
+                                    Holz: <span>${ziel.beute.holz}</span>
+                                </span>
+                                <span class="badge bg-secondary border border-secondary">
+                                    Stein: <span>${ziel.beute.stein}</span>
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <br>
+            `;
+            container.appendChild(div);
     }
 
     // --- Postfach View updaten ---
@@ -329,6 +397,9 @@ export class ViewHandler {
                                 <span>Mauer Stufe: <span>${quest.bauwerke.stadtmauer.verteidigung}</span></span>
                             </li>
                             <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                <span>Dauer: <span>${quest.dauerMin}</span> Min <span>${quest.dauerSek}</span> Sek</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
                                 Beute
                                 <span class="badge bg-warning text-dark border border-warning">
                                     Gold: <span>${quest.beute.gold}</span>
@@ -348,4 +419,48 @@ export class ViewHandler {
             container.appendChild(div);
         });
     }
+
+    // --- Armeen View update ---
+    updateArmee() {
+        const container = document.getElementById("armee-liste-container");
+        if (!container || !this.mySaveGame.aktuelleStadt.marschierendeArmeen) return;
+
+        container.innerHTML = ""; // Container leeren
+
+        this.mySaveGame.aktuelleStadt.marschierendeArmeen.forEach((armee, index) => {
+            const div = document.createElement("div");
+        
+            div.innerHTML = `
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span>Angriff auf: ${armee.zielName}</span>
+                        <span class="armee-timer" data-index="${index}">0 Sek.</span>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
+                                <span>Schwertkämpfer: <span>${armee.anzahlSchwert}</span></span>
+                                <span>Speerträger: <span>${armee.anzahlSpeer}</span></span>
+                                <span>Bogenschützen: <span>${armee.anzahlBogen}</span></span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <br>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    // --- Armee Timer update ---
+    updateArmeeTimer() {
+    const timerElements = document.querySelectorAll(".armee-timer");
+    timerElements.forEach(el => {
+        const idx = el.dataset.index;
+        const armee = this.aktuelleStadt.marschierendeArmeen[idx];
+        if (armee) {
+            el.innerText = armee.restZeitString;
+        }
+    });
+}
 }
