@@ -69,17 +69,23 @@ export default class FirebaseStorage {
             return {
                 name: stadt.name,
                 verteidigung: stadt.verteidigungGesamt,
-                mauerLevel: mauer.level,
-                
-                // Einheitenanzahl (Spionage-Infos)
-                anzahlSchwert: einheiten.anzahlSchwert,
-                anzahlSpeer: einheiten.anzahlSpeer,
-                anzahlBogen: einheiten.anzahlBogen,
-
-                // Plünderbare Ressourcen (Wir sagen mal 50% sind ungeschützt)
-                lootableGold: Math.floor(lager.gold * 0.5),
-                lootableHolz: Math.floor(lager.holz * 0.5),
-                lootableStein: Math.floor(lager.stein * 0.5)
+                // Einheiten-Informationen
+                einheiten: {
+                    anzahlSchwert: einheiten.anzahlSchwert,
+                    anzahlSpeer: einheiten.anzahlSpeer,
+                    anzahlBogen: einheiten.anzahlBogen
+                },
+                bauwerke: {
+                    stadtmauer: { 
+                        verteidigung: mauer.level 
+                    }
+                },
+                // Beute-Informationen
+                beute: {
+                    gold: Math.floor(lager.gold * 0.5),
+                    holz: Math.floor(lager.holz * 0.5),
+                    stein: Math.floor(lager.stein * 0.5)
+                }
             };
         });
 
@@ -126,9 +132,9 @@ export default class FirebaseStorage {
             const enemies = [];
             querySnapshot.forEach((doc) => {
                 // Nicht mich selbst in die Liste packen
-                if (doc.id !== user.uid) {
+                //if (doc.id !== user.uid) {
                     enemies.push(doc.data());
-                }
+                //}
             });
             return enemies;
         } catch (error) {
