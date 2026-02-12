@@ -17,8 +17,9 @@ export class Armee {
         this.unitsBogen = [];
         this.ankunftZeit = 0;
         this.zielId = null;
+        this.zielName = null;
 
-        // Nur splicten, wenn stadtEinheiten wirklich mitgegeben wurden (beim Start des Marsches)
+        // Nur splicen, wenn stadtEinheiten wirklich mitgegeben wurden (beim Start des Marsches)
         if (stadtEinheiten) {
             this.unitsSchwert = stadtEinheiten.unitsSchwert.splice(0, s);
             this.unitsSpeer = stadtEinheiten.unitsSpeer.splice(0, p);
@@ -31,6 +32,7 @@ export class Armee {
         if (!data) return;
         this.ankunftZeit = data.ankunftZeit || 0;
         this.zielId = data.zielId || null;
+        this.zielName = data.zielName || null;
         // Nutzt die Ladelogik der Einheiten
         this.unitsSchwert = this._loadUnitArray(data.unitsSchwert || [], Schwert);
         this.unitsSpeer = this._loadUnitArray(data.unitsSpeer || [], Speer);
@@ -58,6 +60,13 @@ export class Armee {
         total += this.unitsSpeer.reduce((sum, u) => sum + u.angriff, 0);
         total += this.unitsBogen.reduce((sum, u) => sum + u.angriff, 0);
         return total;
+    }
+
+    get restZeitString() {
+        const restMs = Math.floor(this.ankunftZeit - Date.now() + 1000);
+        const restSek = Math.floor(restMs / 1000) % 60;
+        const restMin = Math.floor(restMs / 60000);
+        return `${restMin} Min ${restSek} Sek`;
     }
 
     // --- Verluste verarbeiten ---

@@ -46,4 +46,6 @@ export class Stadt {
 
         return angriff;
     }
+
+    get anzahlArmeen() { return this.marschierendeArmeen.length; }
 }

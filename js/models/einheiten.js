@@ -215,49 +215,55 @@ export class Einheiten {
         }
         return "";
     }
-    get ausbildungsschleifeFirstRestZeitSek() {
+    get ausbildungsschleifeFirstZeitString() {
         let string = "";
         if (this.ausbildungsschleife.length > 0) {
-            const diff = this.ausbildungsschleife[0].nextUnitEndzeit - Date.now();
-            // Math.max(0, ...) verhindert negative Zahlen bei Lag
-            string = `${Math.floor(Math.max(0, diff) / 1000 + 1)} Sek.`;
+            const restMs = Math.floor(this.ausbildungsschleife[0].nextUnitEndzeit - Date.now() + 1000);
+            const restSek = Math.floor(restMs / 1000) % 60;
+            const restMin = Math.floor(restMs / 60000);
+            string = `${restMin} Min ${restSek} Sek`;
+
             if (this.ausbildungsschleife[0].anzahl > 1) {
-                const diffGrp = this.ausbildungsschleife[0].groupEndzeit - Date.now();
-                // Math.max(0, ...) verhindert negative Zahlen bei Lag
-                string = string + ` / ${Math.floor(Math.max(0, diffGrp) / 1000 + 1)} Sek.`;
+                const restMs2 = Math.floor(this.ausbildungsschleife[0].groupEndzeit - Date.now() + 1000);
+                const restSek2 = Math.floor(restMs2 / 1000) % 60;
+                const restMin2 = Math.floor(restMs2 / 60000);
+                string = string + ` / ${restMin2} Min ${restSek2} Sek`;
             }
         }
-        
         return string;
     }
-    get ausbildungsschleifeSecondRestZeitSek() {
+    get ausbildungsschleifeSecondZeitString() {
         let string = "";
         if (this.ausbildungsschleife.length > 1) {
-            const diff = this.ausbildungsschleife[1].nextUnitEndzeit - Date.now();
-            // Math.max(0, ...) verhindert negative Zahlen bei Lag
-            string = `${Math.floor(Math.max(0, diff) / 1000 + 1)} Sek.`;
+            const restMs = Math.floor(this.ausbildungsschleife[1].nextUnitEndzeit - Date.now() + 1000);
+            const restSek = Math.floor(restMs / 1000) % 60;
+            const restMin = Math.floor(restMs / 60000);
+            string = `${restMin} Min ${restSek} Sek`;
+
             if (this.ausbildungsschleife[1].anzahl > 1) {
-                const diffGrp = this.ausbildungsschleife[1].groupEndzeit - Date.now();
-                // Math.max(0, ...) verhindert negative Zahlen bei Lag
-                string = string + ` / ${Math.floor(Math.max(0, diffGrp) / 1000 + 1)} Sek.`;
+                const restMs2 = Math.floor(this.ausbildungsschleife[1].groupEndzeit - Date.now() + 1000);
+                const restSek2 = Math.floor(restMs2 / 1000) % 60;
+                const restMin2 = Math.floor(restMs2 / 60000);
+                string = string + ` / ${restMin2} Min ${restSek2} Sek`;
             }
         }
-        
         return string;
     }
-    get ausbildungsschleifeThirdRestZeitSek() {
+    get ausbildungsschleifeThirdZeitString() {
         let string = "";
         if (this.ausbildungsschleife.length > 2) {
-            const diff = this.ausbildungsschleife[2].nextUnitEndzeit - Date.now();
-            // Math.max(0, ...) verhindert negative Zahlen bei Lag
-            string = `${Math.floor(Math.max(0, diff) / 1000 + 1)} Sek.`;
+            const restMs = Math.floor(this.ausbildungsschleife[2].nextUnitEndzeit - Date.now() + 1000);
+            const restSek = Math.floor(restMs / 1000) % 60;
+            const restMin = Math.floor(restMs / 60000);
+            string = `${restMin} Min ${restSek} Sek`;
+
             if (this.ausbildungsschleife[2].anzahl > 1) {
-                const diffGrp = this.ausbildungsschleife[2].groupEndzeit - Date.now();
-                // Math.max(0, ...) verhindert negative Zahlen bei Lag
-                string = string + ` / ${Math.floor(Math.max(0, diffGrp) / 1000 + 1)} Sek.`;
+                const restMs2 = Math.floor(this.ausbildungsschleife[2].groupEndzeit - Date.now() + 1000);
+                const restSek2 = Math.floor(restMs2 / 1000) % 60;
+                const restMin2 = Math.floor(restMs2 / 60000);
+                string = string + ` / ${restMin2} Min ${restSek2} Sek`;
             }
         }
-        
         return string;
     }
 

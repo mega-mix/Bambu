@@ -158,12 +158,14 @@ function starteMarsch(sMenge, pMenge, bMenge, zielId) {
     const marschDauer = ziel.dauer || 10000; // Marschzeit
     neueArmee.ankunftZeit = Date.now() + marschDauer;
     neueArmee.zielId = zielId; // Wer wird angegriffen?
+    neueArmee.zielName = ziel.name; // Klartext Name
 
     // 3. In die Liste der Stadt eintragen
     stadt.marschierendeArmeen.push(neueArmee);
     console.log(`Armee ist auf dem Weg zu ${ziel.name}`);
     
     saveGame();
+    gameView.updateArmee();
 }
 
 // --- Armee Update ---
@@ -232,6 +234,7 @@ function updateArmee() {
             // 5. Aus der Marschliste löschen & Speichern
             stadt.marschierendeArmeen.splice(i, 1);
             saveGame();
+            gameView.updateArmee();
         }
     }
 }
@@ -345,7 +348,7 @@ function initInteractions() {
         "viewPlayer": () => gameView.switchView("view-player"),
         "viewStadt": () => gameView.switchView("view-stadt"),
         "viewPost": () => { gameView.switchView("view-post"); gameView.updatePostfach(); },
-        "viewQuests": () => { gameView.switchView("view-quests"); gameView.updateQuests(); },
+        "viewQuests": () => { gameView.switchView("view-quests"); gameView.updateQuests(); gameView.updateArmee(); },
         "viewBauwerke": () => gameView.switchView("view-bauwerke"),
         "viewRathaus": () => gameView.switchView("view-rathaus"),
         "viewLagerhaus": () => gameView.switchView("view-lagerhaus"),
@@ -355,6 +358,7 @@ function initInteractions() {
         "viewStadtmauer": () => gameView.switchView("view-stadtmauer"),
         "viewKaserne": () => gameView.switchView("view-kaserne"),
         "viewKaserneAusbildung": () => gameView.switchView("view-kaserneAusbildung"),
+        "viewArmee": () => { gameView.switchView("view-armee"); gameView.updateArmee(); },
 
         "rathausLevelKauf": () => gebaeudeLevelKauf("rathaus"),
         "lagerhausLevelKauf": () => gebaeudeLevelKauf("lagerhaus"),
@@ -380,7 +384,7 @@ function initInteractions() {
         "prepareAngriffQuest": (event) => {
             // Ziel-ID mitgeben (z.B. aus einem Data-Attribut des Buttons)
             aktuellesAngriffsZiel = event.target.dataset.targetId; 
-            gameView.prepareAttackView();
+            gameView.prepareAttackView(getZielDaten(aktuellesAngriffsZiel));
             gameView.switchView("view-angriffQuest");
         },
         "execAngriffQuest": () => {
@@ -508,6 +512,7 @@ function updateData() {
 // --- Darstellung aktualisieren ---
 function updateView() {
     gameView.update(); // Werte in HTML aktualisieren
+    gameView.updateArmeeTimer();
 }
 
 // --- Button gelesen für Nachrichten ---
