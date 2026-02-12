@@ -59,6 +59,9 @@
                     <button class="btn btn-dark text-start" data-action="viewPost">
                         Nachrichten <span id="postMarker" class="hidden" data-bind-global="post.ungeleseneAnzahl">0</span>
                     </button>
+                    <button class="btn btn-dark text-start" data-action="viewMap">
+                        Nachbarschaft
+                    </button>
                     <button class="btn btn-dark text-start" data-action="viewPlayer">
                         Account
                     </button>
@@ -704,7 +707,7 @@
                     </div> 
                 </div>
 
-                <div id="view-angriffQuest" class="view">
+                <div id="view-angriff" class="view">
                     <h2 class="mb-4 border-bottom pb-2">Armee zusammenstellen</h2>
                     <div class="list-group" id="quest-angriff-container">
                     </div> 
@@ -749,6 +752,11 @@
                     </div>
                 </div>
 
+                <div id="view-map" class="view">
+                    <h2 class="mb-4 border-bottom pb-2">Nachbarschaft</h2>
+                    <div id="map-liste-container" class="list-group">
+                    </div>
+                </div>
             </main>
         </div>
     </div>

@@ -13,6 +13,7 @@ import { KampfSystem } from "./models/kampfSystem.js";
 let playerName;
 let mySaveGame;
 let aktuellesAngriffsZiel = null;
+let temporaereGegnerDaten = null;
 export let isAdmin = false;
 const storage = new StorageModul();
 const gameView = new ViewHandler(mySaveGame);
@@ -141,9 +142,8 @@ function getZielDaten(zielId) {
         return mySaveGame.quests.getQuest(index);
     }
 
-    // Hier könnte später die Logik für echte Spieler (via Firebase) folgen
-    // return await storage.loadEnemyPlayer(zielId);
-    return null;
+    // Echte Spieler (via Firebase)
+    return temporaereGegnerDaten;
 }
 
 // --- Armee los schicken ---
@@ -229,6 +229,13 @@ function updateArmee() {
 
                 // 4. Überlebende Truppen zurück in die Stadt schicken
                 stadt.einheiten.rueckkehrTruppen(armee);
+            } else {
+                // FALLBACK: Daten sind weg (z.B. durch Reload) -> Rückzug
+                console.warn("Kampfdaten verloren. Armee kehrt um.");
+                stadt.einheiten.rueckkehrTruppen(armee);
+                stadt.marschierendeArmeen.splice(i, 1);
+                saveGame();
+                gameView.updateArmee();
             }
 
             // 5. Aus der Marschliste löschen & Speichern
@@ -385,7 +392,7 @@ function initInteractions() {
             // Ziel-ID mitgeben (z.B. aus einem Data-Attribut des Buttons)
             aktuellesAngriffsZiel = event.target.dataset.targetId; 
             gameView.prepareAttackView(getZielDaten(aktuellesAngriffsZiel));
-            gameView.switchView("view-angriffQuest");
+            gameView.switchView("view-angriff");
         },
         "execAngriffQuest": () => {
             const s = parseInt(document.getElementById("ui-range-schwert").value);
@@ -393,7 +400,50 @@ function initInteractions() {
             const b = parseInt(document.getElementById("ui-range-bogen").value);
         
             starteMarsch(s, p, b, aktuellesAngriffsZiel);
-            gameView.switchView("view-quests");
+            gameView.switchView("view-armee");
+        },
+
+        "viewMap": async () => {
+            gameView.switchView("view-map");
+            const enemies = await storage.loadEnemyPlayers(); // Nutzt die Multiplayer API
+            gameView.updateMap(enemies);
+        },
+        "prepareAngriffSpieler": async (event) => {
+            const targetUserId = event.target.dataset.targetId;
+            const enemies = await storage.loadEnemyPlayers();
+            const targetPlayer = enemies.find(p => p.userId === targetUserId);
+            const targetCity = targetPlayer.cities[0]; 
+
+            // Das Ziel-Objekt wird so aufgebaut, dass es für das kampfSystem.js wie eine Quest aussieht
+            temporaereGegnerDaten = {
+                name: `${targetCity.name} (${targetPlayer.playerName})`,
+                dauer: 10000, 
+                get dauerSek() { return Math.floor(this.dauer / 1000) % 60; },
+                get dauerMin() { return Math.floor(this.dauer / 60000); },
+                einheiten: {
+                    anzahlSchwert: targetCity.einheiten.anzahlSchwert,
+                    anzahlSpeer: targetCity.einheiten.anzahlSpeer,
+                    anzahlBogen: targetCity.einheiten.anzahlBogen,
+
+                    unitsSchwert: Array(targetCity.einheiten.anzahlSchwert).fill({ angriff: 10, verteidigung: 15 }),
+                    unitsSpeer: Array(targetCity.einheiten.anzahlSpeer).fill({ angriff: 15, verteidigung: 12 }),
+                    unitsBogen: Array(targetCity.einheiten.anzahlBogen).fill({ angriff: 18, verteidigung: 5 })
+                },
+                bauwerke: {
+                    stadtmauer: { 
+                        verteidigung: targetCity.bauwerke.stadtmauer.verteidigung 
+                    }
+                },
+                beute: targetCity.beute,
+                
+                // Hilfs-Getter für die Anzeige in der UI
+                get dauerSek() { return Math.floor(this.dauer / 1000) % 60; },
+                get dauerMin() { return Math.floor(this.dauer / 60000); }
+            };
+
+            aktuellesAngriffsZiel = targetUserId;
+            gameView.prepareAttackView(temporaereGegnerDaten);
+            gameView.switchView("view-angriff");
         }
     };
 

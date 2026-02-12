@@ -274,39 +274,38 @@ export class ViewHandler {
         const div = document.createElement("div");
         
             div.innerHTML = `
-                <div class="card">
+                <div class="card bg-dark text-white border-secondary mb-3">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <span>Ziel: ${ziel.name}</span>
+                        <h5 class="mb-0">Angriff auf: ${ziel.name}</h5>
                     </div>
                     <div class="card-body">
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
-                                <span>Schwertkämpfer: <span>${ziel.einheiten.anzahlSchwert}</span></span>
-                                <span>Speerträger: <span>${ziel.einheiten.anzahlSpeer}</span></span>
-                                <span>Bogenschützen: <span>${ziel.einheiten.anzahlBogen}</span></span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
-                                <span>Mauer Stufe: <span>${ziel.bauwerke.stadtmauer.verteidigung}</span></span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
-                                <span>Dauer: <span>${ziel.dauerMin}</span> Min <span>${ziel.dauerSek}</span> Sek</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
-                                Beute
-                                <span class="badge bg-warning text-dark border border-warning">
-                                    Gold: <span>${ziel.beute.gold}</span>
-                                </span>
-                                <span class="badge bg-success border border-success">
-                                    Holz: <span>${ziel.beute.holz}</span>
-                                </span>
-                                <span class="badge bg-secondary border border-secondary">
-                                    Stein: <span>${ziel.beute.stein}</span>
-                                </span>
-                            </li>
-                        </ul>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p class="fw-bold mb-1 small text-info">Verteidigung:</p>
+                                <p class="mb-0 small">Schwertkämpfer: <span>${ziel.einheiten.anzahlSchwert}</span></p>
+                                <p class="mb-0 small">Speerträger: <span>${ziel.einheiten.anzahlSpeer}</span></p>
+                                <p class="mb-0 small">Bogenschützen: <span>${ziel.einheiten.anzahlBogen}</span></p>
+                                <p class="mb-0 small">Mauerbonus: ${ziel.bauwerke.stadtmauer.verteidigung}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="fw-bold mb-1 small text-warning">Mögliche Beute:</p>
+                                <p>
+                                    <span class="badge bg-warning text-dark border border-warning">
+                                        Gold: <span>${ziel.beute.gold}</span>
+                                    </span>
+                                    <span class="badge bg-success border border-success">
+                                        Holz: <span>${ziel.beute.holz}</span>
+                                    </span>
+                                    <span class="badge bg-secondary border border-secondary">
+                                        Stein: <span>${ziel.beute.stein}</span>
+                                    </span>
+                                </p>
+                                <p class="fw-bold mb-1 small">Dauer:</p>
+                                <p class="mb-0 small"> ${ziel.dauerMin} Min ${ziel.dauerSek} Sek</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <br>
             `;
             container.appendChild(div);
     }
@@ -381,40 +380,39 @@ export class ViewHandler {
             const div = document.createElement("div");
         
             div.innerHTML = `
-                <div class="card">
+                <div class="card bg-dark text-white border-secondary mb-3">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <span>${quest.name}</span>
+                        <h5 class="mb-0">${quest.name}</h5>
                         <button class="btn btn-sm btn-secondary" data-action="prepareAngriffQuest" data-target-id="quest_${index}">Angriff planen</button>
                     </div>
                     <div class="card-body">
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
-                                <span>Schwertkämpfer: <span>${quest.einheiten.anzahlSchwert}</span></span>
-                                <span>Speerträger: <span>${quest.einheiten.anzahlSpeer}</span></span>
-                                <span>Bogenschützen: <span>${quest.einheiten.anzahlBogen}</span></span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
-                                <span>Mauer Stufe: <span>${quest.bauwerke.stadtmauer.verteidigung}</span></span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
-                                <span>Dauer: <span>${quest.dauerMin}</span> Min <span>${quest.dauerSek}</span> Sek</span>
-                            </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent text-white">
-                                Beute
-                                <span class="badge bg-warning text-dark border border-warning">
-                                    Gold: <span>${quest.beute.gold}</span>
-                                </span>
-                                <span class="badge bg-success border border-success">
-                                    Holz: <span>${quest.beute.holz}</span>
-                                </span>
-                                <span class="badge bg-secondary border border-secondary">
-                                    Stein: <span>${quest.beute.stein}</span>
-                                </span>
-                            </li>
-                        </ul>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p class="fw-bold mb-1 small text-info">Verteidigung:</p>
+                                <p class="mb-0 small">Schwertkämpfer: <span>${quest.einheiten.anzahlSchwert}</span></p>
+                                <p class="mb-0 small">Speerträger: <span>${quest.einheiten.anzahlSpeer}</span></p>
+                                <p class="mb-0 small">Bogenschützen: <span>${quest.einheiten.anzahlBogen}</span></p>
+                                <p class="mb-0 small">Mauerbonus: ${quest.bauwerke.stadtmauer.verteidigung}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="fw-bold mb-1 small text-warning">Mögliche Beute:</p>
+                                <p>
+                                    <span class="badge bg-warning text-dark border border-warning">
+                                        Gold: <span>${quest.beute.gold}</span>
+                                    </span>
+                                    <span class="badge bg-success border border-success">
+                                        Holz: <span>${quest.beute.holz}</span>
+                                    </span>
+                                    <span class="badge bg-secondary border border-secondary">
+                                        Stein: <span>${quest.beute.stein}</span>
+                                    </span>
+                                </p>
+                                <p class="fw-bold mb-1 small">Dauer:</p>
+                                <p class="mb-0 small"> ${quest.dauerMin} Min ${quest.dauerSek} Sek</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <br>
             `;
             container.appendChild(div);
         });
@@ -462,5 +460,56 @@ export class ViewHandler {
             el.innerText = armee.restZeitString;
         }
     });
-}
+    }
+
+    // --- Nachbarschaft ---
+    updateMap(enemyPlayers) {
+        const container = document.getElementById("map-liste-container");
+        if (!container) return;
+
+        container.innerHTML = ""; // Container leeren
+
+        if (enemyPlayers.length === 0) {
+            container.innerHTML = `<div>Keine anderen Spieler in der Nähe gefunden.</div>`;
+            return;
+        }
+
+        enemyPlayers.forEach(player => {
+            player.cities.forEach((city, cityIndex) => {
+                const div = document.createElement("div");
+                div.className = "card bg-dark text-white border-secondary mb-3";
+                
+                div.innerHTML = `
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">🏰 ${city.name} <small class="text-muted">(${player.playerName})</small></h5>
+                        <button class="btn btn-sm btn-secondary" data-action="prepareAngriffSpieler" data-target-id="${player.userId}" data-city-index="${cityIndex}">Angriff planen</button>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p class="fw-bold mb-1 small text-info">Verteidigung:</p>
+                                <p class="mb-0 small">Stärke: ${city.verteidigung}</p>
+                                <p class="mb-0 small">Mauerbonus: ${city.bauwerke.stadtmauer.verteidigung}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="fw-bold mb-1 small text-warning">Mögliche Beute:</p>
+                                <p>
+                                    <span class="badge bg-warning text-dark border border-warning">
+                                        Gold: <span>${city.beute.gold}</span>
+                                    </span>
+                                    <span class="badge bg-success border border-success">
+                                        Holz: <span>${city.beute.holz}</span>
+                                    </span>
+                                    <span class="badge bg-secondary border border-secondary">
+                                        Stein: <span>${city.beute.stein}</span>
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        });
+    }
 }
